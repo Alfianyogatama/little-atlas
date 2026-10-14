@@ -8,6 +8,8 @@ Keputusannya: negara timbul dipakai di produksi, tapi semua negara digabung menj
 
 Perangkat acuan: Huawei MatePad 11.5 SE dengan browser bawaan Huawei. Semua kombinasi memakai data yang dimuat dari build spike.
 
+Laporan lengkap spike: [2026-10-14-globe-perf](../spikes/2026-10-14-globe-perf.md).
+
 | Kombinasi | Mode dan data | Pixel ratio | FPS diam | FPS diputar | Draw call | Segitiga |
 | --- | --- | --- | --- | --- | --- | --- |
 | A | Timbul, 110m | 1.5 | 58 | 60 | 178 | 83.644 |
