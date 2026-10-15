@@ -24,6 +24,7 @@ jobs:
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
+      - run: bun run content:check
       - run: bun run typecheck
       - run: bun run lint
       - run: bun run format:check

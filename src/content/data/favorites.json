@@ -1,0 +1,602 @@
+[
+  {
+    "code": "AR",
+    "level": 1,
+    "icon": {
+      "emoji": "⚽",
+      "label": {
+        "id": "Bola sepak",
+        "en": "Soccer ball"
+      }
+    },
+    "fact": {
+      "id": "Orang Argentina suka main sepak bola.",
+      "en": "People in Argentina love playing soccer."
+    }
+  },
+  {
+    "code": "AU",
+    "level": 1,
+    "icon": {
+      "emoji": "🦘",
+      "label": {
+        "id": "Kanguru",
+        "en": "Kangaroo"
+      }
+    },
+    "fact": {
+      "id": "Di Australia ada kanguru.",
+      "en": "Kangaroos live in Australia."
+    }
+  },
+  {
+    "code": "BN",
+    "level": 2,
+    "icon": {
+      "emoji": "🕌",
+      "label": {
+        "id": "Masjid kubah emas",
+        "en": "Golden dome mosque"
+      }
+    },
+    "fact": {
+      "id": "Di Brunei ada masjid berkubah emas.",
+      "en": "Brunei has a golden dome mosque."
+    }
+  },
+  {
+    "code": "BR",
+    "level": 1,
+    "icon": {
+      "emoji": "🦜",
+      "label": {
+        "id": "Burung beo",
+        "en": "Parrot"
+      }
+    },
+    "fact": {
+      "id": "Di Brasil ada burung beo warna-warni.",
+      "en": "Colorful parrots live in Brazil."
+    }
+  },
+  {
+    "code": "CA",
+    "level": 1,
+    "icon": {
+      "emoji": "🍁",
+      "label": {
+        "id": "Daun maple",
+        "en": "Maple leaf"
+      }
+    },
+    "fact": {
+      "id": "Ada daun maple di bendera Kanada.",
+      "en": "Canada has a maple leaf on its flag."
+    }
+  },
+  {
+    "code": "CH",
+    "level": 1,
+    "icon": {
+      "emoji": "🧀",
+      "label": {
+        "id": "Keju",
+        "en": "Cheese"
+      }
+    },
+    "fact": {
+      "id": "Di Swiss ada keju yang enak.",
+      "en": "Switzerland has delicious cheese."
+    }
+  },
+  {
+    "code": "CN",
+    "level": 1,
+    "icon": {
+      "emoji": "🐼",
+      "label": {
+        "id": "Panda",
+        "en": "Panda"
+      }
+    },
+    "fact": {
+      "id": "Di China ada panda.",
+      "en": "Pandas live in China."
+    }
+  },
+  {
+    "code": "DE",
+    "level": 2,
+    "icon": {
+      "emoji": "🥨",
+      "label": {
+        "id": "Roti pretzel",
+        "en": "Pretzel"
+      }
+    },
+    "fact": {
+      "id": "Di Jerman ada roti pretzel.",
+      "en": "Germany has pretzels."
+    }
+  },
+  {
+    "code": "EG",
+    "level": 2,
+    "icon": {
+      "emoji": "🐫",
+      "label": {
+        "id": "Unta",
+        "en": "Camel"
+      }
+    },
+    "fact": {
+      "id": "Di Mesir ada unta dan piramida.",
+      "en": "Egypt has camels and pyramids."
+    }
+  },
+  {
+    "code": "ES",
+    "level": 2,
+    "icon": {
+      "emoji": "💃",
+      "label": {
+        "id": "Tari flamenco",
+        "en": "Flamenco dance"
+      }
+    },
+    "fact": {
+      "id": "Di Spanyol orang menari flamenco.",
+      "en": "People in Spain dance flamenco."
+    }
+  },
+  {
+    "code": "FR",
+    "level": 2,
+    "icon": {
+      "emoji": "🥐",
+      "label": {
+        "id": "Roti croissant",
+        "en": "Croissant"
+      }
+    },
+    "fact": {
+      "id": "Di Prancis ada roti croissant.",
+      "en": "France has croissants."
+    }
+  },
+  {
+    "code": "GB",
+    "level": 1,
+    "icon": {
+      "emoji": "🚌",
+      "label": {
+        "id": "Bus tingkat",
+        "en": "Double-decker bus"
+      }
+    },
+    "fact": {
+      "id": "Di Inggris ada bus merah bertingkat.",
+      "en": "The United Kingdom has red double-decker buses."
+    }
+  },
+  {
+    "code": "GR",
+    "level": 2,
+    "icon": {
+      "emoji": "🏛️",
+      "label": {
+        "id": "Bangunan kuno",
+        "en": "Ancient building"
+      }
+    },
+    "fact": {
+      "id": "Di Yunani ada bangunan kuno.",
+      "en": "Greece has ancient buildings."
+    }
+  },
+  {
+    "code": "ID",
+    "level": 1,
+    "icon": {
+      "emoji": "🦎",
+      "label": {
+        "id": "Komodo",
+        "en": "Komodo dragon"
+      }
+    },
+    "fact": {
+      "id": "Di sini ada komodo.",
+      "en": "Komodo dragons live here."
+    }
+  },
+  {
+    "code": "IN",
+    "level": 1,
+    "icon": {
+      "emoji": "🐘",
+      "label": {
+        "id": "Gajah",
+        "en": "Elephant"
+      }
+    },
+    "fact": {
+      "id": "Di India ada gajah.",
+      "en": "Elephants live in India."
+    }
+  },
+  {
+    "code": "IT",
+    "level": 2,
+    "icon": {
+      "emoji": "🍕",
+      "label": {
+        "id": "Pizza",
+        "en": "Pizza"
+      }
+    },
+    "fact": {
+      "id": "Pizza berasal dari Italia.",
+      "en": "Pizza comes from Italy."
+    }
+  },
+  {
+    "code": "JP",
+    "level": 1,
+    "icon": {
+      "emoji": "🗻",
+      "label": {
+        "id": "Gunung Fuji",
+        "en": "Mount Fuji"
+      }
+    },
+    "fact": {
+      "id": "Di Jepang ada Gunung Fuji.",
+      "en": "Japan has Mount Fuji."
+    }
+  },
+  {
+    "code": "KE",
+    "level": 1,
+    "icon": {
+      "emoji": "🦒",
+      "label": {
+        "id": "Jerapah",
+        "en": "Giraffe"
+      }
+    },
+    "fact": {
+      "id": "Di Kenya ada jerapah.",
+      "en": "Giraffes live in Kenya."
+    }
+  },
+  {
+    "code": "KH",
+    "level": 1,
+    "icon": {
+      "emoji": "🛕",
+      "label": {
+        "id": "Candi Angkor Wat",
+        "en": "Angkor Wat temple"
+      }
+    },
+    "fact": {
+      "id": "Di Kamboja ada candi Angkor Wat.",
+      "en": "Cambodia has the Angkor Wat temple."
+    }
+  },
+  {
+    "code": "KR",
+    "level": 1,
+    "icon": {
+      "emoji": "🥢",
+      "label": {
+        "id": "Sumpit",
+        "en": "Chopsticks"
+      }
+    },
+    "fact": {
+      "id": "Di Korea Selatan orang makan pakai sumpit.",
+      "en": "People in South Korea eat with chopsticks."
+    }
+  },
+  {
+    "code": "LA",
+    "level": 2,
+    "icon": {
+      "emoji": "🛶",
+      "label": {
+        "id": "Perahu sungai",
+        "en": "River boat"
+      }
+    },
+    "fact": {
+      "id": "Di Laos ada perahu di Sungai Mekong.",
+      "en": "Laos has boats on the Mekong River."
+    }
+  },
+  {
+    "code": "MA",
+    "level": 2,
+    "icon": {
+      "emoji": "🫖",
+      "label": {
+        "id": "Teko teh",
+        "en": "Teapot"
+      }
+    },
+    "fact": {
+      "id": "Di Maroko ada teko teh.",
+      "en": "People in Morocco drink tea from teapots."
+    }
+  },
+  {
+    "code": "MG",
+    "level": 2,
+    "icon": {
+      "emoji": "🐒",
+      "label": {
+        "id": "Lemur",
+        "en": "Lemur"
+      }
+    },
+    "fact": {
+      "id": "Di Madagaskar ada lemur.",
+      "en": "Lemurs live in Madagascar."
+    }
+  },
+  {
+    "code": "MM",
+    "level": 2,
+    "icon": {
+      "emoji": "🛕",
+      "label": {
+        "id": "Pagoda emas",
+        "en": "Golden pagoda"
+      }
+    },
+    "fact": {
+      "id": "Di Myanmar ada pagoda emas.",
+      "en": "Myanmar has a golden pagoda."
+    }
+  },
+  {
+    "code": "MX",
+    "level": 2,
+    "icon": {
+      "emoji": "🌮",
+      "label": {
+        "id": "Taco",
+        "en": "Taco"
+      }
+    },
+    "fact": {
+      "id": "Di Meksiko orang suka makan taco.",
+      "en": "People in Mexico love eating tacos."
+    }
+  },
+  {
+    "code": "MY",
+    "level": 1,
+    "icon": {
+      "emoji": "🦧",
+      "label": {
+        "id": "Orang utan",
+        "en": "Orangutan"
+      }
+    },
+    "fact": {
+      "id": "Di Malaysia ada orang utan.",
+      "en": "Orangutans live in Malaysia."
+    }
+  },
+  {
+    "code": "NL",
+    "level": 2,
+    "icon": {
+      "emoji": "🌷",
+      "label": {
+        "id": "Bunga tulip",
+        "en": "Tulip"
+      }
+    },
+    "fact": {
+      "id": "Di Belanda ada banyak bunga tulip.",
+      "en": "The Netherlands has many tulips."
+    }
+  },
+  {
+    "code": "NZ",
+    "level": 2,
+    "icon": {
+      "emoji": "🐑",
+      "label": {
+        "id": "Domba",
+        "en": "Sheep"
+      }
+    },
+    "fact": {
+      "id": "Di Selandia Baru ada banyak domba.",
+      "en": "New Zealand has many sheep."
+    }
+  },
+  {
+    "code": "PE",
+    "level": 2,
+    "icon": {
+      "emoji": "🦙",
+      "label": {
+        "id": "Llama",
+        "en": "Llama"
+      }
+    },
+    "fact": {
+      "id": "Di Peru ada llama.",
+      "en": "Llamas live in Peru."
+    }
+  },
+  {
+    "code": "PG",
+    "level": 2,
+    "icon": {
+      "emoji": "🐦",
+      "label": {
+        "id": "Burung cendrawasih",
+        "en": "Bird of paradise"
+      }
+    },
+    "fact": {
+      "id": "Di Papua Nugini ada burung cendrawasih.",
+      "en": "Birds of paradise live in Papua New Guinea."
+    }
+  },
+  {
+    "code": "PH",
+    "level": 1,
+    "icon": {
+      "emoji": "🏝️",
+      "label": {
+        "id": "Pulau",
+        "en": "Island"
+      }
+    },
+    "fact": {
+      "id": "Filipina punya banyak pulau.",
+      "en": "The Philippines has many islands."
+    }
+  },
+  {
+    "code": "RU",
+    "level": 2,
+    "icon": {
+      "emoji": "🐻",
+      "label": {
+        "id": "Beruang cokelat",
+        "en": "Brown bear"
+      }
+    },
+    "fact": {
+      "id": "Di Rusia ada beruang cokelat.",
+      "en": "Brown bears live in Russia."
+    }
+  },
+  {
+    "code": "SA",
+    "level": 1,
+    "icon": {
+      "emoji": "🐪",
+      "label": {
+        "id": "Unta",
+        "en": "Camel"
+      }
+    },
+    "fact": {
+      "id": "Di Arab Saudi ada unta di padang pasir.",
+      "en": "Camels live in the Saudi Arabian desert."
+    }
+  },
+  {
+    "code": "SG",
+    "level": 2,
+    "icon": {
+      "emoji": "🦁",
+      "label": {
+        "id": "Patung Merlion",
+        "en": "Merlion statue"
+      }
+    },
+    "fact": {
+      "id": "Di Singapura ada patung Merlion.",
+      "en": "Singapore has the Merlion statue."
+    }
+  },
+  {
+    "code": "TH",
+    "level": 2,
+    "icon": {
+      "emoji": "🛺",
+      "label": {
+        "id": "Mobil tuk-tuk",
+        "en": "Tuk-tuk"
+      }
+    },
+    "fact": {
+      "id": "Di Thailand ada mobil tuk-tuk.",
+      "en": "There are tuk-tuks in Thailand."
+    }
+  },
+  {
+    "code": "TL",
+    "level": 2,
+    "icon": {
+      "emoji": "🐊",
+      "label": {
+        "id": "Buaya",
+        "en": "Crocodile"
+      }
+    },
+    "fact": {
+      "id": "Di Timor-Leste ada buaya.",
+      "en": "Crocodiles live in Timor-Leste."
+    }
+  },
+  {
+    "code": "TR",
+    "level": 1,
+    "icon": {
+      "emoji": "🎈",
+      "label": {
+        "id": "Balon udara",
+        "en": "Hot air balloon"
+      }
+    },
+    "fact": {
+      "id": "Di Turki ada balon udara.",
+      "en": "Türkiye has hot air balloons."
+    }
+  },
+  {
+    "code": "US",
+    "level": 1,
+    "icon": {
+      "emoji": "🗽",
+      "label": {
+        "id": "Patung Liberty",
+        "en": "Statue of Liberty"
+      }
+    },
+    "fact": {
+      "id": "Di Amerika Serikat ada Patung Liberty.",
+      "en": "The United States has the Statue of Liberty."
+    }
+  },
+  {
+    "code": "VN",
+    "level": 1,
+    "icon": {
+      "emoji": "👒",
+      "label": {
+        "id": "Topi caping",
+        "en": "Conical hat"
+      }
+    },
+    "fact": {
+      "id": "Di Vietnam ada topi caping.",
+      "en": "People in Vietnam wear conical hats."
+    }
+  },
+  {
+    "code": "ZA",
+    "level": 1,
+    "icon": {
+      "emoji": "🦁",
+      "label": {
+        "id": "Singa",
+        "en": "Lion"
+      }
+    },
+    "fact": {
+      "id": "Di Afrika Selatan ada singa.",
+      "en": "Lions live in South Africa."
+    }
+  }
+]

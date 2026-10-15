@@ -4,6 +4,13 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+// Data di public/ dimuat lewat fetch, tidak dibundel (ADR-006). Dipakai ulang di setiap blok
+// no-restricted-imports karena flat config menimpa opsi, bukan menggabung.
+const publicDataPattern = {
+  group: ['**/public', '**/public/**', '@/../public/**'],
+  message: 'data di public/ dimuat lewat fetch, jangan diimpor (ADR-006)',
+};
+
 export default tseslint.config(
   {
     ignores: ['dist', 'spikes', 'prototype', 'docs', 'playwright-report', 'test-results', '.tmp'],
@@ -28,6 +35,10 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   // Batas modul per folder (AGENTS.md aturan 1 dan 2).
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: { 'no-restricted-imports': ['error', { patterns: [publicDataPattern] }] },
+  },
   {
     files: ['src/domain/**/*.{ts,tsx}'],
     rules: {
@@ -60,6 +71,7 @@ export default tseslint.config(
               ],
               message: 'src/domain harus TypeScript murni (AGENTS.md aturan 1)',
             },
+            publicDataPattern,
           ],
         },
       ],
@@ -118,6 +130,7 @@ export default tseslint.config(
               group: ['idb/*'],
               message: 'akses lewat antarmuka di src/services (AGENTS.md aturan 2)',
             },
+            publicDataPattern,
           ],
         },
       ],

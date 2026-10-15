@@ -134,6 +134,19 @@ describe('batas modul: src/features', () => {
   });
 });
 
+describe('batas modul: data peta tidak boleh dibundel (ADR-006)', () => {
+  it.each([
+    ['src/app/x.ts', '../../public/content/map.json'],
+    ['src/globe/x.ts', '../../public/content/grid.json'],
+    ['src/features/explore/x.ts', '../../../public/content/map.json'],
+    ['src/globe/x.ts', '@/../public/content/map.json'],
+    ['src/app/x.ts', '@/../public/x'],
+  ])('%s tidak boleh mengimpor %s', async (file, spec) => {
+    const rules = await lintRules(`import m from '${spec}';\nexport const v = m;\n`, file);
+    expect(rules).toContain('no-restricted-imports');
+  });
+});
+
 describe('konvensi kode', () => {
   it('melarang any', async () => {
     const rules = await lintRules('export const a: any = 1;\n', 'src/app/x.ts');
