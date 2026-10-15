@@ -1,0 +1,9 @@
+dist
+spikes
+prototype
+docs
+bun.lock
+playwright-report
+test-results
+.tmp
+*.md
