@@ -331,7 +331,7 @@ Enam dokumen ini dibutuhkan sebelum issue 1 dimulai. Urutannya sesuai prioritas.
 
 1. AGENTS.md, yang dirujuk CLAUDE.md: perintah proyek, aturan arsitektur, konvensi, dan definisi selesai, untuk dibaca Claude CLI di setiap sesi.
 2. PRD v1: masalah, pengguna, user story, dan kriteria penerimaan per fitur.
-3. ADR-001 stack dan ADR-002 penyimpanan lokal. ADR-003 (audio) dan ADR-004 (alat AI) sudah ditulis.
+3. ADR-001 (stack), ADR-002 (penyimpanan lokal), ADR-003 (audio), dan ADR-004 (alat AI) sudah ditulis.
 4. Spesifikasi kurikulum membaca: urutan huruf dan suku kata, bank 150 kata, aturan naik level.
 5. Panduan konten: gaya menulis fakta untuk anak, kebijakan wilayah sengketa, proses tinjauan.
 6. Template issue dan PR yang sesuai dengan backlog di atas.
