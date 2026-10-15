@@ -1,0 +1,31 @@
+{
+  "id": {
+    "AG": "Antigua dan Barbuda",
+    "BA": "Bosnia dan Herzegovina",
+    "CD": "Republik Demokratik Kongo",
+    "CG": "Republik Kongo",
+    "CI": "Pantai Gading",
+    "CN": "China",
+    "GB": "Inggris",
+    "KN": "Saint Kitts dan Nevis",
+    "LC": "Saint Lucia",
+    "MM": "Myanmar",
+    "ST": "São Tomé dan Príncipe",
+    "SZ": "Eswatini",
+    "TL": "Timor-Leste",
+    "TT": "Trinidad dan Tobago",
+    "VC": "Saint Vincent dan Grenadines"
+  },
+  "en": {
+    "AG": "Antigua and Barbuda",
+    "BA": "Bosnia and Herzegovina",
+    "CD": "Democratic Republic of the Congo",
+    "CG": "Republic of the Congo",
+    "KN": "Saint Kitts and Nevis",
+    "LC": "Saint Lucia",
+    "MM": "Myanmar",
+    "ST": "São Tomé and Príncipe",
+    "TT": "Trinidad and Tobago",
+    "VC": "Saint Vincent and the Grenadines"
+  }
+}

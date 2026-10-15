@@ -7,3 +7,5 @@ playwright-report
 test-results
 .tmp
 *.md
+src/content/generated
+public/content

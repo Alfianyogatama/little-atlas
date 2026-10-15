@@ -1,0 +1,15 @@
+{
+  "AQ": {
+    "icon": {
+      "emoji": "🐧",
+      "label": {
+        "id": "Penguin",
+        "en": "Penguin"
+      }
+    },
+    "fact": {
+      "id": "Di Antartika ada penguin.",
+      "en": "Penguins live in Antarctica."
+    }
+  }
+}

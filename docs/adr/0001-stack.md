@@ -4,6 +4,8 @@ Status: diterima pada 14 Oktober 2026.
 
 Diperbarui pada 15 Oktober 2026: mencatat versi terkunci yang dipasang di issue #2 (scaffold) beserta mekanisme penguncian di `bunfig.toml`, memperjelas bahwa Vitest, Vite, dan Playwright dipanggil lewat skrip Bun tetapi berjalan di Node, serta menetapkan cara batas modul ditegakkan, anggaran ukuran bundle, pin GitHub Actions, dan cakupan peramban Playwright. Keputusan stack tidak berubah.
 
+Diperbarui pada 15 Oktober 2026: mencatat paket dan versi yang dipasang di issue #3 (build-content) beserta lisensinya, aktifnya `resolveJsonModule`, dan aturan impor relatif untuk skrip di `scripts/`. Keputusan stack tidak berubah.
+
 Keputusannya: aplikasi dibangun sebagai PWA statis dengan Bun, Vite, React 19, TypeScript strict, dan React Three Fiber 9, lalu di-host di Vercel tanpa backend di v1.
 
 ## Konteks
@@ -61,6 +63,28 @@ Semua versi ditulis persis di `package.json`, tanpa `^` atau `~`. `bunfig.toml` 
 Tanggal rilis diambil dari registry npm. TypeScript 6.0.3 dipilih, bukan TypeScript 7, karena peer dependency typescript-eslint 8.71.0 membatasi TypeScript di bawah 6.1.0.
 
 Paket lain di tabel stack, seperti three, @react-three/fiber, @react-three/drei, Zod, Dexie, Paraglide JS, dan Howler, belum dipasang di issue #2. Paket itu dikunci di issue yang pertama memakainya, dengan aturan yang sama.
+
+### Paket issue #3
+
+Issue #3 (build-content) memasang paket berikut dengan aturan penguncian yang sama. Hanya Zod yang menjadi dependency runtime; paket lain adalah devDependency yang dipakai skrip build-content atau sebagai tipe.
+
+| Paket | Versi | Lisensi | Dipakai untuk |
+| --- | --- | --- | --- |
+| zod | 4.6.5 | MIT | Validasi data, dependency runtime |
+| world-atlas | 2.0.2 | ISC | Data peta 110m dan 50m |
+| topojson-client | 3.1.0 | ISC | Mengubah TopoJSON menjadi GeoJSON saat build |
+| @types/topojson-client | 3.1.5 | MIT | Tipe |
+| @types/topojson-specification | 1.0.5 | MIT | Tipe TopoJSON untuk skrip build, dirilis 7 November 2023; sebelumnya hanya terpasang transitif lewat @types/topojson-client |
+| d3-geo | 3.1.1 | ISC | Menghitung luas negara saat build; tidak masuk bundle |
+| @types/d3-geo | 3.1.1 | MIT | Tipe |
+| @types/geojson | 7946.0.16 | MIT | Tipe |
+| polylabel | 2.1.0 | ISC | Titik anchor bendera saat build |
+| @types/polylabel | 2.0.0 | MIT | Tipe |
+| flag-icons | 7.5.0 | MIT | Sumber SVG bendera |
+| cldr-localenames-modern | 45.0.0 | Unicode-3.0 | Nama negara dalam bahasa Indonesia dan Inggris |
+| @resvg/resvg-wasm | 2.6.2 | MPL-2.0 | Merender SVG bendera menjadi PNG; hanya alat build, tidak didistribusikan di aplikasi |
+
+`resolveJsonModule` diaktifkan di `tsconfig.base.json` supaya `src/content/generated/countries.json` bisa diimpor statis. Skrip di `scripts/` memakai impor relatif, misalnya `../src/content/schema`, bukan alias `@/`, karena alias itu tidak dibaca saat skrip dijalankan langsung dengan Bun.
 
 ### Cara perintah dijalankan
 
