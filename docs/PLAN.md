@@ -141,7 +141,7 @@ Konten negara dibagi tiga tingkatan. Angka 193 hanya mengatur negara mana yang a
 | Favorit | Sekitar 40 | Ditambah ikon 2D, hewan atau benda khas, dan satu kalimat fakta |
 | Bintang | Sekitar 30 dari Favorit | Ditambah hewan 3D beranimasi |
 
-Daftar Favorit sama dengan 40 bendera di level 1–2 Tebak Bendera, sehingga negara yang paling sering dilihat anak di awal adalah negara yang kontennya paling kaya. Kriteria memilihnya: ikonnya dikenali anak Indonesia, semua benua terwakili, seluruh negara ASEAN masuk, dan benderanya cukup khas untuk level awal. Fakta 34 negara dari v0 menjadi titik awal, sehingga hanya 9 negara baru yang perlu dibuat lewat alur ADR-004.
+Daftar Favorit sama dengan 40 bendera di level 1–2 Tebak Bendera, sehingga negara yang paling sering dilihat anak di awal adalah negara yang kontennya paling kaya. Kriteria memilihnya: ikonnya dikenali anak Indonesia, semua benua terwakili, seluruh negara ASEAN masuk, dan benderanya cukup khas untuk level awal. v0 punya 34 fakta. 31 di antaranya dipakai sebagai titik awal untuk negara Favorit, fakta Antartika tetap dipakai untuk benua Antartika, sementara Greenland (ADR-005) dan Norwegia tidak masuk daftar. Hasilnya, hanya 9 negara baru yang perlu dibuat lewat alur ADR-004.
 
 Aturan di game dan data:
 
@@ -221,7 +221,7 @@ Aturan performa untuk tablet kelas bawah:
 - Tekstur dikompres ke KTX2, model dengan Draco atau meshopt.
 - Objek berulang memakai InstancedMesh, dan objek jauh memakai LOD.
 - Tampilan kartun memakai MeshToonMaterial. Efek pasca-proses seperti bloom dan outline hanya dipakai kalau lolos uji di perangkat target.
-- Shader baru ditulis dengan TSL, supaya tetap jalan kalau nanti pindah ke renderer WebGPU.
+- Shader v1 ditulis dalam GLSL untuk WebGLRenderer, karena itu yang sudah terbukti di perangkat acuan. TSL baru dipakai bersama peralihan ke renderer WebGPU (ADR-006).
 
 Yang ditunda: AR (WebXR di Android, AR Quick Look lewat USDZ di iOS) dan peralihan ke renderer WebGPU. Keduanya belum menunjang Goal 1 dan 2, dan dukungan perangkatnya belum merata.
 

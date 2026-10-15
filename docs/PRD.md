@@ -189,7 +189,7 @@ Sebagai orang tua, saya ingin memilih bahasa yang dipakai anak, supaya game mend
 Sebagai anak yang belum bisa membaca, saya ingin semua yang tampil di layar bisa didengar, supaya saya tidak tertinggal.
 
 1. Semua nama negara, kalimat fakta, soal, dan pujian punya file audio per bahasa (ADR-003).
-2. Teks yang belum punya file dibacakan dengan Web Speech sebagai cadangan, sehingga game tidak pernah diam.
+2. Teks yang belum punya file dibacakan dengan suara Web Speech lokal perangkat (`localService` bernilai true) sebagai cadangan. Suara yang diproses di server tidak dipakai (F-11.2). Kalau perangkat tidak punya suara lokal untuk bahasa itu, teks tidak dibacakan, tapi game tetap berjalan dan umpan balik visual tetap tampil.
 3. Audio baru diputar setelah ketukan pertama di layar mulai, sesuai aturan browser, dan berfungsi di Safari iPad.
 4. Audio baru menghentikan audio yang sedang berjalan, sehingga suara tidak menumpuk.
 5. Tombol suara mematikan dan menyalakan semua audio, dan pilihannya diingat.

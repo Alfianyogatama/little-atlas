@@ -2,6 +2,8 @@
 
 Status: diterima pada 14 Oktober 2026.
 
+Diperbarui pada 15 Oktober 2026: memperjelas isi jendela jawaban di tabel `progress` dan aturan pengosongannya saat level berubah, baik oleh aturan naik dan turun level (F-04.7) maupun oleh orang tua (F-10.2), serta perilaku di level terendah dan tertinggi. Skema versi 1 belum diimplementasi, jadi tidak ada migrasi.
+
 Keputusannya: semua progres dan pengaturan disimpan di IndexedDB lewat Dexie, dibungkus antarmuka repository, divalidasi Zod saat dibaca, dan tidak pernah dikirim ke server.
 
 ## Konteks
@@ -22,7 +24,7 @@ PRD meminta progres terpisah untuk hingga 4 profil per perangkat (F-08), data ya
 | --- | --- | --- |
 | `profiles` | `id` | Nama panggilan, avatar, kunci level Tebak Bendera, waktu dibuat |
 | `settings` | `id` (satu baris) | Mode bahasa, suara nyala atau mati, huruf kapital atau kecil |
-| `progress` | `profileId` | Jumlah bintang, level Tebak Bendera saat ini, 10 jawaban terakhir untuk aturan naik dan turun level |
+| `progress` | `profileId` | Jumlah bintang, level Tebak Bendera saat ini, dan jendela 10 jawaban terakhir Tebak Bendera untuk aturan naik dan turun level. Setiap entri jawaban berisi `itemId` (kode negara), benar atau salah, `sessionId` (merujuk `sessions.id`), dan waktu menjawab |
 | `stamps` | `[profileId+countryCode]` | Waktu stempel didapat |
 | `mastery` | `[profileId+itemId]` | Kotak Leitner, jumlah benar dan salah, waktu terakhir dilihat; dipakai Tebak Bendera sekarang dan Membaca di Fase 2 |
 | `sessions` | `id`, indeks `profileId` | Mode, waktu mulai dan selesai; dasar perhitungan dasbor orang tua |
@@ -32,6 +34,12 @@ Pengaturan bahasa, suara, dan huruf berlaku untuk satu perangkat. Kunci level be
 ### Aturan data
 
 - Jawaban di mode Latihan tidak menulis ke `progress` maupun `mastery`. Latihan hanya menulis ke `sessions` (F-05.5, F-05.6).
+- Jendela jawaban dipisah per jalur level. Jendela di skema versi 1 hanya untuk Tebak Bendera. Jalur Membaca di Fase 2 mendapat jendela sendiri lewat versi skema berikutnya, sehingga jawaban membaca tidak memengaruhi level bendera, dan sebaliknya.
+- Jendela menyimpan paling banyak 10 entri. Jawaban baru ditambahkan di ujung, dan entri paling lama dibuang kalau jumlahnya melewati 10.
+- Aturan naik dan turun level (F-04.7) baru dinilai kalau jendela berisi tepat 10 entri. Syarat "tersebar di minimal dua sesi" dihitung dari jumlah `sessionId` unik di dalam jendela.
+- Saat level naik atau turun, jendela dikosongkan dalam transaksi yang sama dengan perubahan level. Dengan begitu, level baru hanya dinilai dari jawaban yang diberikan di level itu. Akibatnya, setelah level berubah, anak harus menjawab 10 soal baru sebelum level bisa naik atau turun lagi.
+- Kalau orang tua mengubah atau mengunci level dari dasbor (F-10.2), jendela juga dikosongkan dalam transaksi yang sama dengan perubahan itu.
+- Turun level dari level 1 tidak melakukan apa-apa: level tetap 1 dan jendela tidak dikosongkan. Begitu pula naik level dari level tertinggi yang tersedia tidak melakukan apa-apa: level tetap dan jendela tidak dikosongkan.
 - Baris `sessions` mentah disimpan 90 hari. Ringkasan mingguan untuk dasbor dihitung dari baris itu.
 - Menghapus data satu profil (F-11.4) dilakukan dalam satu transaksi yang menghapus semua baris dengan `profileId` tersebut.
 - Perkiraan ukuran data di bawah 1 MB per perangkat.

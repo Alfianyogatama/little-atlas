@@ -2,6 +2,8 @@
 
 Status: diterima pada 14 Oktober 2026.
 
+Diperbarui pada 15 Oktober 2026: cadangan Web Speech dibatasi ke suara lokal perangkat, supaya tidak ada teks yang diproses di server penyedia (F-11.2).
+
 Keputusannya: semua audio dibuat saat build dengan Gemini TTS, diperiksa otomatis oleh Whisper, lalu ditinjau manusia sebelum masuk game.
 
 ## Konteks
@@ -17,6 +19,7 @@ Goal 1 butuh bunyi huruf dan suku kata yang benar, dan Goal 2 butuh audio bahasa
 - Tinjauan akhir di halaman tinjau internal. Klip yang ditandai Whisper muncul paling atas.
 - Format MP3, digabung menjadi audio sprite per locale dan per level, diputar dengan Howler.js. Setiap klip diberi hash dari teks sumbernya, dan hanya klip yang teksnya berubah yang dibuat ulang.
 - Cadangan: MMS-TTS lokal kalau tier gratis Gemini berubah, dan Web Speech saat bermain untuk teks yang belum punya file.
+- Cadangan Web Speech hanya memakai suara dengan `SpeechSynthesisVoice.localService === true` untuk locale yang sedang dipakai. Di beberapa browser, misalnya Chrome, sebagian suara diproses di server penyedia, dan itu bertentangan dengan F-11.2. Kalau tidak ada suara lokal untuk locale itu, teks tidak dibacakan. Game tetap berjalan, dan umpan balik visual serta animasi tetap tampil.
 
 ## Alternatif yang ditolak
 

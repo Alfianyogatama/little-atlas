@@ -2,6 +2,8 @@
 
 Status: diterima pada 14 Oktober 2026, berdasarkan spike globe dan uji di tablet.
 
+Diperbarui pada 15 Oktober 2026: menambahkan keputusan renderer dan bahasa shader (WebGLRenderer dan GLSL untuk v1; TSL ditunda bersama peralihan ke WebGPU).
+
 Keputusannya: negara timbul dipakai di produksi, tapi semua negara digabung menjadi satu mesh, dan data peta serta bendera disiapkan saat build.
 
 ## Hasil uji
@@ -33,12 +35,14 @@ Kesimpulan dari angka ini:
 - Bendera 193 negara dibuat sebagai gambar tekstur kecil saat build, lalu dimuat per negara saat diketuk. Shader kibaran mengikuti spike, dan render terus-menerus hanya selama kartu negara terbuka.
 - Pixel ratio dibatasi paling tinggi 2, dengan frameloop demand.
 - touch-action: none hanya di kanvas; zoom halaman tidak dimatikan.
+- Renderer v1 adalah WebGLRenderer, renderer bawaan React Three Fiber 9. Shader ditulis dalam GLSL lewat ShaderMaterial atau onBeforeCompile, seperti di spike, karena kombinasi itulah yang sudah terbukti di Huawei Browser pada perangkat acuan. TSL dan WebGPURenderer ditunda bersama peralihan ke renderer WebGPU (PLAN, bagian "Kemampuan 3D yang dipakai").
 
 ## Alternatif yang ditolak
 
 - Satu mesh per negara seperti di spike: lancar di perangkat acuan, tapi 178–242 draw call adalah risiko terbesar di perangkat yang lebih lemah.
 - Tekstur datar seperti v0: paling ringan, tapi kehilangan efek negara timbul yang sudah terbukti mampu dijalankan.
 - Raycast ke setiap mesh negara: tidak diperlukan lagi setelah negara digabung menjadi satu mesh.
+- Menulis shader dengan TSL sejak sekarang: dukungan dan performa WebGPURenderer, termasuk fallback WebGL2-nya, belum diuji di Huawei Browser pada perangkat acuan. Memakainya sekarang menambah risiko di issue globe tanpa manfaat untuk Goal 1 dan 2.
 
 ## Konsekuensi dan yang belum diukur
 
