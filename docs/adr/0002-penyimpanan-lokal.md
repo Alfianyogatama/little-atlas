@@ -12,7 +12,7 @@ PRD meminta progres terpisah untuk hingga 4 profil per perangkat (F-08), data ya
 
 ### Teknologi
 
-- IndexedDB lewat Dexie, dengan satu database bernama `halo-dunia` dan skema berversi.
+- IndexedDB lewat Dexie, dengan satu database bernama `little-atlas` dan skema berversi.
 - Domain mendefinisikan antarmuka repository (port) di `src/domain/`. Implementasi Dexie ada di `src/services/storage/`. Domain tidak pernah mengimpor Dexie, sesuai aturan batas modul di ADR-001.
 - Setiap data yang dibaca dari IndexedDB divalidasi dengan skema Zod. Data yang rusak tidak membuat game macet: data itu diganti dengan nilai awal, dan kejadiannya dicatat ke console saja (tanpa pelaporan ke server).
 

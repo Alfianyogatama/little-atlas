@@ -1,4 +1,4 @@
-# Halo, Dunia! — Rencana Pengembangan v1
+# Little Atlas — Rencana Pengembangan v1
 
 Oct 14, 2026 · @ALFIAN
 
