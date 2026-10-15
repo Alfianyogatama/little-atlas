@@ -17,3 +17,9 @@ dist/
 
 # Spike sekali pakai; laporannya diarsipkan di docs/spikes/
 /spikes/
+
+# Hasil Playwright, artefak sementara, dan Vercel
+playwright-report/
+test-results/
+.tmp/
+.vercel/

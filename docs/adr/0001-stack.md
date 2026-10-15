@@ -2,6 +2,8 @@
 
 Status: diterima pada 14 Oktober 2026.
 
+Diperbarui pada 15 Oktober 2026: mencatat versi terkunci yang dipasang di issue #2 (scaffold) beserta mekanisme penguncian di `bunfig.toml`, memperjelas bahwa Vitest, Vite, dan Playwright dipanggil lewat skrip Bun tetapi berjalan di Node, serta menetapkan cara batas modul ditegakkan, anggaran ukuran bundle, pin GitHub Actions, dan cakupan peramban Playwright. Keputusan stack tidak berubah.
+
 Keputusannya: aplikasi dibangun sebagai PWA statis dengan Bun, Vite, React 19, TypeScript strict, dan React Three Fiber 9, lalu di-host di Vercel tanpa backend di v1.
 
 ## Konteks
@@ -20,11 +22,63 @@ v0 adalah satu file HTML. v1 membutuhkan modul, tes, i18n, globe 3D yang lebih k
 | Peta | world-atlas, d3-geo, topojson-client | Diolah saat build, bukan dimuat mentah |
 | State, routing, i18n | Zustand, TanStack Router, Paraglide JS | Sesuai tabel stack di tab rencana |
 | Penyimpanan | IndexedDB lewat Dexie | Dirinci di ADR-002 |
-| Tes | Vitest, Testing Library, Playwright | Vitest dijalankan lewat Bun |
+| Tes | Vitest, Testing Library, Playwright | Dipanggil lewat `bun run test` dan `bun run test:e2e`; binary-nya berjalan di Node |
 | Kualitas | ESLint (typescript-eslint, aturan React hooks), Prettier | Spike belum punya linter; produksi wajib |
 | Hosting | Vercel, paket gratis | Preview deploy per PR |
 
 Versi persis setiap paket dikunci saat issue 1 (scaffold), dengan aturan yang sama seperti di aplikasi: tidak memakai versi yang dirilis kurang dari dua minggu sebelumnya.
+
+## Penguncian dan gerbang (issue #2)
+
+Bagian ini mencatat keputusan pemilik pada 15 Oktober 2026 saat scaffold dikerjakan di issue #2.
+
+### Versi terkunci
+
+Semua versi ditulis persis di `package.json`, tanpa `^` atau `~`. `bunfig.toml` memasang `exact = true` supaya `bun add` selalu menulis versi persis, dan `minimumReleaseAge = 1209600` (14 hari dalam detik) supaya Bun menolak versi yang dirilis kurang dari 14 hari sebelumnya. Batas umur ini juga berlaku untuk dependensi transitif. Bun sendiri dikunci lewat `packageManager` di `package.json`.
+
+| Paket | Versi | Tanggal rilis |
+| --- | --- | --- |
+| Bun | 1.4.1 | Bukan paket npm; dikunci lewat `packageManager` |
+| react, react-dom | 19.3.0 | 9 September 2026 |
+| @types/react, @types/react-dom | 19.3.0 | 9 September 2026 |
+| typescript | 6.0.3 | 16 April 2026 |
+| vite | 8.3.1 | 24 September 2026 |
+| @vitejs/plugin-react | 6.1.1 | 28 Agustus 2026 |
+| vitest | 5.0.3 | 30 September 2026 |
+| eslint | 10.11.0 | 18 September 2026 |
+| @eslint/js | 10.0.1 | 6 Februari 2026 |
+| typescript-eslint | 8.71.0 | 28 September 2026 |
+| eslint-plugin-react-hooks | 7.1.1 | 17 April 2026 |
+| eslint-config-prettier | 10.1.8 | 18 Juli 2025 |
+| prettier | 3.9.9 | 23 September 2026 |
+| jsdom | 30.1.1 | 22 September 2026 |
+| @testing-library/react | 16.3.3 | 27 Agustus 2026 |
+| @testing-library/dom | 10.4.2 | 13 September 2026 |
+| @playwright/test | 1.63.0 | 4 September 2026 |
+| globals | 17.12.0 | 1 September 2026 |
+| @types/node | 24.19.0 | 25 September 2026 |
+
+Tanggal rilis diambil dari registry npm. TypeScript 6.0.3 dipilih, bukan TypeScript 7, karena peer dependency typescript-eslint 8.71.0 membatasi TypeScript di bawah 6.1.0.
+
+Paket lain di tabel stack, seperti three, @react-three/fiber, @react-three/drei, Zod, Dexie, Paraglide JS, dan Howler, belum dipasang di issue #2. Paket itu dikunci di issue yang pertama memakainya, dengan aturan yang sama.
+
+### Cara perintah dijalankan
+
+"Dijalankan lewat Bun" berarti perintah dipanggil lewat skrip Bun, misalnya `bun run test`. Binary Vitest, Vite, dan Playwright tetap berjalan di Node lewat shebang masing-masing. Opsi `bun --bun`, yang memaksa binary itu berjalan di runtime Bun, tidak dipakai karena risiko kompatibilitasnya. Skrip milik proyek di `scripts/` dijalankan langsung dengan Bun.
+
+### Batas modul dan lint
+
+Batas modul di AGENTS.md aturan 1 dan 2 ditegakkan dengan aturan inti ESLint `no-restricted-imports`, `no-restricted-globals`, dan `no-restricted-properties`, yang dipasang per folder di `eslint.config.js` tanpa plugin tambahan. Aturan ini dites di `tests/lint/boundaries.test.ts`. Selain itu, `tsconfig.domain.json` mengetik `src/domain` tanpa lib DOM, sehingga API peramban di domain sudah gagal saat typecheck.
+
+Lint memakai preset typescript-eslint `strict` dan `stylistic` tanpa aturan type-aware. Aturan type-aware ditunda ke issue #19.
+
+### Anggaran ukuran bundle
+
+Anggarannya 450 KB gzip, dengan 1 KB sama dengan 1000 byte. Yang dihitung hanya JavaScript muatan pertama: entry beserta import statisnya menurut manifest Vite, tanpa dynamic import dan tanpa CSS. Pengecekannya dilakukan oleh `scripts/check-bundle-size.ts` lewat `bun run check:bundle`, yang dijalankan di CI setelah build.
+
+### CI dan peramban tes
+
+GitHub Actions di-pin ke SHA commit penuh dengan komentar tag di sebelahnya: actions/checkout v7.0.1, oven-sh/setup-bun v2.2.0, dan actions/upload-artifact v7.0.1. Playwright di issue #2 hanya menjalankan Chromium. WebKit, sebagai pendekatan Safari di iPad, ditambahkan di issue #8.
 
 ## Alternatif yang ditolak
 
