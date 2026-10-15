@@ -1,0 +1,19 @@
+# Dependensi dan hasil build
+node_modules/
+dist/
+
+# Rahasia dan konfigurasi lokal
+.env
+.env.*
+!.env.example
+*.local
+
+# Sistem operasi
+.DS_Store
+
+# Cache Vite dan Bun
+.vite/
+.bun/
+
+# Spike sekali pakai; laporannya diarsipkan di docs/spikes/
+/spikes/
