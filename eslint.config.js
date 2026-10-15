@@ -180,5 +180,22 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['src/globe/**/*.{ts,tsx}', 'src/ui/**/*.tsx'],
+    ignores: ['**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Literal[value=/^#[0-9a-fA-F]{3,8}$/]',
+          message: 'warna diambil dari token design system (AGENTS.md)',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
+          message: 'warna diambil dari token design system (AGENTS.md)',
+        },
+      ],
+    },
+  },
   prettier,
 );

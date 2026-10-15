@@ -1,3 +1,5 @@
+import { GlobeDemo } from './GlobeDemo';
+
 export function App() {
-  return <main />;
+  return <GlobeDemo />;
 }

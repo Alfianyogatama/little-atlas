@@ -4,7 +4,7 @@ Status: diterima pada 14 Oktober 2026.
 
 Diperbarui pada 15 Oktober 2026: mencatat versi terkunci yang dipasang di issue #2 (scaffold) beserta mekanisme penguncian di `bunfig.toml`, memperjelas bahwa Vitest, Vite, dan Playwright dipanggil lewat skrip Bun tetapi berjalan di Node, serta menetapkan cara batas modul ditegakkan, anggaran ukuran bundle, pin GitHub Actions, dan cakupan peramban Playwright. Keputusan stack tidak berubah.
 
-Diperbarui pada 15 Oktober 2026: mencatat paket dan versi yang dipasang di issue #3 (build-content) beserta lisensinya, aktifnya `resolveJsonModule`, dan aturan impor relatif untuk skrip di `scripts/`. Keputusan stack tidak berubah.
+Diperbarui pada 15 Oktober 2026: mencatat paket dan versi yang dipasang di issue #3 (build-content) beserta lisensinya, aktifnya `resolveJsonModule`, dan aturan impor relatif untuk skrip di `scripts/`. Juga mencatat paket yang dipasang di issue #4 (globe) beserta lisensinya, bahwa drei belum dipasang, flag SwiftShader untuk WebGL di Playwright, dan ukuran muatan pertama terhadap anggaran. Keputusan stack tidak berubah.
 
 Keputusannya: aplikasi dibangun sebagai PWA statis dengan Bun, Vite, React 19, TypeScript strict, dan React Three Fiber 9, lalu di-host di Vercel tanpa backend di v1.
 
@@ -85,6 +85,23 @@ Issue #3 (build-content) memasang paket berikut dengan aturan penguncian yang sa
 | @resvg/resvg-wasm | 2.6.2 | MPL-2.0 | Merender SVG bendera menjadi PNG; hanya alat build, tidak didistribusikan di aplikasi |
 
 `resolveJsonModule` diaktifkan di `tsconfig.base.json` supaya `src/content/generated/countries.json` bisa diimpor statis. Skrip di `scripts/` memakai impor relatif, misalnya `../src/content/schema`, bukan alias `@/`, karena alias itu tidak dibaca saat skrip dijalankan langsung dengan Bun.
+
+### Paket issue #4
+
+Issue #4 (globe) memasang paket berikut dengan aturan penguncian yang sama.
+
+| Paket | Versi | Lisensi | Dipakai untuk |
+| --- | --- | --- | --- |
+| three | 0.186.1 | MIT | Renderer, geometri, shader, dan OrbitControls dari `three/addons`; dependency runtime |
+| @react-three/fiber | 9.8.1 | MIT | Kanvas dan siklus render globe; dependency runtime |
+| @phosphor-icons/react | 2.1.10 | MIT | Ikon antarmuka, diimpor per ikon; dependency runtime |
+| @types/three | 0.186.0 | MIT | Tipe, devDependency |
+
+@react-three/drei tidak dipasang di issue #4. Satu-satunya kebutuhannya, kontrol orbit, dipenuhi OrbitControls dari `three/addons`. Drei dikunci di issue yang pertama membutuhkannya, dengan aturan yang sama.
+
+Chromium di Playwright dijalankan dengan flag `--use-angle=swiftshader` dan `--enable-unsafe-swiftshader` (`playwright.config.ts`), supaya WebGL tersedia di CI yang tidak punya GPU.
+
+Setelah issue #4, JavaScript muatan pertama berukuran sekitar 360 KB gzip dari anggaran 450 KB (diukur sesi utama dengan `bun run check:bundle`).
 
 ### Cara perintah dijalankan
 

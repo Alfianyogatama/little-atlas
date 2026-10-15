@@ -1,0 +1,75 @@
+.globe-demo {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+}
+
+.globe-demo__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.globe-demo__calm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.globe-demo__calm svg {
+  width: 96px;
+  height: 96px;
+  fill: currentColor;
+  opacity: 0.6;
+}
+
+.zoom-stack {
+  position: absolute;
+  top: 50%;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transform: translateY(-50%);
+}
+
+.home-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  pointer-events: none;
+  color: var(--ink);
+}
+
+.home-marker svg {
+  display: block;
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.debug-overlay {
+  position: absolute;
+  top: max(var(--space-4), env(safe-area-inset-top));
+  left: max(var(--space-4), env(safe-area-inset-left));
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2px var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--space-3);
+  background: var(--toy);
+  color: var(--ink);
+  font:
+    14px/1.3 ui-monospace,
+    monospace;
+  pointer-events: none;
+}
+
+.debug-overlay dd {
+  margin: 0;
+  text-align: right;
+}
