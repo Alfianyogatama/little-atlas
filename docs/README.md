@@ -1,4 +1,4 @@
-# Dokumentasi Halo, Dunia!
+# Dokumentasi Little Atlas
 
 - [Rencana pengembangan](PLAN.md)
 - [PRD v1](PRD.md)

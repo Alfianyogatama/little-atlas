@@ -1,4 +1,4 @@
-# Halo, Dunia! — Rencana Pengembangan v1
+# Little Atlas — Rencana Pengembangan v1
 
 Oct 14, 2026 · @ALFIAN
 
@@ -230,7 +230,7 @@ Yang ditunda: AR (WebXR di Android, AR Quick Look lewat USDZ di iOS) dan peralih
 Repo dibagi per fitur, dengan logika game di folder domain yang tidak boleh mengimpor React atau three. Aturan batas ini dijaga oleh linter, bukan sekadar kesepakatan.
 
 ```text
-halo-dunia/
+little-atlas/
   CLAUDE.md               aturan proyek untuk Claude CLI
   docs/
     PRD.md

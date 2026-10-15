@@ -1,10 +1,12 @@
-# PRD v1: Halo, Dunia!
+# PRD v1: Little Atlas
 
 Oct 14, 2026 · @ALFIAN
 
 ## Tujuan
 
-Halo, Dunia! v1 membantu anak 3–7 tahun mengenal negara, bendera, dan mulai membaca lewat bola dunia 3D yang bisa dimainkan sendiri, dalam bahasa Indonesia dan Inggris, tanpa tekanan dan tanpa biaya.
+Little Atlas v1 membantu anak 3–7 tahun mengenal negara, bendera, dan mulai membaca lewat bola dunia 3D yang bisa dimainkan sendiri, dalam bahasa Indonesia dan Inggris, tanpa tekanan dan tanpa biaya.
+
+Nama produk: Little Atlas, sama di semua bahasa antarmuka.
 
 Masalah yang diselesaikan: anak yang tertarik pada peta dan bendera butuh cara bermain yang bisa dinikmati sebelum ia lancar membaca, dan bisa tumbuh bersamanya sampai ia mulai membaca. v0 membuktikan ketertarikannya, tapi belum punya jenjang, belum dwibahasa, dan belum melatih membaca.
 
@@ -264,4 +266,4 @@ Hal-hal berikut sengaja tidak dikerjakan di v1. Ide baru masuk backlog, bukan ke
 - [ ] Konfirmasi kualitas audio suku kata setelah spike audio, sebelum PRD v1.1.
 - [x] Bentuk gerbang orang tua: diputuskan opsi B, angka yang ditulis dalam kata (F-10.1).
 - [ ] Huruf kapital atau huruf kecil sebagai tampilan awal membaca (dibutuhkan sebelum Fase 2).
-- [ ] Nama produk dan domain final.
+- [ ] Nama produk sudah diputuskan: Little Atlas. Nama repo mengikuti nama aplikasi: `little-atlas`. Domain belum diputuskan.

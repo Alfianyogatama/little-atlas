@@ -1,10 +1,10 @@
-# AGENTS.md — Halo, Dunia!
+# AGENTS.md — Little Atlas
 
 Aturan ini berlaku untuk semua agen coding di repo ini, termasuk Claude CLI dan Antigravity. Kalau ada yang bertentangan dengan dokumen di `docs/`, dokumen yang menang, dan agen harus melaporkan pertentangannya.
 
 ## Tentang proyek
 
-Halo, Dunia! adalah game bola dunia 3D untuk anak 3–7 tahun: mengenal negara, bendera, dan (mulai Fase 2) belajar membaca, dalam bahasa Indonesia dan Inggris. Aplikasinya PWA statis tanpa backend, di-host di Vercel.
+Little Atlas adalah game bola dunia 3D untuk anak 3–7 tahun: mengenal negara, bendera, dan (mulai Fase 2) belajar membaca, dalam bahasa Indonesia dan Inggris. Aplikasinya PWA statis tanpa backend, di-host di Vercel.
 
 Pengguna akhirnya balita. Setiap keputusan antarmuka harus lolos pertanyaan: apakah anak yang belum bisa membaca tetap bisa memakainya sendiri?
 
