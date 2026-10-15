@@ -266,4 +266,4 @@ Hal-hal berikut sengaja tidak dikerjakan di v1. Ide baru masuk backlog, bukan ke
 - [ ] Konfirmasi kualitas audio suku kata setelah spike audio, sebelum PRD v1.1.
 - [x] Bentuk gerbang orang tua: diputuskan opsi B, angka yang ditulis dalam kata (F-10.1).
 - [ ] Huruf kapital atau huruf kecil sebagai tampilan awal membaca (dibutuhkan sebelum Fase 2).
-- [ ] Nama produk sudah diputuskan: Little Atlas. Nama repo dan domain belum diputuskan.
+- [ ] Nama produk sudah diputuskan: Little Atlas. Nama repo mengikuti nama aplikasi: `little-atlas`. Domain belum diputuskan.
