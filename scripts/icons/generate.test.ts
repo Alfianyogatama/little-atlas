@@ -370,7 +370,8 @@ describe('runGenerate: vision Gemini terkonfigurasi', () => {
     const text = body.contents[0]?.parts[0]?.text ?? '';
     expect(text).toContain('kangaroo');
     expect(text).toMatch(/JSON/);
-    for (const k of ['seen', 'matchesLabel', 'hasText', 'hasFlag', 'scary']) expect(text).toContain(k);
+    for (const k of ['seen', 'matchesLabel', 'hasText', 'hasFlag', 'scary'])
+      expect(text).toContain(k);
     expect(text).not.toContain('Australia');
     expect(text).not.toContain('a kangaroo with a joey');
     expect(text).not.toMatch(/\b(dan|yang|ikon|gambar|negara)\b/i);

@@ -51,7 +51,7 @@ const aq = {
 const fav = {
   code: 'ID',
   level: 1,
-  icon: { emoji: '🐉', label: { id: 'komodo', en: 'komodo' } },
+  icon: { image: 'icons/id.webp', label: { id: 'komodo', en: 'komodo' } },
   fact: { id: 'Ada komodo.', en: 'There are komodos.' },
 };
 const ok = (s: { safeParse: (v: unknown) => { success: boolean } }, v: unknown) =>
@@ -136,9 +136,21 @@ describe('FavoritesSchema', () => {
   it('payload valid lolos, termasuk review draft', () => {
     ok(FavoritesSchema, [fav, { ...fav, level: 2, review: 'draft' }]);
   });
-  it('favorit tanpa emoji ditolak', () => {
-    bad(FavoritesSchema, [{ ...fav, icon: { label: fav.icon.label } }]);
-    bad(FavoritesSchema, [{ ...fav, icon: { ...fav.icon, emoji: '' } }]);
+  const au = { ...fav, code: 'AU', icon: { ...fav.icon, image: 'icons/au.webp' } };
+  it('favorit dengan icon.image sesuai kode lolos', () => {
+    ok(FavoritesSchema, [au]);
+  });
+  it('favorit dengan field emoji ditolak (icon ketat)', () => {
+    bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, emoji: '🦘' } }]);
+  });
+  it('favorit dengan image kosong atau hilang ditolak', () => {
+    bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, image: '' } }]);
+    bad(FavoritesSchema, [{ ...au, icon: { label: au.icon.label } }]);
+  });
+  it('favorit dengan image tidak sesuai bentuk icons/<kode kecil>.webp ditolak', () => {
+    for (const image of ['icons/jp.webp', 'icons/AU.webp', 'au.webp', 'icons/au.png']) {
+      bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, image } }]);
+    }
   });
   it('level 3 ditolak', () => {
     bad(FavoritesSchema, [{ ...fav, level: 3 }]);
@@ -148,15 +160,23 @@ describe('FavoritesSchema', () => {
 describe('ContinentFactsSchema', () => {
   const aqFacts = {
     AQ: {
-      icon: { emoji: '🐧', label: { id: 'penguin', en: 'penguin' } },
+      icon: { image: 'icons/aq.webp', label: { id: 'penguin', en: 'penguin' } },
       fact: { id: 'Antartika sangat dingin.', en: 'Antarctica is very cold.' },
     },
   };
   it('payload valid dengan kunci AQ lolos', () => ok(ContinentFactsSchema, aqFacts));
   it('tanpa AQ ditolak', () => bad(ContinentFactsSchema, {}));
-  it('emoji kosong atau hilang ditolak', () => {
-    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, emoji: '' } } });
+  it('field emoji pada ikon benua ditolak (icon ketat)', () => {
+    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, emoji: '🐧' } } });
+  });
+  it('image kosong atau hilang pada ikon benua ditolak', () => {
+    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, image: '' } } });
     bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { label: aqFacts.AQ.icon.label } } });
+  });
+  it('image benua yang bukan icons/aq.webp ditolak', () => {
+    for (const image of ['icons/jp.webp', 'icons/AQ.webp', 'aq.webp', 'icons/aq.png']) {
+      bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, image } } });
+    }
   });
   it('kunci selain AQ ditolak', () => {
     bad(ContinentFactsSchema, { ...aqFacts, ID: aqFacts.AQ });

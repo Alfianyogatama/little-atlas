@@ -126,7 +126,7 @@ describe('katalog hasil build: favorit (F-01.5)', () => {
   it('semua favorit punya ikon, label, fakta id/en, dan bukan draft', () => {
     // Bagian audio F-01.5 diverifikasi di issue #8.
     for (const f of favorites) {
-      expect(f.icon.emoji.length, `${f.code} emoji`).toBeGreaterThan(0);
+      expect(f.icon.image, `${f.code} image`).toBe(`icons/${f.code.toLowerCase()}.webp`);
       expect(f.icon.label.id.length).toBeGreaterThan(0);
       expect(f.icon.label.en.length).toBeGreaterThan(0);
       expect(f.fact.id.length).toBeGreaterThan(0);

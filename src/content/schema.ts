@@ -94,21 +94,37 @@ export const CountryCatalogSchema = z.array(
 );
 export type CountryCatalog = z.infer<typeof CountryCatalogSchema>;
 
+const iconFor = (code: string): string => `icons/${code.toLowerCase()}.webp`;
+const IconRef = z.object({ image: z.string().min(1), label: LocalizedName }).strict();
+
 export const FavoritesSchema = z.array(
-  z.object({
-    code: Alpha2,
-    level: FavoriteLevel,
-    icon: z.object({ emoji: z.string().min(1), label: LocalizedName }),
-    fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
-    review: z.literal('draft').optional(),
-  }),
+  z
+    .object({
+      code: Alpha2,
+      level: FavoriteLevel,
+      icon: IconRef,
+      fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
+      review: z.literal('draft').optional(),
+    })
+    .superRefine((f, ctx) => {
+      if (f.icon.image !== iconFor(f.code)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['icon', 'image'],
+          message: `icon.image harus '${iconFor(f.code)}' untuk ${f.code}`,
+        });
+      }
+    }),
 );
 export type Favorites = z.infer<typeof FavoritesSchema>;
 
 export const ContinentFactsSchema = z
   .object({
     AQ: z.object({
-      icon: z.object({ emoji: z.string().min(1), label: LocalizedName }),
+      icon: IconRef.refine((i) => i.image === iconFor('AQ'), {
+        path: ['image'],
+        message: `icon.image harus '${iconFor('AQ')}' untuk AQ`,
+      }),
       fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
     }),
   })

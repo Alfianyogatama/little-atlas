@@ -1,0 +1,1154 @@
+{
+  "styleVersion": 1,
+  "styleHash": "89f50a1a49dbe7ff7b5bd1b37851d9df3ce67ae97f0e4bd0d998e60e0186a3f5",
+  "icons": {
+    "IT": {
+      "file": "icons/it.webp",
+      "sha256": "25029100e2192508abbc0692f124ddac90a6d62222018112570f58bc617601db",
+      "bytes": 9938,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "693d20472b3315acb9aefeb16946e7a4a461bc7f11913d990279a63b4d04495a",
+      "attempt": 3,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute smiling pizza slice",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly slice of pizza with flat colors, bold outlines, and a smiling face."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:48:03.013Z",
+      "reviewedAt": "2026-10-16T04:06:26.739Z"
+    },
+    "AQ": {
+      "file": "icons/aq.webp",
+      "sha256": "1367bc1b28c2161a3e15fab340090b8b3b2aae3ffaa49b037f9ef182e08223a0",
+      "bytes": 23350,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "966aa260f74b83073dee8f5366bed9088cc1d5fc9141ecb7ee59253fee4128eb",
+      "attempt": 2,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon penguin waving",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly cartoon penguin illustration perfectly suited for a children's game."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:03:31.184Z",
+      "reviewedAt": "2026-10-16T04:07:36.725Z"
+    },
+    "GB": {
+      "file": "icons/gb.webp",
+      "sha256": "09b50373f5bf82f78567002e5b7995e680991c50a5cd55aa1a2854270704d32f",
+      "bytes": 12300,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "19a0418fba06b43969f4fe4762942ffff2b6edac1c7954d570e52374bdfa5377",
+      "attempt": 2,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "red cartoon double-decker bus with a smile",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon depicts a friendly red double-decker bus in a clean sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:46:47.697Z",
+      "reviewedAt": "2026-10-16T04:09:02.292Z"
+    },
+    "ID": {
+      "file": "icons/id.webp",
+      "sha256": "9e3ed2a4c8012674076032823d224cf51231ae8115e405baaf65ca541f96dd86",
+      "bytes": 26710,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "943e6bb3dee1515c3dc7f302c5dce931888785cd91e449067478484d82dff78e",
+      "attempt": 2,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a cartoon green Komodo dragon with yellow spots",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly green Komodo dragon with yellow spots and a dark outline."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:47:26.807Z",
+      "reviewedAt": "2026-10-16T04:09:09.196Z"
+    },
+    "KH": {
+      "file": "icons/kh.webp",
+      "sha256": "3c8e0eaca151a6ba38ee381636b595a5f3ef58a8b5c755d69f4c1e523020fa34",
+      "bytes": 12444,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "805247f1b6a53f37f5cc79f80b854274dc7d3b592e15c1a2f0012d94731e40e7",
+      "attempt": 2,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "Angkor Wat temple towers",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and colorful icon depicting Angkor Wat with clear outlines."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:49:19.944Z",
+      "reviewedAt": "2026-10-16T04:09:47.133Z"
+    },
+    "AR": {
+      "file": "icons/ar.webp",
+      "sha256": "e200d15a7a66eb5a012e8c6f9e7d19d7a20ebd6adefa114db569a71ca06c8151",
+      "bytes": 12158,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "c8ca984a517cf51fb1a9aeb9df0483387112a04e145e8753eadf656c6d3e83c9",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "blue and white soccer ball with a smiling sun",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The soccer ball is stylized with light blue and white panels and a cute smiling sun center."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:39:29.558Z",
+      "reviewedAt": "2026-10-16T04:06:44.104Z"
+    },
+    "LA": {
+      "file": "icons/la.webp",
+      "sha256": "6699b1544bffbe05b62fdf7fff8b1e8fece6f320708c3715975567e11a5b66a5",
+      "bytes": 11232,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "39e96a5f60b9468042d869a8f41e08edde84c0039e79fd6ee83017cc9c4bb137",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "houseboat floating on water",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon depicts a friendly wooden river boat floating on water in a cute sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:50:19.968Z",
+      "reviewedAt": "2026-10-16T04:07:03.124Z"
+    },
+    "MM": {
+      "file": "icons/mm.webp",
+      "sha256": "63d7597136566539841808e7f1e788818f6aa67b442e70d28cdcb2c0861bcd4f",
+      "bytes": 11632,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "bea1cd763f791843a2849986e816e5b5e7d30a204766ecac6cb671bfc11f2666",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "golden pagoda stupa",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly sticker-style illustration of a golden pagoda with a thick outline."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:52:19.998Z",
+      "reviewedAt": "2026-10-16T04:07:11.042Z"
+    },
+    "MY": {
+      "file": "icons/my.webp",
+      "sha256": "f62a9a05c6723fdd7178d1d671c2f0cec738ecd05e65dc312cbe1f73260d1d9c",
+      "bytes": 13286,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "5077bf327175e79b27121ca738de92a262b141f924345ebdca0731f5816c294a",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cartoon orange ape",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The friendly orange ape clearly depicts an orangutan in a clean sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:53:15.726Z",
+      "reviewedAt": "2026-10-16T04:07:19.500Z"
+    },
+    "SG": {
+      "file": "icons/sg.webp",
+      "sha256": "2b3e9c7d9b498f0208c31b0c42c487bf6c15f14a0e9e80a6eb36a91e46205eb3",
+      "bytes": 15744,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "f86365ea0a9069499a7317b27a923a7145f3cdf48407fdd4234dd63672d5c897",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon merlion in water",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly cartoon Merlion illustrated in a bold sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:58:46.872Z",
+      "reviewedAt": "2026-10-16T04:07:27.217Z"
+    },
+    "US": {
+      "file": "icons/us.webp",
+      "sha256": "c45c148c59de5a5d22adb1fa760f3cfbe22b6e238760a2637e53610c9410df8c",
+      "bytes": 10894,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "f58aa15f3f039dbf645c03652970f6f4f5878832b091646c4aae9bdedc7f93f8",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon Statue of Liberty",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly, colorful sticker-style illustration of the Statue of Liberty."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:01:36.347Z",
+      "reviewedAt": "2026-10-16T04:07:34.458Z"
+    },
+    "AU": {
+      "file": "icons/au.webp",
+      "sha256": "6448dc8bfe22c49ecc52bc3cdb5e2a6c8748834ac976a5a40d193bd80bf6b2ef",
+      "bytes": 26992,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "07c9d40cb16a1d17faef269b4d174c8a0757b610df02f2f246d1166016a59278",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon kangaroo",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and clearly recognizable cartoon kangaroo perfectly suited for children."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:40:30.701Z",
+      "reviewedAt": "2026-10-16T04:07:40.974Z"
+    },
+    "BN": {
+      "file": "icons/bn.webp",
+      "sha256": "401e3c2aee69d38f2c427d0e36278960fcf12a672eee791e7ef0ae91d0753670",
+      "bytes": 14504,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "f52884dab9d3716e8a858a6170a514cc1d29476278d2c9c21352525508e3af19",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "Mosque with a large golden dome and minarets",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": false,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The mosque features soft gradients on the golden domes but maintains a friendly sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:41:13.822Z",
+      "reviewedAt": "2026-10-16T04:07:49.010Z"
+    },
+    "BR": {
+      "file": "icons/br.webp",
+      "sha256": "8c6dda858ea2410addfd1abe7f51e74286cd91def24ff18daddcaf1131916d64",
+      "bytes": 10432,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "079553f66589aaeb03ef65d0b58c0eef424d4fd2200d627b757408e53c00e501",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute green parrot perched on a stick",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon is a friendly and colorful parrot perfectly suited for a children's game."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:41:34.037Z",
+      "reviewedAt": "2026-10-16T04:07:54.138Z"
+    },
+    "CA": {
+      "file": "icons/ca.webp",
+      "sha256": "91c932369cc74f069adcd6ebdc08f59a1fc49ae887279010c204db441d917896",
+      "bytes": 25798,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "10cdb66629f455c0a4331b3ac80b39fd572c5f3bc21b83a6a9c882620c02ea55",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "red maple leaf",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A simple and clear vector illustration of a red maple leaf."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:42:34.058Z",
+      "reviewedAt": "2026-10-16T04:08:09.318Z"
+    },
+    "CH": {
+      "file": "icons/ch.webp",
+      "sha256": "077b430151fbaa37bfe7505edf08844fc38cf5a885dd1fdf4663c237bd1ab650",
+      "bytes": 11240,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "a8c480a557e70cbb0acdf05f6a3972d25359c8ce7146f110d253b54dc3d22aa8",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "smiling cartoon cheese wedge",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "Cute and friendly cheese wedge sticker with bold outlines."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:43:13.000Z",
+      "reviewedAt": "2026-10-16T04:08:12.586Z"
+    },
+    "CN": {
+      "file": "icons/cn.webp",
+      "sha256": "6608fbc08470b21b99faf7712cd984c0b2dea5c9cfb5cffd31c27bbf98f647d1",
+      "bytes": 25610,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "eaaa9c0c05591c4cb28585270680e2c892dc3b0c055ee431324afe05cb721e80",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon panda",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The illustration is friendly and clearly depicts a panda in a sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:43:32.068Z",
+      "reviewedAt": "2026-10-16T04:08:27.543Z"
+    },
+    "DE": {
+      "file": "icons/de.webp",
+      "sha256": "4dbe1580084fbbaff93050d98c28cefa9923214c9214fe098332a3397466cc56",
+      "bytes": 11588,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "eaea8fde83539d7dbc537bbff6019450f07272d4f68b29124066cf8cb65d7119",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a smiling cartoon pretzel",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon depicts a cute cartoon pretzel with a happy face and salt specks."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:44:33.160Z",
+      "reviewedAt": "2026-10-16T04:08:33.015Z"
+    },
+    "EG": {
+      "file": "icons/eg.webp",
+      "sha256": "c487b4f02553dedb882d3ed883de4587dff49a2fc6b678aa978eded4ea76e3eb",
+      "bytes": 11514,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "f6a8acb1d4dc238a748cf7e35ad5539b14dcb443c3ad391d8a3c115422dbcfd6",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cartoon camel in front of a pyramid",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly two-humped camel standing in front of a yellow pyramid."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:44:51.020Z",
+      "reviewedAt": "2026-10-16T04:08:35.497Z"
+    },
+    "GR": {
+      "file": "icons/gr.webp",
+      "sha256": "67a3486abe4c36c81be45bf729718c091c8477bf0eddf9a6d07ca36ae30b7c8b",
+      "bytes": 10054,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "750fbbf5625cc94b48f99ed72e5d4bc26ecf55353ddd511643193f4bec62c6b7",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "classical ancient temple with columns",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": false,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly classical building illustration with subtle color gradients on the roof and columns."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:47:07.352Z",
+      "reviewedAt": "2026-10-16T04:09:07.026Z"
+    },
+    "IN": {
+      "file": "icons/in.webp",
+      "sha256": "bd3e615fd5f968df84cb95c52fb6f2a0985e8aaaeeca94740dc40efba9f94ea7",
+      "bytes": 11840,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "58987b609092da123e7d6de1af2516f444fd0707496a79bf5d8a8a2a7113d79c",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a decorated cartoon elephant",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A cute and colorful cartoon elephant perfectly suitable for a children's game."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:47:44.349Z",
+      "reviewedAt": "2026-10-16T04:09:14.168Z"
+    },
+    "JP": {
+      "file": "icons/jp.webp",
+      "sha256": "85522f7f8ace2f0fe870143d24938fb3e4c558a63e502374446dbf90fef60de1",
+      "bytes": 26574,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "c2fb7ac979c35148f95754793ec960e9038d6431ad3674a530f6612a1c94c980",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "snow-capped Mount Fuji with sun and clouds",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and clear sticker-style depiction of Mount Fuji."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:48:23.008Z",
+      "reviewedAt": "2026-10-16T04:09:17.578Z"
+    },
+    "KE": {
+      "file": "icons/ke.webp",
+      "sha256": "f401c341a2be2ec6069938dc50f49ad47a12b33cd73d6b5a6291eee9e82190fb",
+      "bytes": 26264,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "6b7adcd7892f43b7a441d876f78489d713c8fbd02e629bcebf3f352f62a17a4a",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon giraffe walking",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A charming and friendly giraffe perfectly suited for a children's game icon."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:49:00.871Z",
+      "reviewedAt": "2026-10-16T04:09:38.583Z"
+    },
+    "MA": {
+      "file": "icons/ma.webp",
+      "sha256": "333737bbfe2cca11e19573ed22f223734f64ee4f026f7aa5abbf42390fcc6b49",
+      "bytes": 10868,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "5d6970e7a7304b2ad98f990494ada5b9cb2bf9ae7b5ea6765bcbe54a227e9195",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "colorful decorative teapot",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A vibrant and ornate teapot in a clean sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:51:02.105Z",
+      "reviewedAt": "2026-10-16T04:10:20.452Z"
+    },
+    "MG": {
+      "file": "icons/mg.webp",
+      "sha256": "cda89786b6f920e365eb2a6dd3cc8508be2c544c6ee025337921cbe9769e68df",
+      "bytes": 12984,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "192a1ec886f5d7e2084f7c6620b8cd73b099eb1c326df8688e8e5c09d99bb384",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a cartoon ring-tailed lemur perched on a branch",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "There is an unintended bright magenta fill artifact beneath the lemur's belly and arm."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:51:39.196Z",
+      "reviewedAt": "2026-10-16T04:10:25.452Z"
+    },
+    "MX": {
+      "file": "icons/mx.webp",
+      "sha256": "57ad3af6823b1e3ffa43844d01299b2153723e7f18b261f68f68d6d72a335c41",
+      "bytes": 8810,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "4fa2074896adeb23af8d6fb0a35df3fae105bccefbbe798e80d5978cc06d9001",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a smiling cartoon taco",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A cute, friendly taco with simple flat colors and thick outlines."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:52:57.404Z",
+      "reviewedAt": "2026-10-16T04:10:28.191Z"
+    },
+    "NL": {
+      "file": "icons/nl.webp",
+      "sha256": "3f2dd11f51efeff31b3f083146f0ac59af44159b21aff408a48e24fb37037470",
+      "bytes": 23770,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "48aa73fd35a4d929b5dfa2b4b7427d70fbf8b580ca064efa4c155099f8cb0790",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a red tulip flower with green stem and leaves",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon depicts a clear, friendly tulip with bold outlines and flat colors."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:54:16.406Z",
+      "reviewedAt": "2026-10-16T04:10:30.060Z"
+    },
+    "NZ": {
+      "file": "icons/nz.webp",
+      "sha256": "651959a1da5660692fe440d0bd477e804b4ea0db8a468c1ec5714c22df5883de",
+      "bytes": 10918,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "8deeaf401fd763b139671b60013a440d98924a45a59aa010b9198130172c313e",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon sheep sitting down",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and simple sticker-style illustration of a fluffy sheep."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:54:55.012Z",
+      "reviewedAt": "2026-10-16T04:10:34.466Z"
+    },
+    "PE": {
+      "file": "icons/pe.webp",
+      "sha256": "51dea5ee811d21de849fc88a0b8bd0c152df57713866d2fcdc8313c62c52fdae",
+      "bytes": 11910,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "3c05915a266141fa2b37bb6e0c158523d107bdffad8d69ab33cf04d106326af9",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon llama",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly cartoon llama wearing a colorful saddle blanket."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:55:14.755Z",
+      "reviewedAt": "2026-10-16T04:10:40.600Z"
+    },
+    "PG": {
+      "file": "icons/pg.webp",
+      "sha256": "aa2a2f570f3932312df7d66596cf1a1c78a5ae0b5acda828f5442cbd7b1433ce",
+      "bytes": 14488,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "ede7932d9f3fe943459010a6a5dc5067795b8c0abdfe1f9974ac457a557b96d8",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "colorful bird of paradise",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and colorful cartoon depiction of a bird of paradise."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:55:52.767Z",
+      "reviewedAt": "2026-10-16T04:10:44.069Z"
+    },
+    "PH": {
+      "file": "icons/ph.webp",
+      "sha256": "e71ac36de63b70b75994c032bf974a87064727225105d06de25bf9c0752c3344",
+      "bytes": 14178,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "70a63ab45c6e22aefe0ab4a6066b03bfc8a666518cca75c390141cbe07378a75",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "tropical island with palm trees",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon clearly depicts a friendly tropical island with palm trees in the ocean."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:56:30.653Z",
+      "reviewedAt": "2026-10-16T04:10:49.641Z"
+    },
+    "RU": {
+      "file": "icons/ru.webp",
+      "sha256": "695ea14e82a71eee9b32a35f02d980f4d543f5220db34ef9e07d5066c321d0fc",
+      "bytes": 10464,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "dde4e88274c488af4914d8c989b0a3b043a78aaf277dfd1a6272c7685028b7a9",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon brown bear sitting",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly brown bear cub icon with bold outlines and flat colors."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:57:39.340Z",
+      "reviewedAt": "2026-10-16T04:11:01.444Z"
+    },
+    "SA": {
+      "file": "icons/sa.webp",
+      "sha256": "d96d49c9b0eb27d2ecbe6a157ebc4dbace8d1c5212215c0d04c4e822601e4f63",
+      "bytes": 13578,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "097c3bc9026ebf271b6cfdd485dbb96369defaf4db194beb30cfaa09845e88ea",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cartoon camel on sand",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": false,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "There is an unexpected bright pink or magenta patch visible under the camel's belly."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:57:59.280Z",
+      "reviewedAt": "2026-10-16T04:11:08.081Z"
+    },
+    "TH": {
+      "file": "icons/th.webp",
+      "sha256": "cd6dcee73cd58e539d067a5eaa30c643868f584a8992ee2e1883bc5876f23ebc",
+      "bytes": 13364,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "5a8c74386c46dfbca105d43ef7fb643f60434848b36cc37ac992b89023e594af",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cartoon tuk-tuk with a smiling face",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and colorful cartoon tuk-tuk designed in a clean sticker style."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T03:59:35.763Z",
+      "reviewedAt": "2026-10-16T04:11:17.820Z"
+    },
+    "TL": {
+      "file": "icons/tl.webp",
+      "sha256": "9050bc50c6398ed2da4ab3de44ff2298ce056d4fa9e522a37a0818887595c7c6",
+      "bytes": 12604,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "184d272a01dcd3f832d0e3b7a640248db69b607c80d1478740adcd6ce9f4e2f3",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon crocodile",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The image features a friendly, cute crocodile that fits the children's sticker style perfectly."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:00:33.418Z",
+      "reviewedAt": "2026-10-16T04:11:22.716Z"
+    },
+    "TR": {
+      "file": "icons/tr.webp",
+      "sha256": "ab4448594f391361798e2f3a3299eb463971a02b5d062e647870cc59f747c1a3",
+      "bytes": 11736,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "8356459fb9cb27618e4ff26649842e810e0e0cf0109cd4aa1ab236cee4981254",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "patterned hot air balloon",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and colorful hot air balloon decorated with folk patterns."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:01:13.156Z",
+      "reviewedAt": "2026-10-16T04:11:28.216Z"
+    },
+    "VN": {
+      "file": "icons/vn.webp",
+      "sha256": "3c996a51bf2bc6194a53c8aa55efa550b65acd775fee1d5c4efae7d76c6daba7",
+      "bytes": 27366,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "fd0340bd7c73dd71b17976f3ca0a8fa47d66debdc5aae33ce432071e3a6b74ff",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "colorful conical hat with chin strap",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The icon clearly depicts a stylized conical hat suitable for a children's game."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:02:14.882Z",
+      "reviewedAt": "2026-10-16T04:11:32.829Z"
+    },
+    "ZA": {
+      "file": "icons/za.webp",
+      "sha256": "8f8782feddf5f37a02631a89e08ed55e6b81db1c5a26d915d0cf71323a51efe8",
+      "bytes": 11236,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "8943f969a6ed2c77a2a7c59ca50daf86283f49f9610f3be2f7b73f084e5ed857",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cute cartoon lion",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly and simple cartoon lion that perfectly fits a children's game."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:03:10.901Z",
+      "reviewedAt": "2026-10-16T04:11:36.514Z"
+    },
+    "KR": {
+      "file": "icons/kr.webp",
+      "sha256": "8a285b08ed940b7f5bea2c73e7c2c802b25dca4ac96c25984f9b9fc29945fc2f",
+      "bytes": 15274,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "47b54896a95dfac662061c01c746914b8ae341d0b83dae42392548882fcc0702",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "bowl of food with chopsticks on top",
+          "matchesLabel": false,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "The image focuses primarily on a bowl of food rather than chopsticks alone."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:21:58.426Z",
+      "reviewedAt": "2026-10-16T04:25:15.262Z"
+    },
+    "ES": {
+      "file": "icons/es.webp",
+      "sha256": "e492d08f19de987bea8e07ec801c08d92bf420081603c27fc9ad58d2553aad34",
+      "bytes": 14202,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "0e8fc2c9e81e697309921b7ec907026f0d44f79436d48b4a41aafc33ca47ed36",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "cartoon cat dancing flamenco with castanets",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A charming and friendly design perfectly depicting a flamenco dancer as a cartoon cat."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:20:36.642Z",
+      "reviewedAt": "2026-10-16T04:25:19.503Z"
+    },
+    "FR": {
+      "file": "icons/fr.webp",
+      "sha256": "8a8fad5b2d27341bf695106c1cee614e8bc5307b92305b5810379912265fe8cc",
+      "bytes": 22358,
+      "width": 256,
+      "height": 256,
+      "source": "gemini-api",
+      "model": "gemini-3.1-flash-image",
+      "promptHash": "cca9ad67e575a554d4d0fd48757c5d8c93fec66613a9c65129747b42a9277a32",
+      "attempt": 1,
+      "checker": {
+        "model": "gemini-3.8-flash",
+        "verdict": {
+          "seen": "a colorful cartoon Eiffel Tower",
+          "matchesLabel": true,
+          "hasText": false,
+          "hasFlag": false,
+          "thickOutline": true,
+          "flatColors": true,
+          "sameStyleAsReference": true,
+          "scary": false,
+          "notes": "A friendly, brightly colored illustration of the Eiffel Tower."
+        }
+      },
+      "status": "approved",
+      "generatedAt": "2026-10-16T04:21:19.405Z",
+      "reviewedAt": "2026-10-16T04:25:23.136Z"
+    }
+  }
+}
