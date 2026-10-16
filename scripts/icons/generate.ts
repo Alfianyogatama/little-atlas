@@ -195,6 +195,41 @@ function findRaw(
   return null;
 }
 
+export interface ProcessedIcon {
+  small: RgbaImage;
+  webp: Uint8Array;
+  encoding: 'lossless' | 'q90';
+  checks: LocalChecks;
+}
+
+/**
+ * Pasca-proses bersama (generate dan reprocess): hapus latar, trim, perkecil, encode WebP.
+ * Melempar bila latar tidak terhapus; `checks` pada error tidak tersedia, lihat generate.
+ */
+export class BackgroundNotRemovedError extends Error {
+  constructor() {
+    super('Latar tidak terhapus: warna latar tidak seragam di tepi gambar.');
+  }
+}
+
+export async function processRaw(
+  decoded: RgbaImage,
+  codec: Pick<GenerateCodec, 'encodeWebp'>,
+): Promise<ProcessedIcon> {
+  const keyed = removeKeyBackground(decoded, estimateBackground(decoded), BACKGROUND_TOLERANCE);
+  const backgroundRemoved = checkBackgroundRemoved(keyed);
+  if (!backgroundRemoved) throw new BackgroundNotRemovedError();
+  const small = downscale(trimPad(keyed), ICON_SIZE);
+  const checks = localChecks(small, { ink: INK_COLOR, backgroundRemoved });
+  let webp = await codec.encodeWebp(small, { lossless: true });
+  let encoding: 'lossless' | 'q90' = 'lossless';
+  if (webp.length > MAX_BYTES) {
+    webp = await codec.encodeWebp(small, { lossless: false, quality: 90 });
+    encoding = 'q90';
+  }
+  return { small, webp, encoding, checks };
+}
+
 export async function runGenerate(opts: GenerateOptions): Promise<Report> {
   const { codes, variants, rawDir, outDir, style, client, codec, log } = opts;
 
@@ -269,25 +304,19 @@ export async function runGenerate(opts: GenerateOptions): Promise<Report> {
         item.rawPath = raw.path;
 
         const decoded = await codec.decode(new Uint8Array(readFileSync(raw.path)), MIME[raw.ext]);
-        const keyed = removeKeyBackground(
-          decoded,
-          estimateBackground(decoded),
-          BACKGROUND_TOLERANCE,
-        );
-        const backgroundRemoved = checkBackgroundRemoved(keyed);
-        if (!backgroundRemoved) {
-          item.checks = { ...EMPTY_CHECKS, backgroundRemoved };
-          throw new Error('Latar tidak terhapus: warna latar tidak seragam di tepi gambar.');
+        let processed: ProcessedIcon;
+        try {
+          processed = await processRaw(decoded, codec);
+        } catch (err) {
+          if (err instanceof BackgroundNotRemovedError) {
+            item.checks = { ...EMPTY_CHECKS, backgroundRemoved: false };
+          }
+          throw err;
         }
-        const small = downscale(trimPad(keyed), ICON_SIZE);
-        item.checks = localChecks(small, { ink: INK_COLOR, backgroundRemoved });
-
-        let webp = await codec.encodeWebp(small, { lossless: true });
-        item.encoding = 'lossless';
-        if (webp.length > MAX_BYTES) {
-          webp = await codec.encodeWebp(small, { lossless: false, quality: 90 });
-          item.encoding = 'q90';
-        }
+        item.checks = processed.checks;
+        item.encoding = processed.encoding;
+        const small = processed.small;
+        const webp = processed.webp;
         const outPath = join(outDir, `${code}-${variant}.webp`);
         writeFileSync(outPath, webp);
         item.outPath = outPath;

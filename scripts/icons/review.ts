@@ -79,6 +79,7 @@ export function approve(opts: ApproveOptions): IconManifest {
         model: opts.model,
         promptHash: item.promptHash,
         attempt: previous ? previous.attempt + 1 : 1,
+        raw: item.rawPath ? basename(item.rawPath) : undefined,
         checker,
         status: 'approved',
         generatedAt: item.generatedAt,

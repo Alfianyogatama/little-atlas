@@ -12,6 +12,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "693d20472b3315acb9aefeb16946e7a4a461bc7f11913d990279a63b4d04495a",
       "attempt": 3,
+      "raw": "IT-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -40,6 +41,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "966aa260f74b83073dee8f5366bed9088cc1d5fc9141ecb7ee59253fee4128eb",
       "attempt": 2,
+      "raw": "AQ-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -68,6 +70,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "19a0418fba06b43969f4fe4762942ffff2b6edac1c7954d570e52374bdfa5377",
       "attempt": 2,
+      "raw": "GB-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -96,6 +99,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "943e6bb3dee1515c3dc7f302c5dce931888785cd91e449067478484d82dff78e",
       "attempt": 2,
+      "raw": "ID-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -124,6 +128,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "805247f1b6a53f37f5cc79f80b854274dc7d3b592e15c1a2f0012d94731e40e7",
       "attempt": 2,
+      "raw": "KH-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -152,6 +157,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "c8ca984a517cf51fb1a9aeb9df0483387112a04e145e8753eadf656c6d3e83c9",
       "attempt": 1,
+      "raw": "AR-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -180,6 +186,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "39e96a5f60b9468042d869a8f41e08edde84c0039e79fd6ee83017cc9c4bb137",
       "attempt": 1,
+      "raw": "LA-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -200,14 +207,15 @@
     },
     "MM": {
       "file": "icons/mm.webp",
-      "sha256": "63d7597136566539841808e7f1e788818f6aa67b442e70d28cdcb2c0861bcd4f",
-      "bytes": 11632,
+      "sha256": "e659ebc5c1205fee041c09d2775fa2b0867ed44cb95d8109de7b76880858317a",
+      "bytes": 11634,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "bea1cd763f791843a2849986e816e5b5e7d30a204766ecac6cb671bfc11f2666",
       "attempt": 1,
+      "raw": "MM-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -236,6 +244,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "5077bf327175e79b27121ca738de92a262b141f924345ebdca0731f5816c294a",
       "attempt": 1,
+      "raw": "MY-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -256,14 +265,15 @@
     },
     "SG": {
       "file": "icons/sg.webp",
-      "sha256": "2b3e9c7d9b498f0208c31b0c42c487bf6c15f14a0e9e80a6eb36a91e46205eb3",
-      "bytes": 15744,
+      "sha256": "0729eb7366d89e67ae2f557bca1b69fccb0df6bca9d4c3cd58c762aefb31c682",
+      "bytes": 16100,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "f86365ea0a9069499a7317b27a923a7145f3cdf48407fdd4234dd63672d5c897",
       "attempt": 1,
+      "raw": "SG-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -284,14 +294,15 @@
     },
     "US": {
       "file": "icons/us.webp",
-      "sha256": "c45c148c59de5a5d22adb1fa760f3cfbe22b6e238760a2637e53610c9410df8c",
-      "bytes": 10894,
+      "sha256": "411edbaf063f3d1a6af5c56add5e1d5e281e769a615ebe8d493a13d0d1f24723",
+      "bytes": 11058,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "f58aa15f3f039dbf645c03652970f6f4f5878832b091646c4aae9bdedc7f93f8",
       "attempt": 1,
+      "raw": "US-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -320,6 +331,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "07c9d40cb16a1d17faef269b4d174c8a0757b610df02f2f246d1166016a59278",
       "attempt": 1,
+      "raw": "AU-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -348,6 +360,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "f52884dab9d3716e8a858a6170a514cc1d29476278d2c9c21352525508e3af19",
       "attempt": 1,
+      "raw": "BN-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -376,6 +389,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "079553f66589aaeb03ef65d0b58c0eef424d4fd2200d627b757408e53c00e501",
       "attempt": 1,
+      "raw": "BR-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -404,6 +418,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "10cdb66629f455c0a4331b3ac80b39fd572c5f3bc21b83a6a9c882620c02ea55",
       "attempt": 1,
+      "raw": "CA-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -432,6 +447,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "a8c480a557e70cbb0acdf05f6a3972d25359c8ce7146f110d253b54dc3d22aa8",
       "attempt": 1,
+      "raw": "CH-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -460,6 +476,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "eaaa9c0c05591c4cb28585270680e2c892dc3b0c055ee431324afe05cb721e80",
       "attempt": 1,
+      "raw": "CN-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -480,14 +497,15 @@
     },
     "DE": {
       "file": "icons/de.webp",
-      "sha256": "4dbe1580084fbbaff93050d98c28cefa9923214c9214fe098332a3397466cc56",
-      "bytes": 11588,
+      "sha256": "47bee5697fb4200ba28a141264dbe3aca97dba11839ea65ba21c1f755e0f0b66",
+      "bytes": 12134,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "eaea8fde83539d7dbc537bbff6019450f07272d4f68b29124066cf8cb65d7119",
       "attempt": 1,
+      "raw": "DE-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -508,14 +526,15 @@
     },
     "EG": {
       "file": "icons/eg.webp",
-      "sha256": "c487b4f02553dedb882d3ed883de4587dff49a2fc6b678aa978eded4ea76e3eb",
-      "bytes": 11514,
+      "sha256": "1e145c638bea5fa202f76ec92c8f1ce6fe79aab75618539c706be85866727380",
+      "bytes": 11396,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "f6a8acb1d4dc238a748cf7e35ad5539b14dcb443c3ad391d8a3c115422dbcfd6",
       "attempt": 1,
+      "raw": "EG-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -544,6 +563,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "750fbbf5625cc94b48f99ed72e5d4bc26ecf55353ddd511643193f4bec62c6b7",
       "attempt": 1,
+      "raw": "GR-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -572,6 +592,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "58987b609092da123e7d6de1af2516f444fd0707496a79bf5d8a8a2a7113d79c",
       "attempt": 1,
+      "raw": "IN-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -600,6 +621,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "c2fb7ac979c35148f95754793ec960e9038d6431ad3674a530f6612a1c94c980",
       "attempt": 1,
+      "raw": "JP-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -628,6 +650,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "6b7adcd7892f43b7a441d876f78489d713c8fbd02e629bcebf3f352f62a17a4a",
       "attempt": 1,
+      "raw": "KE-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -648,14 +671,15 @@
     },
     "MA": {
       "file": "icons/ma.webp",
-      "sha256": "333737bbfe2cca11e19573ed22f223734f64ee4f026f7aa5abbf42390fcc6b49",
-      "bytes": 10868,
+      "sha256": "00a33b3d135ad15c534f9f477147b372aca10b0fe1ad3673bb597dc7b3b35d2e",
+      "bytes": 11078,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "5d6970e7a7304b2ad98f990494ada5b9cb2bf9ae7b5ea6765bcbe54a227e9195",
       "attempt": 1,
+      "raw": "MA-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -676,14 +700,15 @@
     },
     "MG": {
       "file": "icons/mg.webp",
-      "sha256": "cda89786b6f920e365eb2a6dd3cc8508be2c544c6ee025337921cbe9769e68df",
-      "bytes": 12984,
+      "sha256": "8a42ce43de1dda3f817c489a65fcc18ebf149f184a738c9e52ef2e5875b6b48a",
+      "bytes": 13166,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "192a1ec886f5d7e2084f7c6620b8cd73b099eb1c326df8688e8e5c09d99bb384",
       "attempt": 1,
+      "raw": "MG-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -712,6 +737,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "4fa2074896adeb23af8d6fb0a35df3fae105bccefbbe798e80d5978cc06d9001",
       "attempt": 1,
+      "raw": "MX-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -740,6 +766,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "48aa73fd35a4d929b5dfa2b4b7427d70fbf8b580ca064efa4c155099f8cb0790",
       "attempt": 1,
+      "raw": "NL-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -768,6 +795,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "8deeaf401fd763b139671b60013a440d98924a45a59aa010b9198130172c313e",
       "attempt": 1,
+      "raw": "NZ-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -796,6 +824,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "3c05915a266141fa2b37bb6e0c158523d107bdffad8d69ab33cf04d106326af9",
       "attempt": 1,
+      "raw": "PE-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -816,14 +845,15 @@
     },
     "PG": {
       "file": "icons/pg.webp",
-      "sha256": "aa2a2f570f3932312df7d66596cf1a1c78a5ae0b5acda828f5442cbd7b1433ce",
-      "bytes": 14488,
+      "sha256": "a05741225c836978ac5badcf220c1e895cfe878933ac7311fc07fff47c501e3c",
+      "bytes": 14578,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "ede7932d9f3fe943459010a6a5dc5067795b8c0abdfe1f9974ac457a557b96d8",
       "attempt": 1,
+      "raw": "PG-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -852,6 +882,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "70a63ab45c6e22aefe0ab4a6066b03bfc8a666518cca75c390141cbe07378a75",
       "attempt": 1,
+      "raw": "PH-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -880,6 +911,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "dde4e88274c488af4914d8c989b0a3b043a78aaf277dfd1a6272c7685028b7a9",
       "attempt": 1,
+      "raw": "RU-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -900,14 +932,15 @@
     },
     "SA": {
       "file": "icons/sa.webp",
-      "sha256": "d96d49c9b0eb27d2ecbe6a157ebc4dbace8d1c5212215c0d04c4e822601e4f63",
-      "bytes": 13578,
+      "sha256": "97a56ac9e454dbbf18467c08d21e89df39c83a02afea960e5cd254522ed4a9aa",
+      "bytes": 14184,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "097c3bc9026ebf271b6cfdd485dbb96369defaf4db194beb30cfaa09845e88ea",
       "attempt": 1,
+      "raw": "SA-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -928,14 +961,15 @@
     },
     "TH": {
       "file": "icons/th.webp",
-      "sha256": "cd6dcee73cd58e539d067a5eaa30c643868f584a8992ee2e1883bc5876f23ebc",
-      "bytes": 13364,
+      "sha256": "963c132935b0d859c9c015675d4ec96c0cafa183822168d7137579c97e8b1a4b",
+      "bytes": 13934,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "5a8c74386c46dfbca105d43ef7fb643f60434848b36cc37ac992b89023e594af",
       "attempt": 1,
+      "raw": "TH-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -964,6 +998,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "184d272a01dcd3f832d0e3b7a640248db69b607c80d1478740adcd6ce9f4e2f3",
       "attempt": 1,
+      "raw": "TL-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -984,14 +1019,15 @@
     },
     "TR": {
       "file": "icons/tr.webp",
-      "sha256": "ab4448594f391361798e2f3a3299eb463971a02b5d062e647870cc59f747c1a3",
-      "bytes": 11736,
+      "sha256": "00f1ace5ab76103a5ec2cd8b0759377cd86569411b6a0a4876507ddaf74a584f",
+      "bytes": 11904,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "8356459fb9cb27618e4ff26649842e810e0e0cf0109cd4aa1ab236cee4981254",
       "attempt": 1,
+      "raw": "TR-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -1012,14 +1048,15 @@
     },
     "VN": {
       "file": "icons/vn.webp",
-      "sha256": "3c996a51bf2bc6194a53c8aa55efa550b65acd775fee1d5c4efae7d76c6daba7",
-      "bytes": 27366,
+      "sha256": "c3c20eb38f06775f745c2d64a434facb0570c227b0af81096e317e1658a9c063",
+      "bytes": 26390,
       "width": 256,
       "height": 256,
       "source": "gemini-api",
       "model": "gemini-3.1-flash-image",
       "promptHash": "fd0340bd7c73dd71b17976f3ca0a8fa47d66debdc5aae33ce432071e3a6b74ff",
       "attempt": 1,
+      "raw": "VN-1.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -1048,6 +1085,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "8943f969a6ed2c77a2a7c59ca50daf86283f49f9610f3be2f7b73f084e5ed857",
       "attempt": 1,
+      "raw": "ZA-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -1076,6 +1114,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "47b54896a95dfac662061c01c746914b8ae341d0b83dae42392548882fcc0702",
       "attempt": 1,
+      "raw": "KR-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -1104,6 +1143,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "0e8fc2c9e81e697309921b7ec907026f0d44f79436d48b4a41aafc33ca47ed36",
       "attempt": 1,
+      "raw": "ES-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {
@@ -1132,6 +1172,7 @@
       "model": "gemini-3.1-flash-image",
       "promptHash": "cca9ad67e575a554d4d0fd48757c5d8c93fec66613a9c65129747b42a9277a32",
       "attempt": 1,
+      "raw": "FR-2.jpg",
       "checker": {
         "model": "gemini-3.8-flash",
         "verdict": {

@@ -54,13 +54,16 @@ describe('removeKeyBackground', () => {
     expect(px(out, 10, 10)).toEqual([...WHITE, 255]);
     expect(px(out, 6, 6)[3]).toBe(255);
   });
-  it('pulau warna kunci di dalam garis luar tidak terhapus', () => {
+  // Remap (issue #25): kontrak lama "pulau warna kunci di dalam garis luar tidak terhapus" diganti.
+  // Bidang tertutup bewarna latar (jendela, lubang, celah) kini harus ikut transparan.
+  it('pulau warna kunci yang tertutup garis luar ikut menjadi transparan, isi lain tetap', () => {
     const img = boxOnKey();
     rect(img, 9, 9, 10, 10, KEY);
     const out = removeKeyBackground(img, KEY, 40);
-    expect(px(out, 9, 9)).toEqual([...KEY, 255]);
-    expect(px(out, 10, 10)).toEqual([...KEY, 255]);
-    expect(px(out, 8, 8)[3]).toBe(255);
+    expect(px(out, 9, 9)[3]).toBe(0);
+    expect(px(out, 10, 10)[3]).toBe(0);
+    expect(px(out, 8, 8)).toEqual([...WHITE, 255]);
+    expect(px(out, 6, 6)[3]).toBe(255);
     expect(px(out, 0, 0)[3]).toBe(0);
   });
   it('tepi anti-alias di-despill sehingga tidak lagi kemerahan-magenta', () => {
@@ -226,7 +229,8 @@ describe('estimateBackground', () => {
 });
 
 describe('removeKeyBackground dengan kunci hasil estimateBackground', () => {
-  it('menghapus semua piksel tepi; objek, area putih, dan pulau berwarna latar tetap buram', () => {
+  // Remap (issue #25): pulau berwarna latar yang tertutup kini transparan, bukan buram.
+  it('menghapus semua piksel tepi dan pulau berwarna latar yang tertutup; objek dan area putih tetap buram', () => {
     expect(BACKGROUND_TOLERANCE).toBeGreaterThanOrEqual(24);
     const src = iconOnNoisyBackdrop();
     const out = removeKeyBackground(src, estimateBackground(src), BACKGROUND_TOLERANCE);
@@ -246,11 +250,19 @@ describe('removeKeyBackground dengan kunci hasil estimateBackground', () => {
       [20, 40],
       [40, 20],
       [47, 47],
+      [22, 22],
+      [31, 31],
+    ] as const) {
+      expect(px(out, x, y)[3]).toBe(255);
+    }
+    for (const [x, y] of [
       [26, 26],
       [23, 23],
       [30, 30],
+      [23, 30],
+      [30, 23],
     ] as const) {
-      expect(px(out, x, y)[3]).toBe(255);
+      expect(px(out, x, y)[3], `pulau (${x},${y})`).toBe(0);
     }
     expect(px(out, 8, 8)[3]).toBe(0);
   });
@@ -274,5 +286,106 @@ describe('checkBackgroundRemoved', () => {
     expect(localChecks(make(10, 10, WHITE), { ink: INK, backgroundRemoved: true })).toMatchObject({
       backgroundRemoved: true,
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Issue #25: bidang latar tertutup (bukan terhubung ke tepi) harus ikut dihapus.
+// Latar nyata dari Gemini kira-kira #E84AE0 dengan noise JPEG, bukan #FF00FF.
+// ---------------------------------------------------------------------------
+describe('pasca-proses latar nyata: bidang tertutup', () => {
+  const BG: Rgb = [0xe8, 0x4a, 0xe0];
+  const RING_INK: Rgb = [0x1d, 0x3a, 0x6e];
+  const ORANGE: Rgb = [0xff, 0xb8, 0x6b];
+  const PURPLE: Rgb = [0xb4, 0x9b, 0xf2];
+  const PINK: Rgb = [0xff, 0x8f, 0xab];
+  const colorDist = (a: Rgb, b: Rgb): number => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+  function noisy(seed: number): () => number {
+    let s = seed;
+    return () => {
+      s = (s * 1664525 + 1013904223) >>> 0;
+      return (s % 21) - 10; // -10..10
+    };
+  }
+
+  /** 96x64: cincin ink di kiri (lubang bewarna latar), kotak ber-garis ink di kanan dengan tiga isi berwarna. */
+  function scene(): RgbaImage {
+    const w = 96;
+    const h = 64;
+    const rnd = noisy(7);
+    const img = make(w, h, BG);
+    const cx = 28;
+    const cy = 32;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const r = Math.hypot(x - cx, y - cy);
+        let c: Rgb = BG;
+        if (r <= 24 && r > 12) c = RING_INK;
+        if (x >= 60 && x <= 90 && y >= 12 && y <= 52) c = RING_INK;
+        if (x >= 63 && x <= 87 && y >= 15 && y <= 49) {
+          c = x < 71 ? ORANGE : x < 79 ? PURPLE : PINK;
+        }
+        const n = (): number => rnd();
+        put(img, x, y, [c[0] + n(), c[1] + n(), c[2] + n()] as Rgb);
+      }
+    }
+    return img;
+  }
+  const run = (): RgbaImage => {
+    const img = scene();
+    return removeKeyBackground(img, estimateBackground(img), BACKGROUND_TOLERANCE);
+  };
+
+  it('titik uji kontrol berjarak dari latar di atas toleransi', () => {
+    for (const c of [ORANGE, PURPLE, PINK, RING_INK]) {
+      expect(colorDist(c, BG) - 17.4).toBeGreaterThan(BACKGROUND_TOLERANCE); // 17.4 = noise maksimum
+    }
+  });
+
+  it('bidang tertutup bewarna latar di tengah cincin menjadi alpha 0', () => {
+    const out = run();
+    for (const [x, y] of [
+      [28, 32],
+      [24, 30],
+      [32, 34],
+      [28, 24],
+      [28, 40],
+      [22, 32],
+    ] as const) {
+      expect(px(out, x, y)[3], `titik (${x},${y})`).toBe(0);
+    }
+  });
+
+  it('latar luar tetap transparan dan cincin tetap buram dengan warna ink', () => {
+    const out = run();
+    expect(px(out, 0, 0)[3]).toBe(0);
+    expect(px(out, 50, 5)[3]).toBe(0);
+    for (const [x, y] of [
+      [28, 14], // r=18
+      [28, 50],
+      [12, 32],
+      [44, 32],
+    ] as const) {
+      const [r, g, b, a] = px(out, x, y);
+      expect(a, `alpha (${x},${y})`).toBe(255);
+      expect(colorDist([r, g, b], RING_INK)).toBeLessThanOrEqual(20);
+    }
+  });
+
+  it('kontrol: isi oranye, ungu, dan pink di dalam garis luar tidak ikut terhapus', () => {
+    const out = run();
+    const probes: [number, number, Rgb][] = [
+      [66, 30, ORANGE],
+      [75, 30, PURPLE],
+      [84, 30, PINK],
+      [66, 20, ORANGE],
+      [84, 44, PINK],
+    ];
+    for (const [x, y, c] of probes) {
+      const [r, g, b, a] = px(out, x, y);
+      expect(a, `alpha (${x},${y})`).toBe(255);
+      expect(colorDist([r, g, b], c)).toBeLessThanOrEqual(20);
+    }
   });
 });

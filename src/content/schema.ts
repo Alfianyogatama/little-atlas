@@ -143,6 +143,11 @@ const IconEntrySchema = z.object({
   model: z.string().min(1).nullable(),
   promptHash: Hex64,
   attempt: z.number().int().min(1),
+  /** Berkas mentah di .tmp/icons/raw yang menghasilkan ikon ini; dipakai icons:reprocess. */
+  raw: z
+    .string()
+    .regex(/^[A-Z]{2}-[1-9][0-9]*\.(jpg|png)$/, 'harus <KODE>-<n>.jpg atau .png')
+    .optional(),
   checker: z
     .object({ model: z.string().min(1), verdict: z.record(z.string(), z.unknown()) })
     .nullable(),

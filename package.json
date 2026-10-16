@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "content": "bun scripts/build-content.ts",
     "icons:generate": "bun scripts/icons/generate-cli.ts",
+    "icons:reprocess": "bun scripts/icons/reprocess-cli.ts",
     "icons:review": "bun scripts/icons/review-server.ts",
     "content:check": "bun scripts/check-content.ts",
     "check:bundle": "bun scripts/check-bundle-size.ts"

@@ -117,6 +117,8 @@ describe('approve', () => {
       model: 'gemini-x',
       promptHash: PROMPT_HASH,
       attempt: 1,
+      // Remap (issue #25): entri manifest kini mencatat berkas mentah (basename rawPath).
+      raw: 'AU-1.png',
       checker: { model: 'gemini-vision-test', verdict: VERDICT },
       status: 'approved',
       generatedAt: '2026-10-16T07:00:00.000Z',

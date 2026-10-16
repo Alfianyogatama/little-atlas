@@ -56,34 +56,16 @@ export function checkBackgroundRemoved(img: RgbaImage): boolean {
   return edge > 0 && clear / edge >= REMOVED_EDGE_RATIO;
 }
 
-/** Hapus latar warna kunci yang terhubung ke tepi, lalu despill piksel buram di sebelahnya. */
+/**
+ * Hapus semua piksel dalam toleransi warna kunci (termasuk bidang tertutup seperti lubang atau jendela),
+ * lalu despill piksel buram di sebelahnya.
+ */
 export function removeKeyBackground(img: RgbaImage, key: Rgb, tolerance: number): RgbaImage {
   const { width: w, height: h } = img;
   const data = Uint8ClampedArray.from(img.data);
   const removed = new Uint8Array(w * h);
-  const queue = new Int32Array(w * h);
-  let head = 0;
-  let tail = 0;
-  const push = (p: number): void => {
-    if (removed[p] === 1 || dist(data, p * 4, key) > tolerance) return;
-    removed[p] = 1;
-    queue[tail++] = p;
-  };
-  for (let x = 0; x < w; x++) {
-    push(x);
-    push((h - 1) * w + x);
-  }
-  for (let y = 0; y < h; y++) {
-    push(y * w);
-    push(y * w + w - 1);
-  }
-  while (head < tail) {
-    const p = queue[head++] ?? 0;
-    const x = p % w;
-    if (x > 0) push(p - 1);
-    if (x < w - 1) push(p + 1);
-    if (p >= w) push(p - w);
-    if (p < w * (h - 1)) push(p + w);
+  for (let p = 0; p < w * h; p++) {
+    if (dist(data, p * 4, key) <= tolerance) removed[p] = 1;
   }
 
   const high = [0, 1, 2].filter((c) => (key[c] ?? 0) > 128);
