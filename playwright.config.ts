@@ -10,6 +10,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'retain-on-failure',
+    // Bahasa dasar aplikasi id; bahasa perangkat diikuti sesuai P1 (#7), jadi tes default memakai id-ID.
+    locale: 'id-ID',
   },
   projects: [
     {

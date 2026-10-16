@@ -9,3 +9,6 @@ test-results
 *.md
 src/content/generated
 public/content
+src/paraglide
+project.inlang/*
+!project.inlang/settings.json

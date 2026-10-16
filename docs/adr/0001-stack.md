@@ -103,6 +103,15 @@ Chromium di Playwright dijalankan dengan flag `--use-angle=swiftshader` dan `--e
 
 Setelah issue #4, JavaScript muatan pertama berukuran sekitar 360 KB gzip dari anggaran 450 KB (diukur sesi utama dengan `bun run check:bundle`).
 
+### Paket issue #7
+
+Issue #7 (i18n) memasang Paraglide JS dengan aturan penguncian yang sama. Paket npm-nya tidak masuk bundle, tetapi kode hasil generate `src/paraglide` (runtime dan pesan) ikut ter-bundle. Rinciannya di ADR-007.
+
+| Paket | Versi | Tanggal rilis | Dipakai untuk |
+| --- | --- | --- | --- |
+| @inlang/paraglide-js | 2.25.4 | 17 September 2026 | Kompiler dan runtime pesan |
+| @inlang/plugin-message-format | 4.4.4 | 31 Agustus 2026 | Plugin format pesan JSON, dimuat dari `node_modules` |
+
 ### Cara perintah dijalankan
 
 "Dijalankan lewat Bun" berarti perintah dipanggil lewat skrip Bun, misalnya `bun run test`. Binary Vitest, Vite, dan Playwright tetap berjalan di Node lewat shebang masing-masing. Opsi `bun --bun`, yang memaksa binary itu berjalan di runtime Bun, tidak dipakai karena risiko kompatibilitasnya. Skrip milik proyek di `scripts/` dijalankan langsung dengan Bun.
