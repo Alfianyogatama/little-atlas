@@ -79,7 +79,7 @@ interface ViewItem {
   problems: string[];
 }
 
-function toView(raw: unknown): ViewItem | null {
+export function toView(raw: unknown): ViewItem | null {
   if (!isRecord(raw) || typeof raw.code !== 'string' || typeof raw.variant !== 'number')
     return null;
   const checks = isRecord(raw.checks) ? raw.checks : {};
@@ -88,6 +88,9 @@ function toView(raw: unknown): ViewItem | null {
   const problems: string[] = [];
   if (error) problems.push('error');
   if (verdict && verdict.matchesLabel === false) problems.push('verdict tidak cocok');
+  if (verdict && verdict.hasText === true) problems.push('ada teks');
+  if (verdict && verdict.hasFlag === true) problems.push('ada bendera');
+  if (verdict && verdict.scary === true) problems.push('menakutkan');
   if (checks.size !== undefined && checks.size !== 256) problems.push('ukuran bukan 256');
   if (checks.hasAlpha === false) problems.push('tanpa alpha');
   if (checks.cornersTransparent === false) problems.push('sudut tidak transparan');

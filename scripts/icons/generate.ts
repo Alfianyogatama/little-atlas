@@ -174,6 +174,7 @@ function visionInstruction(label: string): string {
     '{"seen": string (what you see, in a few words),',
     '"matchesLabel": boolean (the icon clearly shows the intended subject),',
     '"hasText": boolean (any letters, words, or numbers appear),',
+    '"hasFlag": boolean (any national flag or flag-like banner appears),',
     '"thickOutline": boolean (shapes have a thick dark outline),',
     '"flatColors": boolean (flat fill colors, no gradients or shading),',
     '"sameStyleAsReference": boolean (looks like a simple friendly sticker-style icon),',

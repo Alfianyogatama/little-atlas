@@ -287,6 +287,7 @@ describe('VisionVerdictSchema dan parseVerdict', () => {
     seen: 'kanguru kartun',
     matchesLabel: true,
     hasText: false,
+    hasFlag: false,
     thickOutline: true,
     flatColors: true,
     sameStyleAsReference: true,
@@ -307,6 +308,17 @@ describe('VisionVerdictSchema dan parseVerdict', () => {
     expect(() => parseVerdict(JSON.stringify(tanpaScary))).toThrow();
     expect(() => parseVerdict('ini bukan json')).toThrow();
     expect(() => parseVerdict('[]')).toThrow();
+  });
+  it('menerima verdict lengkap dengan hasFlag true maupun false', () => {
+    expect(parseVerdict(JSON.stringify({ ...verdict, hasFlag: true })).hasFlag).toBe(true);
+    expect(parseVerdict(JSON.stringify(verdict)).hasFlag).toBe(false);
+  });
+  it('menolak verdict tanpa hasFlag atau hasFlag bukan boolean', () => {
+    const tanpaFlag: Record<string, unknown> = { ...verdict };
+    Reflect.deleteProperty(tanpaFlag, 'hasFlag');
+    expect(() => parseVerdict(JSON.stringify(tanpaFlag))).toThrow();
+    expect(VisionVerdictSchema.safeParse(tanpaFlag).success).toBe(false);
+    expect(() => parseVerdict(JSON.stringify({ ...verdict, hasFlag: 'ya' }))).toThrow();
   });
 });
 

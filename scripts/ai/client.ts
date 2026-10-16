@@ -18,6 +18,7 @@ export const VisionVerdictSchema = z.object({
   seen: z.string(),
   matchesLabel: z.boolean(),
   hasText: z.boolean(),
+  hasFlag: z.boolean(),
   thickOutline: z.boolean(),
   flatColors: z.boolean(),
   sameStyleAsReference: z.boolean(),
