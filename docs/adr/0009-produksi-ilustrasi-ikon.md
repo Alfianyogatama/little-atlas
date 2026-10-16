@@ -13,7 +13,7 @@ Emoji dilarang sebagai ikon di mana pun (revisi R2, keputusan pemilik 15 Oktober
 ### Alat: pengecualian ADR-004
 
 - Gemini dipakai sebagai pembuat gambar dan sebagai pemeriksa vision. Modelnya dibaca dari `scripts/ai/models.json` (`image` dan `vision`), bukan ditulis di kode.
-- Ini pengecualian ADR-004, yang mewajibkan pembuat dan pemeriksa dari keluarga berbeda. Pemilik menyetujuinya pada 16 Oktober 2026 (opsi A). Alasannya, MiMo yang dulu direncanakan sebagai pemeriksa gambar tidak tersedia atau tidak dipakai.
+- Ini pengecualian ADR-004, yang mewajibkan pembuat dan pemeriksa dari keluarga berbeda. Pemilik menyetujuinya pada 16 Oktober 2026 (opsi A). Alasan pemilik (issue #25): hanya 41 ikon, dan semuanya ditinjau manusia sebagai penyaring terakhir. MiMo, yang dulu direncanakan sebagai pemeriksa gambar, tidak dipakai (keputusan 15 Oktober 2026).
 - Risikonya nyata: pemeriksa dan pembuat dari keluarga yang sama cenderung meloloskan kesalahan yang sama. Mitigasinya review manual oleh pemilik atas setiap ikon sebelum di-commit (`icons:review`).
 
 ### Pipeline
@@ -22,7 +22,7 @@ Emoji dilarang sebagai ikon di mana pun (revisi R2, keputusan pemilik 15 Oktober
 2. Gambar diminta di atas latar warna kunci magenta #FF00FF.
 3. Pasca-proses: warna latar diperkirakan dari median piksel tepi, semua piksel dalam toleransi dihapus (termasuk bidang tertutup di dalam objek, bukan hanya yang terhubung ke tepi), lalu despill menghilangkan sisa warna kunci di tepi.
 4. Dikecilkan ke 256×256 dan di-encode ke WebP lossless. Kalau hasilnya lebih dari 30 KB, di-encode ulang dengan q90. Dekode dan encode memakai paket WASM `@jsquash/*` (ADR-001, spike `docs/spikes/2026-10-15-icon-webp.md`).
-5. Pemeriksa vision menilai isi, teks, bendera, garis tebal, warna datar, kesamaan gaya, dan unsur menakutkan. Verdict dicatat di manifest.
+5. Pemeriksa vision menilai isi, teks, bendera, garis tebal, warna datar, kesesuaian dengan gaya "simple sticker-style", dan unsur menakutkan. Pemeriksa tidak menerima gambar referensi; field `sameStyleAsReference` hanya menilai apakah gambar tampak seperti ikon ramah bergaya stiker sederhana, bukan kemiripan dengan ikon lain. Verdict dicatat di manifest.
 6. Pemilik mengurasi hasilnya.
 
 ### Aset dan manifest
@@ -41,6 +41,12 @@ Emoji dilarang sebagai ikon di mana pun (revisi R2, keputusan pemilik 15 Oktober
 
 - `TC-ICON-BG`: tidak ada piksel buram yang masih berwarna latar (dalam toleransi pasca-proses yang sama) di ikon yang di-commit.
 - `TC-ICON-RAW`: setiap entri manifest punya `raw` yang sesuai kodenya.
+
+## Pengecualian dan persetujuan pemilik (16 Oktober 2026)
+
+- **KR:** label sengaja diganti pemilik dari "Chopsticks" ke "Bibimbap". Verdict vision yang tersimpan (`matchesLabel: false`) dan `promptHash` merujuk label lama, jadi keduanya basi. Gambar mangkuk bibimbap sudah ditinjau dan disetujui pemilik untuk label baru. Vision tidak dijalankan ulang, supaya tidak memakai kuota.
+- **Proses ulang:** 12 ikon (TH, DE, VN, SA, SG, MA, TR, PG, MG, MM, EG, US) diproses ulang lewat `icons:reprocess` setelah perbaikan latar. Ini pengecualian dari aturan bahwa hanya halaman tinjau yang menulis manifest dan `public/content/icons/`. Pemilik meninjau dan menyetujui hasilnya pada 16 Oktober 2026. Field `reviewedAt` dan `checker.verdict` masih milik tinjauan sebelumnya.
+- **Aturan:** setiap `icons:reprocess` wajib diikuti tinjauan ulang pemilik.
 
 ## Alternatif yang ditolak
 

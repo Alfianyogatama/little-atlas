@@ -231,6 +231,25 @@ test('TC-F03-08b kartu Antarktika menampilkan ikon penguin dan tanpa bendera', a
   await expect(card.getByRole('img')).toHaveCount(1);
 });
 
+for (const scheme of ['light', 'dark'] as const) {
+  test.describe(`TC-F03-08c latar slot ikon (${scheme})`, () => {
+    test.use({ colorScheme: scheme });
+    test(`TC-F03-08c ${scheme} slot ikon kartu berlatar --icon-slot`, async ({ page }) => {
+      const jpIconLabel = favorites.find((f) => f.code === 'JP')?.icon.label.id;
+      if (!jpIconLabel) throw new Error('label ikon Jepang tidak ada di favorites.json');
+      const card = await openJapanCard(page);
+      const icon = card.getByRole('img', { name: jpIconLabel, exact: true });
+      await expect(icon).toBeVisible();
+      const style = await icon.evaluate((el) => {
+        const s = getComputedStyle(el);
+        return { bg: s.backgroundColor, border: s.borderTopColor };
+      });
+      expect(style.bg).toBe('rgb(221, 243, 255)');
+      expect(style.border).not.toBe(style.bg);
+    });
+  });
+}
+
 test('TC-F03-03 tombol rumah terbang ke Indonesia dan membuka kartunya', async ({ page }) => {
   await openJapanCard(page);
   await page.getByRole('button', { name: idMessages.explore_home }).click();

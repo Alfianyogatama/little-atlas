@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { createClient } from '../ai/client';
 import { assertConfigured, MODELS } from '../ai/models';
+import { formatUsageSummary } from '../ai/usage';
 import { createCodec } from './codec';
 import { runGenerate, type GenerateCodec } from './generate';
 import type { StyleSpec } from './prompt';
@@ -88,6 +89,7 @@ async function main(): Promise<void> {
       `Selesai: ${report.items.length} varian, ${failed} gagal. Laporan: .tmp/icons/out/report.json`,
     );
   }
+  console.log(formatUsageSummary(client.log));
 }
 
 main().catch((err: unknown) => {

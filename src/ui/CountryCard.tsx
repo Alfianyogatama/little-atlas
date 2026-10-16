@@ -39,8 +39,8 @@ export function CountryCard({
                 className="hd-card__fact-icon"
                 src={icon.src}
                 alt={icon.alt}
-                width={56}
-                height={56}
+                width={256}
+                height={256}
                 decoding="async"
               />
             ) : null}

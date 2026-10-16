@@ -1,12 +1,12 @@
 # ADR-004: Alat AI untuk pengembangan dan produksi konten
 
-Status: diterima pada 14 Oktober 2026.
+Status: diterima pada 14 Oktober 2026; diperbarui 16 Oktober 2026 (pengecualian ikon, issue #25).
 
 Keputusannya: AI hanya dipakai saat pengembangan dan build, dengan peran yang dibagi antar model, dan pembuat serta pemeriksa selalu dari keluarga model yang berbeda.
 
 ## Konteks
 
-Pemilik memakai Claude CLI, berlangganan Google AI Pro (aplikasi Gemini dan Antigravity), dan punya akses ke GLM 5.3, DeepSeek. Targetnya biaya serendah mungkin. Model dari keluarga yang sama cenderung membuat kesalahan yang sama, sehingga saling memeriksa di satu keluarga kurang efektif.
+Pemilik memakai Claude CLI, berlangganan Google AI Pro (aplikasi Gemini dan Antigravity), dan punya akses ke GLM 5.3 dan DeepSeek. Targetnya biaya serendah mungkin. Model dari keluarga yang sama cenderung membuat kesalahan yang sama, sehingga saling memeriksa di satu keluarga kurang efektif.
 
 ## Keputusan
 
