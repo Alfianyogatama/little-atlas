@@ -30,6 +30,27 @@
   fill: currentColor;
 }
 
+.hd-toy:not(.is-icon) {
+  height: var(--touch-min);
+  padding: 0 var(--space-5);
+  gap: var(--space-2);
+  border-radius: var(--radius-toy);
+  font-family: var(--font-display);
+  font-size: var(--kid-button-size);
+  line-height: var(--kid-button-line);
+  font-weight: 800;
+}
+
+.hd-toy:not(.is-icon) svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.hd-toy > [aria-hidden='true'] {
+  display: inline-flex;
+}
+
 .hd-toy:active:not([aria-disabled='true']) {
   transform: translateY(5px);
   box-shadow:

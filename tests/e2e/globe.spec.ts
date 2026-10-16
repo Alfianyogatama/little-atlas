@@ -221,10 +221,7 @@ for (const width of [375, 768, 1280]) {
   }) => {
     await page.setViewportSize({ width, height: width === 1280 ? 800 : 720 });
     await openAt(page, '');
-    await expect(page.locator(holder)).toHaveAttribute(
-      'data-globe-screen',
-      /^-?\d+,-?\d+,\d+$/,
-    );
+    await expect(page.locator(holder)).toHaveAttribute('data-globe-screen', /^-?\d+,-?\d+,\d+$/);
     const raw = (await page.locator(holder).getAttribute('data-globe-screen')) ?? '';
     const [cx = NaN, cy = NaN, r = NaN] = raw.split(',').map(Number);
     expect([cx, cy, r].every(Number.isFinite)).toBe(true);
