@@ -19,6 +19,9 @@ import { m } from '@/paraglide/messages.js';
 import type { AudioService, SpeechSegment } from '@/services/audio';
 import { createBrowserAudio } from '@/services/audio/browser';
 
+/** Perayaan `celebrate:N` punya klip sampai N ini (kelipatan 5); di atasnya `celebrateMany`. */
+const MAX_CELEBRATE_CLIP = 100;
+
 const PRAISES = [m.quiz_praise_1, m.quiz_praise_2, m.quiz_praise_3, m.quiz_praise_4] as const;
 
 export interface FlagQuizOptions {
@@ -111,11 +114,16 @@ export function useFlagQuiz(options: FlagQuizOptions): FlagQuizApi {
           locale: loc,
         });
       } else if (item.kind === 'celebrate') {
-        out.push({
-          id: `celebrate:${item.stars}`,
-          text: m.quiz_celebrate_speech({ count: item.stars }),
-          locale: loc,
-        });
+        // Klip utuh hanya sampai batas; di atasnya satu klip tanpa angka (ADR-008, R5).
+        if (item.stars > MAX_CELEBRATE_CLIP) {
+          out.push({ id: 'celebrateMany', text: m.quiz_celebrate_many_speech(), locale: loc });
+        } else {
+          out.push({
+            id: `celebrate:${item.stars}`,
+            text: m.quiz_celebrate_speech({ count: item.stars }),
+            locale: loc,
+          });
+        }
       } else {
         out.push({ id: 'tryAgain', text: m.quiz_try_again(), locale: loc });
       }

@@ -6,7 +6,12 @@ export default mergeConfig(
   defineConfig({
     test: {
       environment: 'node',
-      include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts', 'tests/lint/**/*.test.ts'],
+      include: [
+        'src/**/*.test.{ts,tsx}',
+        'scripts/**/*.test.ts',
+        'tests/lint/**/*.test.ts',
+        'tests/unit/**/*.test.ts',
+      ],
       exclude: [...configDefaults.exclude, 'spikes/**', 'prototype/**', 'tests/e2e/**'],
     },
   }),

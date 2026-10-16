@@ -32,6 +32,7 @@
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",
     "@react-three/fiber": "9.8.1",
+    "howler": "2.2.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "three": "0.186.1",
@@ -50,6 +51,7 @@
     "@testing-library/react": "16.3.3",
     "@types/d3-geo": "3.1.1",
     "@types/geojson": "7946.0.16",
+    "@types/howler": "2.2.13",
     "@types/node": "24.19.0",
     "@types/polylabel": "2.0.0",
     "@types/react": "19.3.0",

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "locale": "id",
+  "sprites": {
+    "core": { "src": "core-0000aaaa.mp3", "bytes": 30596, "durationMs": 5000 },
+    "fact-1": { "src": "fact-1-0000bbbb.mp3", "bytes": 30596, "durationMs": 5000 },
+    "intro-asia-1": { "src": "intro-asia-1-0000cccc.mp3", "bytes": 30596, "durationMs": 5000 }
+  },
+  "clips": {
+    "praise:1": { "sprite": "core", "startMs": 0, "durationMs": 1000 },
+    "praise:2": { "sprite": "core", "startMs": 1250, "durationMs": 1000 },
+    "praise:3": { "sprite": "core", "startMs": 2500, "durationMs": 1000 },
+    "praise:4": { "sprite": "core", "startMs": 3750, "durationMs": 1000 },
+    "fact:JP": { "sprite": "fact-1", "startMs": 1250, "durationMs": 1500 },
+    "intro:JP": { "sprite": "intro-asia-1", "startMs": 0, "durationMs": 1000 }
+  }
+}

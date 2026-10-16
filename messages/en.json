@@ -27,5 +27,6 @@
   "quiz_stars_label": "Stars: {count}",
   "quiz_celebrate_text": "Hooray! {count} stars!",
   "quiz_celebrate_speech": "Hooray! You got {count} stars! Amazing!",
+  "quiz_celebrate_many_speech": "Hooray! You have so many stars! Amazing!",
   "quiz_region_label": "Flag quiz"
 }
