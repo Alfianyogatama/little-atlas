@@ -44,7 +44,10 @@ export function createBrowserAudio(): AudioService {
             finish();
             u.onend?.();
           };
-          real.onerror = finish;
+          real.onerror = () => {
+            finish();
+            u.onerror?.();
+          };
           current = real;
           native.speak(real);
         },
@@ -58,7 +61,15 @@ export function createBrowserAudio(): AudioService {
   return createWebSpeechAudio({
     synth,
     makeUtterance: (text) => {
-      const u: UtteranceLike = { text, lang: '', rate: 1, pitch: 1, voice: null, onend: null };
+      const u: UtteranceLike = {
+        text,
+        lang: '',
+        rate: 1,
+        pitch: 1,
+        voice: null,
+        onend: null,
+        onerror: null,
+      };
       natives.set(u, new SpeechSynthesisUtterance(text));
       return u;
     },

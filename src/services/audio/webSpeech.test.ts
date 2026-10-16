@@ -17,7 +17,7 @@ interface Voice {
   name: string;
 }
 
-function setup(voices: Voice[]) {
+function setup(voices: Voice[], onCancel?: (spoken: UtteranceLike[]) => void) {
   const log: string[] = [];
   const spoken: UtteranceLike[] = [];
   const synth: SynthLike = {
@@ -28,6 +28,7 @@ function setup(voices: Voice[]) {
     },
     cancel: () => {
       log.push('cancel');
+      onCancel?.(spoken);
     },
   };
   const makeUtterance = (text: string): UtteranceLike => ({
@@ -37,6 +38,7 @@ function setup(voices: Voice[]) {
     pitch: 1,
     voice: null,
     onend: null,
+    onerror: null,
   });
   const audio = createWebSpeechAudio({ synth, makeUtterance });
   return { audio, log, spoken, synth };
@@ -137,5 +139,90 @@ describe('createWebSpeechAudio', () => {
     const { audio, log } = setup([idLocal]);
     audio.speak([]);
     expect(log).toEqual(['cancel']);
+  });
+
+  it('(i) onerror segmen pertama tetap memutar segmen berikutnya', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+    ]);
+    spoken[0]?.onerror?.();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Dua']);
+  });
+
+  it('(i) onend lalu onerror pada ucapan yang sama hanya maju sekali', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+      { id: 'c', text: 'Tiga', locale: 'id' },
+    ]);
+    spoken[0]?.onend?.();
+    spoken[0]?.onerror?.();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Dua']);
+  });
+
+  it('(i) onerror lalu onend pada ucapan yang sama hanya maju sekali', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+      { id: 'c', text: 'Tiga', locale: 'id' },
+    ]);
+    spoken[0]?.onerror?.();
+    spoken[0]?.onend?.();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Dua']);
+  });
+
+  it('(i) stop lalu onerror (interrupted) tidak memutar segmen berikutnya', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+    ]);
+    audio.stop();
+    spoken[0]?.onerror?.();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu']);
+  });
+
+  it('(i) speak baru lalu onerror ucapan lama tidak melanjutkan antrean lama', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+    ]);
+    audio.speak([{ id: 'c', text: 'Tiga', locale: 'id' }]);
+    spoken[0]?.onerror?.();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Tiga']);
+  });
+
+  it('(i) cancel yang memicu onerror secara sinkron tidak memutar segmen berikutnya', () => {
+    const { audio, spoken } = setup([idLocal], (list) => list[list.length - 1]?.onerror?.());
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+    ]);
+    audio.speak([{ id: 'c', text: 'Tiga', locale: 'id' }]);
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Tiga']);
+    audio.stop();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu', 'Tiga']);
+  });
+
+  it('(i) stop dengan cancel yang memicu onerror sinkron tidak memutar segmen berikutnya', () => {
+    const { audio, spoken } = setup([idLocal], (list) => list[list.length - 1]?.onerror?.());
+    audio.speak([
+      { id: 'a', text: 'Satu', locale: 'id' },
+      { id: 'b', text: 'Dua', locale: 'id' },
+    ]);
+    audio.stop();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu']);
+  });
+
+  it('(i) onerror di segmen terakhir: diam, tanpa throw', () => {
+    const { audio, spoken } = setup([idLocal]);
+    audio.speak([{ id: 'a', text: 'Satu', locale: 'id' }]);
+    expect(() => spoken[0]?.onerror?.()).not.toThrow();
+    expect(spoken.map((u) => u.text)).toEqual(['Satu']);
   });
 });

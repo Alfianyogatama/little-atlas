@@ -2,6 +2,8 @@
 
 Status: diterima pada 16 Oktober 2026, dari rencana issue #5 (Jelajah) yang disetujui pemilik.
 
+Diperbarui pada 16 Oktober 2026: `onerror` pada utterance kini ikut melanjutkan antrean segmen, sama seperti `onend`. Keputusan seam tidak berubah.
+
 Keputusannya: fitur berbicara lewat antarmuka `AudioService` (`speak` dan `stop`). Implementasi pertamanya Web Speech yang hanya memakai suara lokal perangkat, dan Howler dari #8 nanti dipasang di balik antarmuka yang sama.
 
 ## Konteks
@@ -18,7 +20,7 @@ Jelajah (#5) harus bersuara: F-03 (kartu negara dibacakan) dan F-07 (umpan balik
 ### Implementasi Web Speech
 
 - Suara dipilih dari `getVoices()` dengan syarat `localService === true` dan subtag bahasa sama dengan locale segmen (`id-ID` cocok untuk `id`). Kalau tidak ada, segmen itu dilewati: aplikasi diam, tanpa error. Aplikasi tidak pernah jatuh ke suara default, karena default bisa berupa suara jaringan (ADR-003, ADR-004).
-- `cancel()` dipanggil sebelum setiap ucapan baru (F-07.4). Segmen diputar berurutan lewat `onend`, dijaga token generasi yang naik di `speak` dan `stop`, sehingga `onend` dari ucapan lama tidak melanjutkan antrean.
+- `cancel()` dipanggil sebelum setiap ucapan baru (F-07.4). Segmen diputar berurutan lewat `onend` atau `onerror` (antrean maju paling banyak sekali per utterance, dari mana pun yang terpanggil lebih dulu), dijaga token generasi yang naik di `speak` dan `stop`, sehingga `onend` atau `onerror` dari ucapan lama tidak melanjutkan antrean. Kode error tidak diteruskan; error apa pun melanjutkan ke segmen berikut.
 - Rate 0,88 dan pitch 1,15, mengikuti prototipe v0.
 - Adaptor browser (`browser.ts`) menyimpan referensi utterance asli selama bicara, karena Chromium bisa membuang utterance lewat GC dan `onend` tidak terpanggil. Adaptor juga memanggil `getVoices()` saat dibuat dan pada setiap `voiceschanged`, karena Chrome Android baru mengisi daftar suara setelah itu. Kalau suara sudah tidak ada saat memutar, adaptor menyelesaikan segmen tanpa bicara.
 - Logika pemilihan dan antrean ada di `webSpeech.ts` dengan dependensi yang disuntikkan (`SynthLike`), sehingga bisa dites tanpa browser.
@@ -31,7 +33,7 @@ Fitur tidak menyentuh `speechSynthesis`. Aturan `boundaries` di lint menjaganya:
 
 - Di perangkat tanpa suara id-ID lokal, aplikasi diam; kartu, bendera, dan animasi tetap jalan. Pemilik perlu mengujinya di MatePad (Huawei Browser dan Chrome): apakah suara id-ID lokal ada, dan apakah kalimatnya terdengar wajar.
 - Tes e2e tidak bisa menguji suara asli. Tes memakai double `SynthLike`.
-- #8 menambah implementasi Howler di balik `AudioService`: memetakan `id` ke klip sprite, memakai Web Speech hanya untuk segmen tanpa klip (cadangan di ADR-003), dan menangani `onerror` yang kini hanya dilepas diam-diam.
+- #8 menambah implementasi Howler di balik `AudioService`: memetakan `id` ke klip sprite, memakai Web Speech hanya untuk segmen tanpa klip (cadangan di ADR-003).
 - `id` segmen menjadi kontrak dengan pipeline #8. Mengubah format `id` berarti mengubah nama klip.
 
 ## Alternatif yang ditolak
