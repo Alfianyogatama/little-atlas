@@ -119,7 +119,7 @@ Sebagai orang tua, saya ingin peta yang mengikuti aturan yang jelas, supaya saya
 2. Wilayah lain tampil sebagai daratan abu-abu netral yang tidak bisa diketuk, tanpa nama dan bendera (ADR-005).
 3. Antartika tampil sebagai benua dengan nama, tanpa bendera, dan tidak masuk kuis.
 4. Negara yang terlalu kecil untuk diketuk punya penanda titik yang bisa diketuk.
-5. Negara Favorit punya ikon, kalimat fakta, dan audio; tes build memastikan semua negara level 1–2 lengkap.
+5. Negara Favorit punya ikon berupa ilustrasi milik aplikasi (bukan emoji), kalimat fakta, dan audio; tes build memastikan semua negara level 1–2 lengkap dan setiap ikon tercatat di manifest.
 
 ### F-02 Globe 3D
 
@@ -137,7 +137,7 @@ Sebagai anak, saya ingin memutar bola dunia dan mengetuk negara, supaya saya bis
 Sebagai anak, saya ingin mengetuk negara mana saja dan langsung melihat serta mendengar tentangnya, supaya saya mengenal dunia tanpa harus bisa membaca.
 
 1. Mengetuk negara menampilkan kartu berisi bendera dan nama, dan nama itu dibacakan.
-2. Untuk negara Favorit, kartu juga menampilkan ikon dan kalimat fakta yang ikut dibacakan.
+2. Untuk negara Favorit, kartu juga menampilkan ilustrasi ikon dan kalimat fakta yang ikut dibacakan.
 3. Indonesia dibacakan dengan kalimat khusus, "Ini Indonesia, rumah kita!"
 4. Tombol dengar lagi memutar ulang audio kartu.
 5. Mengetuk laut membacakan kalimat pendek tentang laut, tanpa kartu.

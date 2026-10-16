@@ -20,6 +20,8 @@ function walk(dir: string): string[] {
 
 const isFixture = (rel: string): boolean => /(^|\/)(fixtures?|__fixtures__)\//.test(rel);
 const isTest = (rel: string): boolean => /\.test\.(ts|tsx)$/.test(rel);
+// src/paraglide adalah hasil generate Paraglide yang di-gitignore (ADR-007); komentar JSDoc bawaannya memuat ❌/✅ dan bukan teks antarmuka. Disetujui pemilik pada 16 Oktober 2026 (#25).
+const isGenerated = (rel: string): boolean => rel.startsWith('src/paraglide/');
 
 function targets(): string[] {
   const files = [
@@ -29,7 +31,7 @@ function targets(): string[] {
   ];
   return [...new Set(files)]
     .map((f) => relative(ROOT, f))
-    .filter((rel) => !isTest(rel) && !isFixture(rel))
+    .filter((rel) => !isTest(rel) && !isFixture(rel) && !isGenerated(rel))
     .sort();
 }
 

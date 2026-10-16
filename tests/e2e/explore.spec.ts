@@ -11,6 +11,7 @@ interface CatalogEntry {
 }
 interface Favorite {
   code: string;
+  icon: { image: string; label: { id: string; en: string } };
   fact: { id: string; en: string };
 }
 
@@ -169,6 +170,65 @@ test('TC-F03-02 fakta Favorit tampil di kartu dan dibaca setelah intro', async (
   } else {
     expect(introAt).toBeLessThan(factAt);
   }
+});
+
+test('TC-F03-08 kartu Favorit menampilkan ilustrasi ikon yang termuat, non-Favorit tidak', async ({
+  page,
+}) => {
+  const jpIconLabel = favorites.find((f) => f.code === 'JP')?.icon.label.id;
+  if (!jpIconLabel) throw new Error('label ikon Jepang tidak ada di favorites.json');
+  const card = await openJapanCard(page);
+  const icon = card.getByRole('img', { name: jpIconLabel, exact: true });
+  await expect(icon).toBeVisible();
+  await expect(icon).toHaveAttribute('src', /\/content\/icons\/jp\.webp$/);
+  await expect
+    .poll(() => icon.evaluate((el) => (el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
+  const size = await icon.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return { w: r.width, h: r.height };
+  });
+  expect(Math.abs(size.w - 56)).toBeLessThanOrEqual(1);
+  expect(Math.abs(size.h - 56)).toBeLessThanOrEqual(1);
+
+  // Non-Favorit (Kolombia): kartu terbuka, hanya bendera sebagai gambar.
+  const colombia = entry('CO');
+  expect(favorites.some((f) => f.code === 'CO')).toBe(false);
+  await openAt(page, '&lookAt=CO');
+  await waitFlightDone(page, colombia.anchor);
+  await tapGlobeCenter(page);
+  const coCard = page.getByRole('region', {
+    name: fill(idMessages.explore_card_label, colombia.name.id),
+  });
+  await expect(coCard).toBeVisible();
+  await expect(
+    coCard.getByRole('img', { name: fill(idMessages.explore_flag_alt, colombia.name.id) }),
+  ).toBeVisible();
+  await expect(coCard.getByRole('img')).toHaveCount(1);
+});
+
+test('TC-F03-08b kartu Antarktika menampilkan ikon penguin dan tanpa bendera', async ({ page }) => {
+  const aq = entry('AQ');
+  const aqIconLabel = (
+    JSON.parse(readFileSync('src/content/data/continent-facts.json', 'utf8')) as {
+      AQ: { icon: { label: { id: string } } };
+    }
+  ).AQ.icon.label.id;
+  await openAt(page, '&lookAt=AQ');
+  await waitFlightDone(page, aq.anchor);
+  await tapGlobeCenter(page);
+  const card = page.getByRole('region', { name: fill(idMessages.explore_card_label, aq.name.id) });
+  await expect(card).toBeVisible();
+  const icon = card.getByRole('img', { name: aqIconLabel, exact: true });
+  await expect(icon).toBeVisible();
+  await expect(icon).toHaveAttribute('src', /\/content\/icons\/aq\.webp$/);
+  await expect
+    .poll(() => icon.evaluate((el) => (el as HTMLImageElement).naturalWidth))
+    .toBeGreaterThan(0);
+  await expect(
+    card.getByRole('img', { name: idMessages.explore_flag_alt.split('{')[0] ?? '' }),
+  ).toHaveCount(0);
+  await expect(card.getByRole('img')).toHaveCount(1);
 });
 
 test('TC-F03-03 tombol rumah terbang ke Indonesia dan membuka kartunya', async ({ page }) => {
@@ -430,6 +490,9 @@ test('TC-NFR-privasi-jelajah tidak ada permintaan ke origin lain saat menjelajah
   await waitFlightDone(page, indonesia.anchor);
   await page.waitForLoadState('networkidle');
   const origin = new URL(baseURL ?? 'http://localhost:4173').origin;
+  const iconRequests = urls.filter((u) => u.includes('/content/icons/'));
+  expect(iconRequests.length).toBeGreaterThan(0);
+  for (const u of iconRequests) expect(new URL(u).origin).toBe(origin);
   const external = urls.filter(
     (u) => !u.startsWith('data:') && !u.startsWith('blob:') && new URL(u).origin !== origin,
   );

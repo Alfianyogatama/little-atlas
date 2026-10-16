@@ -6,7 +6,7 @@ Keputusannya: AI hanya dipakai saat pengembangan dan build, dengan peran yang di
 
 ## Konteks
 
-Pemilik memakai Claude CLI, berlangganan Google AI Pro (aplikasi Gemini dan Antigravity), dan punya akses ke GLM 5.3, DeepSeek, serta keluarga MiMo. Targetnya biaya serendah mungkin. Model dari keluarga yang sama cenderung membuat kesalahan yang sama, sehingga saling memeriksa di satu keluarga kurang efektif.
+Pemilik memakai Claude CLI, berlangganan Google AI Pro (aplikasi Gemini dan Antigravity), dan punya akses ke GLM 5.3, DeepSeek. Targetnya biaya serendah mungkin. Model dari keluarga yang sama cenderung membuat kesalahan yang sama, sehingga saling memeriksa di satu keluarga kurang efektif.
 
 ## Keputusan
 
@@ -18,7 +18,6 @@ Pemilik memakai Claude CLI, berlangganan Google AI Pro (aplikasi Gemini dan Anti
 | Gemini API (tier gratis) | Pembuat aset saat build | TTS dan ilustrasi | Fase 1 |
 | DeepSeek | Pemeriksa teks | Cek fakta, bahasa untuk balita, ketepatan terjemahan | Fase 2 |
 | GLM | Pekerja data terstruktur | Mengisi bank kosakata dan konten JSON dalam jumlah besar | Fase 2 |
-| MiMo (varian vision) | Pemeriksa gambar | Cek isi, teks rusak, dan keseragaman gaya ilustrasi | Saat ilustrasi diproduksi massal |
 | Whisper (lokal) | Pemeriksa audio | Lihat ADR-003 | Fase 1 |
 
 Aturan yang menyertainya:
@@ -41,5 +40,9 @@ Aturan yang menyertainya:
 
 - Biaya mendekati nol, dan model mudah diganti lewat satu baris konfigurasi.
 - Ada lebih banyak kunci API yang harus disimpan aman di luar repo.
-- GLM 5.3 dan versi MiMo terbaru harus diuji dengan 20 sampel sebelum dipakai massal, karena kemampuannya belum terverifikasi untuk tugas ini.
+- GLM 5.3 harus diuji dengan 20 sampel sebelum dipakai massal, karena kemampuannya belum terverifikasi untuk tugas ini.
 - Kebijakan data tiap penyedia berbeda, sehingga aturan nomor 6 harus dijaga ketat.
+
+## Revisi 16 Oktober 2026 (issue #25)
+
+Pengecualian untuk produksi ilustrasi ikon: Gemini dipakai sebagai pembuat gambar sekaligus pemeriksa vision, sehingga aturan pembuat dan pemeriksa dari keluarga berbeda tidak berlaku untuk tugas ini. Pemilik menyetujuinya pada 16 Oktober 2026. Mitigasi, alasan, dan pipeline ada di [ADR-009](0009-produksi-ilustrasi-ikon.md). Keputusan lain di ADR ini tidak berubah.

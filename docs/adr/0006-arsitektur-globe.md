@@ -155,6 +155,10 @@ Hanya ada dalam mode `?debug=1`, dipakai tes e2e:
 - `data-flying`: `true` selama terbang. Ditulis sinkron di `flyTo` dan saat penerbangan selesai atau di-unmount, tidak menunggu frame, karena penerbangan bisa selesai di antara dua frame saat beban tinggi.
 - `data-globe-screen`: `cx,cy,radius` bola dalam piksel layar, dihitung dari proyeksi kamera. Dipakai tes untuk memastikan bola tidak tertimpa kartu atau tombol.
 
+## Revisi 16 Oktober 2026 (issue #25)
+
+Format ikon negara, tanpa mengubah keputusan globe: ikon berupa WebP 256×256 di path `/content/icons/<kode>.webp` (kode huruf kecil), dipakai di kartu negara dan bukan di globe, sehingga draw call globe tidak bertambah. Emoji dilarang sebagai ikon. Produksinya di [ADR-009](0009-produksi-ilustrasi-ikon.md).
+
 ## Alternatif yang ditolak
 
 - Satu mesh per negara seperti di spike: lancar di perangkat acuan, tapi 178–242 draw call adalah risiko terbesar di perangkat yang lebih lemah.
