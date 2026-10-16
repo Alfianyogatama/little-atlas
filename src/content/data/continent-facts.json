@@ -1,7 +1,7 @@
 {
   "AQ": {
     "icon": {
-      "emoji": "🐧",
+      "image": "icons/aq.webp",
       "label": {
         "id": "Penguin",
         "en": "Penguin"

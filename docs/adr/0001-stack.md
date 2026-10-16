@@ -6,6 +6,8 @@ Diperbarui pada 15 Oktober 2026: mencatat versi terkunci yang dipasang di issue 
 
 Diperbarui pada 15 Oktober 2026: mencatat paket dan versi yang dipasang di issue #3 (build-content) beserta lisensinya, aktifnya `resolveJsonModule`, dan aturan impor relatif untuk skrip di `scripts/`. Juga mencatat paket yang dipasang di issue #4 (globe) beserta lisensinya, bahwa drei belum dipasang, flag SwiftShader untuk WebGL di Playwright, dan ukuran muatan pertama terhadap anggaran. Keputusan stack tidak berubah.
 
+Diperbarui pada 16 Oktober 2026: mencatat paket `@jsquash/*` yang dipasang di issue #25 (ilustrasi ikon). Keputusan stack tidak berubah.
+
 Keputusannya: aplikasi dibangun sebagai PWA statis dengan Bun, Vite, React 19, TypeScript strict, dan React Three Fiber 9, lalu di-host di Vercel tanpa backend di v1.
 
 ## Konteks
@@ -111,6 +113,16 @@ Issue #7 (i18n) memasang Paraglide JS dengan aturan penguncian yang sama. Paket 
 | --- | --- | --- | --- |
 | @inlang/paraglide-js | 2.25.4 | 17 September 2026 | Kompiler dan runtime pesan |
 | @inlang/plugin-message-format | 4.4.4 | 31 Agustus 2026 | Plugin format pesan JSON, dimuat dari `node_modules` |
+
+### Paket issue #25
+
+Issue #25 (ilustrasi ikon) memasang tiga paket WASM dari squoosh dengan aturan penguncian yang sama. Ketiganya devDependency yang hanya dipakai di `scripts/` (dekode PNG dan JPEG, encode WebP), tidak masuk bundle aplikasi. Alasan dan pipeline di ADR-009; hasil spike di `docs/spikes/2026-10-15-icon-webp.md`.
+
+| Paket | Versi | Lisensi | Tanggal rilis | Dipakai untuk |
+| --- | --- | --- | --- | --- |
+| @jsquash/png | 3.1.1 | Apache-2.0 | 20 Mei 2025 | Dekode PNG mentah, devDependency |
+| @jsquash/jpeg | 1.6.0 | Apache-2.0 | 12 Mei 2025 | Dekode JPEG mentah, devDependency |
+| @jsquash/webp | 1.5.0 | Apache-2.0 | 12 Mei 2025 | Encode WebP ikon, devDependency |
 
 ### Cara perintah dijalankan
 

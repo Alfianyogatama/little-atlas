@@ -84,6 +84,54 @@ describe('loadExploreContent', () => {
   });
 });
 
+describe('iconFor (T9, F-03.2)', () => {
+  interface Fav {
+    code: string;
+    icon: { image: string; label: { id: string; en: string } };
+  }
+  const favs = favoritesJson as Fav[];
+
+  it('JP mendapat src ikon milik aplikasi dan alt sesuai label data di kedua bahasa', () => {
+    const c = loadExploreContent();
+    const jp = favs.find((f) => f.code === 'JP');
+    expect(jp).toBeDefined();
+    for (const locale of ['id', 'en'] as const) {
+      const icon = c.iconFor('JP', locale);
+      expect(icon?.src).toBe('/content/icons/jp.webp');
+      expect(icon?.alt).toBeTruthy();
+      expect(icon?.alt).toBe(jp?.icon.label[locale]);
+    }
+  });
+
+  it('AQ mendapat ikon penguin dengan alt dari continent-facts di kedua bahasa', () => {
+    const c = loadExploreContent();
+    const aq = (
+      continentFactsJson as unknown as {
+        AQ: { icon: { label: { id: string; en: string } } };
+      }
+    ).AQ;
+    for (const locale of ['id', 'en'] as const) {
+      expect(c.iconFor('AQ', locale)).toEqual({
+        src: '/content/icons/aq.webp',
+        alt: aq.icon.label[locale],
+      });
+    }
+  });
+
+  it('negara non-Favorit mendapat null', () => {
+    const c = loadExploreContent();
+    const favCodes = favs.map((f) => f.code);
+    const nonFav = (countriesJson as { alpha2: string }[]).find(
+      (x) => x.alpha2 !== 'AQ' && !favCodes.includes(x.alpha2),
+    );
+    expect(nonFav).toBeDefined();
+    const code = nonFav?.alpha2 ?? '';
+    expect(c.iconFor(code, 'id')).toBeNull();
+    expect(c.iconFor(code, 'en')).toBeNull();
+    expect(c.iconFor('ZZ', 'id')).toBeNull();
+  });
+});
+
 describe('parseExploreContent: data rusak', () => {
   it('fakta en hilang ditolak dengan ZodError', () => {
     const broken = (favoritesJson as { fact: { id: string } }[]).map((f, i) =>

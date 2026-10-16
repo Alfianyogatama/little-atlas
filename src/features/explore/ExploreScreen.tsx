@@ -202,6 +202,7 @@ export function ExploreScreen() {
                   flagUrl ? { src: flagUrl, alt: m.explore_flag_alt({ name: cardName }) } : null
                 }
                 fact={content.factText(cardCode, locale)}
+                icon={content.iconFor(cardCode, locale) ?? undefined}
                 labels={{
                   card: m.explore_card_label({ name: cardName }),
                   close: m.explore_close_card(),

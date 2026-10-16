@@ -80,6 +80,21 @@ describe('kontras token (garis dan ikon ink terhadap latar) minimal 3:1', () => 
   }
 });
 
+describe('slot ikon kartu', () => {
+  it('--icon-slot bernilai #ddf3ff di siang dan malam', () => {
+    expect(day.get('--icon-slot')).toBe('#ddf3ff');
+    expect(night.get('--icon-slot')).toBe('#ddf3ff');
+  });
+  it('malam: --icon-slot terhadap --panel minimal 3:1 agar terlihat sebagai bidang', () => {
+    const slot = night.get('--icon-slot');
+    const panel = night.get('--panel');
+    if (!slot || !panel) throw new Error('token hilang: icon-slot atau panel');
+    const ratio = contrast(slot, panel);
+    console.log(`kontras malam icon-slot/panel: ${ratio.toFixed(2)}:1`);
+    expect(ratio).toBeGreaterThanOrEqual(3);
+  });
+});
+
 describe('tema malam benar-benar terdefinisi', () => {
   it('penanda tema malam ditemukan di tokens.css', () => {
     expect(readFileSync(tokensPath, 'utf8')).toContain(darkMarker);

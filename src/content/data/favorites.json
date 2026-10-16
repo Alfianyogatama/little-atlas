@@ -3,7 +3,7 @@
     "code": "AR",
     "level": 1,
     "icon": {
-      "emoji": "⚽",
+      "image": "icons/ar.webp",
       "label": {
         "id": "Bola sepak",
         "en": "Soccer ball"
@@ -18,7 +18,7 @@
     "code": "AU",
     "level": 1,
     "icon": {
-      "emoji": "🦘",
+      "image": "icons/au.webp",
       "label": {
         "id": "Kanguru",
         "en": "Kangaroo"
@@ -33,7 +33,7 @@
     "code": "BN",
     "level": 2,
     "icon": {
-      "emoji": "🕌",
+      "image": "icons/bn.webp",
       "label": {
         "id": "Masjid kubah emas",
         "en": "Golden dome mosque"
@@ -48,7 +48,7 @@
     "code": "BR",
     "level": 1,
     "icon": {
-      "emoji": "🦜",
+      "image": "icons/br.webp",
       "label": {
         "id": "Burung beo",
         "en": "Parrot"
@@ -63,7 +63,7 @@
     "code": "CA",
     "level": 1,
     "icon": {
-      "emoji": "🍁",
+      "image": "icons/ca.webp",
       "label": {
         "id": "Daun maple",
         "en": "Maple leaf"
@@ -78,7 +78,7 @@
     "code": "CH",
     "level": 1,
     "icon": {
-      "emoji": "🧀",
+      "image": "icons/ch.webp",
       "label": {
         "id": "Keju",
         "en": "Cheese"
@@ -93,7 +93,7 @@
     "code": "CN",
     "level": 1,
     "icon": {
-      "emoji": "🐼",
+      "image": "icons/cn.webp",
       "label": {
         "id": "Panda",
         "en": "Panda"
@@ -108,7 +108,7 @@
     "code": "DE",
     "level": 2,
     "icon": {
-      "emoji": "🥨",
+      "image": "icons/de.webp",
       "label": {
         "id": "Roti pretzel",
         "en": "Pretzel"
@@ -123,7 +123,7 @@
     "code": "EG",
     "level": 2,
     "icon": {
-      "emoji": "🐫",
+      "image": "icons/eg.webp",
       "label": {
         "id": "Unta",
         "en": "Camel"
@@ -138,7 +138,7 @@
     "code": "ES",
     "level": 2,
     "icon": {
-      "emoji": "💃",
+      "image": "icons/es.webp",
       "label": {
         "id": "Tari flamenco",
         "en": "Flamenco dance"
@@ -153,22 +153,22 @@
     "code": "FR",
     "level": 2,
     "icon": {
-      "emoji": "🥐",
+      "image": "icons/fr.webp",
       "label": {
-        "id": "Roti croissant",
-        "en": "Croissant"
+        "id": "Menara Eiffel",
+        "en": "Eiffel Tower"
       }
     },
     "fact": {
-      "id": "Di Prancis ada roti croissant.",
-      "en": "France has croissants."
+      "id": "Di Prancis ada Menara Eiffel yang tinggi.",
+      "en": "France has the tall Eiffel Tower."
     }
   },
   {
     "code": "GB",
     "level": 1,
     "icon": {
-      "emoji": "🚌",
+      "image": "icons/gb.webp",
       "label": {
         "id": "Bus tingkat",
         "en": "Double-decker bus"
@@ -183,7 +183,7 @@
     "code": "GR",
     "level": 2,
     "icon": {
-      "emoji": "🏛️",
+      "image": "icons/gr.webp",
       "label": {
         "id": "Bangunan kuno",
         "en": "Ancient building"
@@ -198,7 +198,7 @@
     "code": "ID",
     "level": 1,
     "icon": {
-      "emoji": "🦎",
+      "image": "icons/id.webp",
       "label": {
         "id": "Komodo",
         "en": "Komodo dragon"
@@ -213,7 +213,7 @@
     "code": "IN",
     "level": 1,
     "icon": {
-      "emoji": "🐘",
+      "image": "icons/in.webp",
       "label": {
         "id": "Gajah",
         "en": "Elephant"
@@ -228,7 +228,7 @@
     "code": "IT",
     "level": 2,
     "icon": {
-      "emoji": "🍕",
+      "image": "icons/it.webp",
       "label": {
         "id": "Pizza",
         "en": "Pizza"
@@ -243,7 +243,7 @@
     "code": "JP",
     "level": 1,
     "icon": {
-      "emoji": "🗻",
+      "image": "icons/jp.webp",
       "label": {
         "id": "Gunung Fuji",
         "en": "Mount Fuji"
@@ -258,7 +258,7 @@
     "code": "KE",
     "level": 1,
     "icon": {
-      "emoji": "🦒",
+      "image": "icons/ke.webp",
       "label": {
         "id": "Jerapah",
         "en": "Giraffe"
@@ -273,7 +273,7 @@
     "code": "KH",
     "level": 1,
     "icon": {
-      "emoji": "🛕",
+      "image": "icons/kh.webp",
       "label": {
         "id": "Candi Angkor Wat",
         "en": "Angkor Wat temple"
@@ -288,22 +288,22 @@
     "code": "KR",
     "level": 1,
     "icon": {
-      "emoji": "🥢",
+      "image": "icons/kr.webp",
       "label": {
-        "id": "Sumpit",
-        "en": "Chopsticks"
+        "id": "Bibimbap",
+        "en": "Bibimbap"
       }
     },
     "fact": {
-      "id": "Di Korea Selatan orang makan pakai sumpit.",
-      "en": "People in South Korea eat with chopsticks."
+      "id": "Di Korea Selatan orang makan bibimbap.",
+      "en": "People in South Korea eat bibimbap."
     }
   },
   {
     "code": "LA",
     "level": 2,
     "icon": {
-      "emoji": "🛶",
+      "image": "icons/la.webp",
       "label": {
         "id": "Perahu sungai",
         "en": "River boat"
@@ -318,7 +318,7 @@
     "code": "MA",
     "level": 2,
     "icon": {
-      "emoji": "🫖",
+      "image": "icons/ma.webp",
       "label": {
         "id": "Teko teh",
         "en": "Teapot"
@@ -333,7 +333,7 @@
     "code": "MG",
     "level": 2,
     "icon": {
-      "emoji": "🐒",
+      "image": "icons/mg.webp",
       "label": {
         "id": "Lemur",
         "en": "Lemur"
@@ -348,7 +348,7 @@
     "code": "MM",
     "level": 2,
     "icon": {
-      "emoji": "🛕",
+      "image": "icons/mm.webp",
       "label": {
         "id": "Pagoda emas",
         "en": "Golden pagoda"
@@ -363,7 +363,7 @@
     "code": "MX",
     "level": 2,
     "icon": {
-      "emoji": "🌮",
+      "image": "icons/mx.webp",
       "label": {
         "id": "Taco",
         "en": "Taco"
@@ -378,7 +378,7 @@
     "code": "MY",
     "level": 1,
     "icon": {
-      "emoji": "🦧",
+      "image": "icons/my.webp",
       "label": {
         "id": "Orang utan",
         "en": "Orangutan"
@@ -393,7 +393,7 @@
     "code": "NL",
     "level": 2,
     "icon": {
-      "emoji": "🌷",
+      "image": "icons/nl.webp",
       "label": {
         "id": "Bunga tulip",
         "en": "Tulip"
@@ -408,7 +408,7 @@
     "code": "NZ",
     "level": 2,
     "icon": {
-      "emoji": "🐑",
+      "image": "icons/nz.webp",
       "label": {
         "id": "Domba",
         "en": "Sheep"
@@ -423,7 +423,7 @@
     "code": "PE",
     "level": 2,
     "icon": {
-      "emoji": "🦙",
+      "image": "icons/pe.webp",
       "label": {
         "id": "Llama",
         "en": "Llama"
@@ -438,7 +438,7 @@
     "code": "PG",
     "level": 2,
     "icon": {
-      "emoji": "🐦",
+      "image": "icons/pg.webp",
       "label": {
         "id": "Burung cendrawasih",
         "en": "Bird of paradise"
@@ -453,7 +453,7 @@
     "code": "PH",
     "level": 1,
     "icon": {
-      "emoji": "🏝️",
+      "image": "icons/ph.webp",
       "label": {
         "id": "Pulau",
         "en": "Island"
@@ -468,7 +468,7 @@
     "code": "RU",
     "level": 2,
     "icon": {
-      "emoji": "🐻",
+      "image": "icons/ru.webp",
       "label": {
         "id": "Beruang cokelat",
         "en": "Brown bear"
@@ -483,7 +483,7 @@
     "code": "SA",
     "level": 1,
     "icon": {
-      "emoji": "🐪",
+      "image": "icons/sa.webp",
       "label": {
         "id": "Unta",
         "en": "Camel"
@@ -498,7 +498,7 @@
     "code": "SG",
     "level": 2,
     "icon": {
-      "emoji": "🦁",
+      "image": "icons/sg.webp",
       "label": {
         "id": "Patung Merlion",
         "en": "Merlion statue"
@@ -513,7 +513,7 @@
     "code": "TH",
     "level": 2,
     "icon": {
-      "emoji": "🛺",
+      "image": "icons/th.webp",
       "label": {
         "id": "Mobil tuk-tuk",
         "en": "Tuk-tuk"
@@ -528,7 +528,7 @@
     "code": "TL",
     "level": 2,
     "icon": {
-      "emoji": "🐊",
+      "image": "icons/tl.webp",
       "label": {
         "id": "Buaya",
         "en": "Crocodile"
@@ -543,7 +543,7 @@
     "code": "TR",
     "level": 1,
     "icon": {
-      "emoji": "🎈",
+      "image": "icons/tr.webp",
       "label": {
         "id": "Balon udara",
         "en": "Hot air balloon"
@@ -558,7 +558,7 @@
     "code": "US",
     "level": 1,
     "icon": {
-      "emoji": "🗽",
+      "image": "icons/us.webp",
       "label": {
         "id": "Patung Liberty",
         "en": "Statue of Liberty"
@@ -573,7 +573,7 @@
     "code": "VN",
     "level": 1,
     "icon": {
-      "emoji": "👒",
+      "image": "icons/vn.webp",
       "label": {
         "id": "Topi caping",
         "en": "Conical hat"
@@ -588,7 +588,7 @@
     "code": "ZA",
     "level": 1,
     "icon": {
-      "emoji": "🦁",
+      "image": "icons/za.webp",
       "label": {
         "id": "Singa",
         "en": "Lion"

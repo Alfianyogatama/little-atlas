@@ -23,6 +23,7 @@
   --sky-top: #8fd3ff;
   --sky-bottom: #ddf3ff;
   --toy-shadow: rgba(29, 58, 110, 0.18);
+  --icon-slot: #ddf3ff;
   --touch-min: 64px;
   --toy-stroke: 3px; /* garis tepi tombol mainan, di dalam kotak 64 px */
   --radius-full: 999px;
@@ -62,5 +63,6 @@
     --focus-ring: #ff7aa2;
     --sky-top: #141b4d;
     --sky-bottom: #2d2f7a;
+    --icon-slot: #ddf3ff;
   }
 }

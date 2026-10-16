@@ -4,6 +4,7 @@ import {
   CountryCatalogSchema,
   FavoritesSchema,
   GridIndexSchema,
+  IconManifestSchema,
   MapDataSchema,
   NameOverridesSchema,
   UnMembersSchema,
@@ -50,7 +51,7 @@ const aq = {
 const fav = {
   code: 'ID',
   level: 1,
-  icon: { emoji: '🐉', label: { id: 'komodo', en: 'komodo' } },
+  icon: { image: 'icons/id.webp', label: { id: 'komodo', en: 'komodo' } },
   fact: { id: 'Ada komodo.', en: 'There are komodos.' },
 };
 const ok = (s: { safeParse: (v: unknown) => { success: boolean } }, v: unknown) =>
@@ -135,9 +136,21 @@ describe('FavoritesSchema', () => {
   it('payload valid lolos, termasuk review draft', () => {
     ok(FavoritesSchema, [fav, { ...fav, level: 2, review: 'draft' }]);
   });
-  it('favorit tanpa emoji ditolak', () => {
-    bad(FavoritesSchema, [{ ...fav, icon: { label: fav.icon.label } }]);
-    bad(FavoritesSchema, [{ ...fav, icon: { ...fav.icon, emoji: '' } }]);
+  const au = { ...fav, code: 'AU', icon: { ...fav.icon, image: 'icons/au.webp' } };
+  it('favorit dengan icon.image sesuai kode lolos', () => {
+    ok(FavoritesSchema, [au]);
+  });
+  it('favorit dengan field emoji ditolak (icon ketat)', () => {
+    bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, emoji: '🦘' } }]);
+  });
+  it('favorit dengan image kosong atau hilang ditolak', () => {
+    bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, image: '' } }]);
+    bad(FavoritesSchema, [{ ...au, icon: { label: au.icon.label } }]);
+  });
+  it('favorit dengan image tidak sesuai bentuk icons/<kode kecil>.webp ditolak', () => {
+    for (const image of ['icons/jp.webp', 'icons/AU.webp', 'au.webp', 'icons/au.png']) {
+      bad(FavoritesSchema, [{ ...au, icon: { ...au.icon, image } }]);
+    }
   });
   it('level 3 ditolak', () => {
     bad(FavoritesSchema, [{ ...fav, level: 3 }]);
@@ -147,17 +160,100 @@ describe('FavoritesSchema', () => {
 describe('ContinentFactsSchema', () => {
   const aqFacts = {
     AQ: {
-      icon: { emoji: '🐧', label: { id: 'penguin', en: 'penguin' } },
+      icon: { image: 'icons/aq.webp', label: { id: 'penguin', en: 'penguin' } },
       fact: { id: 'Antartika sangat dingin.', en: 'Antarctica is very cold.' },
     },
   };
   it('payload valid dengan kunci AQ lolos', () => ok(ContinentFactsSchema, aqFacts));
   it('tanpa AQ ditolak', () => bad(ContinentFactsSchema, {}));
-  it('emoji kosong atau hilang ditolak', () => {
-    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, emoji: '' } } });
+  it('field emoji pada ikon benua ditolak (icon ketat)', () => {
+    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, emoji: '🐧' } } });
+  });
+  it('image kosong atau hilang pada ikon benua ditolak', () => {
+    bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, image: '' } } });
     bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { label: aqFacts.AQ.icon.label } } });
+  });
+  it('image benua yang bukan icons/aq.webp ditolak', () => {
+    for (const image of ['icons/jp.webp', 'icons/AQ.webp', 'aq.webp', 'icons/aq.png']) {
+      bad(ContinentFactsSchema, { AQ: { ...aqFacts.AQ, icon: { ...aqFacts.AQ.icon, image } } });
+    }
   });
   it('kunci selain AQ ditolak', () => {
     bad(ContinentFactsSchema, { ...aqFacts, ID: aqFacts.AQ });
+  });
+});
+
+describe('IconManifestSchema', () => {
+  const hex64 = 'a'.repeat(64);
+  const entry = (code: string): Record<string, unknown> => ({
+    file: `icons/${code.toLowerCase()}.webp`,
+    sha256: hex64,
+    bytes: 12000,
+    width: 256,
+    height: 256,
+    source: 'gemini-api',
+    model: 'gemini-image-test',
+    promptHash: hex64,
+    attempt: 1,
+    checker: { model: 'gemini-vision-test', verdict: { seen: 'kanguru' } },
+    status: 'approved',
+    generatedAt: '2026-10-15T10:00:00.000Z',
+    reviewedAt: '2026-10-15T11:00:00.000Z',
+  });
+  const manifest = (): Record<string, unknown> => ({
+    styleVersion: 1,
+    styleHash: hex64,
+    icons: { AU: entry('AU'), AQ: entry('AQ') },
+  });
+  const withIcon = (code: string, patch: Record<string, unknown>): unknown => ({
+    ...manifest(),
+    icons: { [code]: { ...entry(code), ...patch } },
+  });
+
+  it('manifest valid diterima, termasuk sumber manual tanpa model dan tanpa checker', () => {
+    expect(IconManifestSchema.safeParse(manifest()).success).toBe(true);
+    expect(
+      IconManifestSchema.safeParse(withIcon('AU', { source: 'manual', model: null, checker: null }))
+        .success,
+    ).toBe(true);
+  });
+  it('styleHash yang bukan 64 hex ditolak', () => {
+    expect(IconManifestSchema.safeParse({ ...manifest(), styleHash: 'abc' }).success).toBe(false);
+    expect(IconManifestSchema.safeParse({ ...manifest(), styleHash: 'Z'.repeat(64) }).success).toBe(
+      false,
+    );
+  });
+  it('file harus icons/<kode kecil>.webp sesuai kodenya', () => {
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/id.webp' })).success).toBe(
+      false,
+    );
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/AU.webp' })).success).toBe(
+      false,
+    );
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/au.png' })).success).toBe(
+      false,
+    );
+  });
+  it('kunci selain Alpha2 huruf besar ditolak', () => {
+    expect(
+      IconManifestSchema.safeParse({ ...manifest(), icons: { au: entry('au') } }).success,
+    ).toBe(false);
+    expect(
+      IconManifestSchema.safeParse({ ...manifest(), icons: { AUS: entry('AUS') } }).success,
+    ).toBe(false);
+  });
+  it.each([
+    ['ukuran bukan 256', { width: 128 }],
+    ['tinggi bukan 256', { height: 512 }],
+    ['status bukan approved', { status: 'pending' }],
+    ['source tak dikenal', { source: 'dalle' }],
+    ['attempt 0', { attempt: 0 }],
+    ['attempt bukan bilangan bulat', { attempt: 1.5 }],
+    ['sha256 bukan 64 hex', { sha256: 'xyz' }],
+    ['promptHash bukan 64 hex', { promptHash: 'xyz' }],
+    ['generatedAt bukan ISO', { generatedAt: 'kemarin' }],
+    ['reviewedAt hilang', { reviewedAt: undefined }],
+  ])('entri ditolak: %s', (_n, patch) => {
+    expect(IconManifestSchema.safeParse(withIcon('AU', patch)).success).toBe(false);
   });
 });

@@ -11,6 +11,8 @@ export interface ExploreContent {
   factText(code: string, locale: AppLocale): string | null;
   /** Path bendera milik aplikasi; null bila kode tidak ada di katalog atau hasFlag false. */
   flagUrl(code: string): string | null;
+  /** Ikon ilustrasi milik aplikasi untuk Favorit dan AQ; null untuk kode lain. */
+  iconFor(code: string, locale: AppLocale): { src: string; alt: string } | null;
 }
 
 export interface ExploreSource {
@@ -34,6 +36,10 @@ export function parseExploreContent(source: ExploreSource): ExploreContent {
   for (const f of favorites) facts.set(f.code, f.fact);
   facts.set('AQ', continentFacts.AQ.fact);
 
+  const icons = new Map<string, { image: string; label: Fact }>();
+  for (const f of favorites) icons.set(f.code, f.icon);
+  icons.set('AQ', continentFacts.AQ.icon);
+
   const flags = new Map<string, string>();
   for (const c of catalog) {
     if (c.hasFlag) flags.set(c.alpha2, `/content/flags/${c.alpha2.toLowerCase()}.png`);
@@ -43,6 +49,10 @@ export function parseExploreContent(source: ExploreSource): ExploreContent {
     factCodes: new Set(facts.keys()),
     factText: (code, locale) => facts.get(code)?.[locale] ?? null,
     flagUrl: (code) => flags.get(code) ?? null,
+    iconFor: (code, locale) => {
+      const icon = icons.get(code);
+      return icon ? { src: `/content/${icon.image}`, alt: icon.label[locale] } : null;
+    },
   };
 }
 

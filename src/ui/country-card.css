@@ -55,6 +55,7 @@
   width: var(--card-icon);
   height: var(--card-icon);
   border-radius: var(--radius-full);
+  background: var(--icon-slot);
   border: var(--toy-stroke) solid var(--ink);
   box-sizing: border-box;
   object-fit: cover;

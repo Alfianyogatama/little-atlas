@@ -34,7 +34,16 @@ export function CountryCard({
         <h2 className="hd-card__name">{name}</h2>
         {fact ? (
           <p className="hd-card__fact">
-            {icon ? <img className="hd-card__fact-icon" src={icon.src} alt={icon.alt} /> : null}
+            {icon ? (
+              <img
+                className="hd-card__fact-icon"
+                src={icon.src}
+                alt={icon.alt}
+                width={256}
+                height={256}
+                decoding="async"
+              />
+            ) : null}
             <span>{fact}</span>
           </p>
         ) : null}

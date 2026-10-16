@@ -94,23 +94,84 @@ export const CountryCatalogSchema = z.array(
 );
 export type CountryCatalog = z.infer<typeof CountryCatalogSchema>;
 
+const iconFor = (code: string): string => `icons/${code.toLowerCase()}.webp`;
+const IconRef = z.object({ image: z.string().min(1), label: LocalizedName }).strict();
+
 export const FavoritesSchema = z.array(
-  z.object({
-    code: Alpha2,
-    level: FavoriteLevel,
-    icon: z.object({ emoji: z.string().min(1), label: LocalizedName }),
-    fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
-    review: z.literal('draft').optional(),
-  }),
+  z
+    .object({
+      code: Alpha2,
+      level: FavoriteLevel,
+      icon: IconRef,
+      fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
+      review: z.literal('draft').optional(),
+    })
+    .superRefine((f, ctx) => {
+      if (f.icon.image !== iconFor(f.code)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['icon', 'image'],
+          message: `icon.image harus '${iconFor(f.code)}' untuk ${f.code}`,
+        });
+      }
+    }),
 );
 export type Favorites = z.infer<typeof FavoritesSchema>;
 
 export const ContinentFactsSchema = z
   .object({
     AQ: z.object({
-      icon: z.object({ emoji: z.string().min(1), label: LocalizedName }),
+      icon: IconRef.refine((i) => i.image === iconFor('AQ'), {
+        path: ['image'],
+        message: `icon.image harus '${iconFor('AQ')}' untuk AQ`,
+      }),
       fact: z.object({ id: z.string().min(1), en: z.string().min(1) }),
     }),
   })
   .strict();
 export type ContinentFacts = z.infer<typeof ContinentFactsSchema>;
+
+const Hex64 = z.string().regex(/^[0-9a-f]{64}$/, 'harus 64 karakter heksadesimal huruf kecil');
+
+const IconEntrySchema = z.object({
+  file: z.string(),
+  sha256: Hex64,
+  bytes: z.number().int().positive(),
+  width: z.literal(256),
+  height: z.literal(256),
+  source: z.enum(['gemini-api', 'manual']),
+  model: z.string().min(1).nullable(),
+  promptHash: Hex64,
+  attempt: z.number().int().min(1),
+  /** Berkas mentah di .tmp/icons/raw yang menghasilkan ikon ini; dipakai icons:reprocess. */
+  raw: z
+    .string()
+    .regex(/^[A-Z]{2}-[1-9][0-9]*\.(jpg|png)$/, 'harus <KODE>-<n>.jpg atau .png')
+    .optional(),
+  checker: z
+    .object({ model: z.string().min(1), verdict: z.record(z.string(), z.unknown()) })
+    .nullable(),
+  status: z.literal('approved'),
+  generatedAt: z.iso.datetime(),
+  reviewedAt: z.iso.datetime(),
+});
+
+/** Manifest ikon kurasi: kunci Alpha2, berkas `icons/<kode kecil>.webp`, 256x256, sudah disetujui. */
+export const IconManifestSchema = z
+  .object({
+    styleVersion: z.number().int().min(1),
+    styleHash: Hex64,
+    icons: z.record(Alpha2, IconEntrySchema),
+  })
+  .superRefine((m, ctx) => {
+    for (const [code, e] of Object.entries(m.icons)) {
+      if (e.file !== `icons/${code.toLowerCase()}.webp`) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['icons', code, 'file'],
+          message: `file harus icons/${code.toLowerCase()}.webp`,
+        });
+      }
+    }
+  });
+export type IconManifest = z.infer<typeof IconManifestSchema>;
