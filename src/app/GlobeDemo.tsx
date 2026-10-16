@@ -8,17 +8,23 @@ import { ZoomButtons, type ZoomButtonsHandle } from '@/globe/ZoomButtons';
 import type { ContentService, GlobeData } from '@/services/content';
 import { createBrowserContentService } from '@/services/content/browser';
 import '../ui/globe-demo.css';
-import { message } from './messages';
+import { m } from '@/paraglide/messages.js';
+import { APP_LOCALES, type AppLocale } from '@/domain/locale';
+import { setAppLocale } from '@/services/i18n/locale';
+import { useLocale } from './i18n/useLocale';
 
 type Status = 'loading' | 'ready' | 'error';
 
 const HOME_CODE = 'ID';
 
-function readParams(): { debug: boolean; lookAt: string | null } {
+function readParams(): { debug: boolean; lookAt: string | null; lang: AppLocale | null } {
   const params = new URLSearchParams(window.location.search);
+  const debug = params.get('debug') === '1';
+  const lang = debug ? params.get('lang') : null;
   return {
-    debug: params.get('debug') === '1',
-    lookAt: params.get('debug') === '1' ? params.get('lookAt') : null,
+    debug,
+    lookAt: debug ? params.get('lookAt') : null,
+    lang: APP_LOCALES.find((l) => l === lang) ?? null,
   };
 }
 
@@ -32,7 +38,8 @@ function createService(): ContentService | null {
 
 /** Halaman demo globe; diganti layar Jelajah di #5. */
 export function GlobeDemo() {
-  const { debug, lookAt } = useMemo(() => readParams(), []);
+  const { debug, lookAt, lang } = useMemo(() => readParams(), []);
+  useLocale();
   const [data, setData] = useState<GlobeData | null>(null);
   const [reported, setStatus] = useState<Status>('loading');
   const [selected, setSelected] = useState<{ code: string; seq: number } | null>(null);
@@ -60,6 +67,11 @@ export function GlobeDemo() {
   }, [service]);
 
   const status: Status = service ? reported : 'error';
+
+  // Ganti bahasa setelah tombol zoom tampil, supaya ganti bahasa saat runtime ikut teruji.
+  useEffect(() => {
+    if (lang && status === 'ready') setAppLocale(lang);
+  }, [lang, status]);
   const loadFlag = service?.loadFlagImage;
 
   const onTap = useCallback((hit: HitResult) => {
@@ -105,16 +117,16 @@ export function GlobeDemo() {
           <ZoomButtons
             ref={zoomRef}
             globeRef={globeRef}
-            labels={{ zoomIn: message('globe_zoom_in'), zoomOut: message('globe_zoom_out') }}
+            labels={{ zoomIn: m.globe_zoom_in(), zoomOut: m.globe_zoom_out() }}
           />
           {home ? <HomeMarker ref={homeRef} anchor={home.anchor} /> : null}
           {debug ? (
             <DebugOverlay
               ref={debugRef}
               labels={{
-                fps: message('debug_fps'),
-                drawCalls: message('debug_draw_calls'),
-                buildMs: message('debug_build_ms'),
+                fps: m.debug_fps(),
+                drawCalls: m.debug_draw_calls(),
+                buildMs: m.debug_build_ms(),
               }}
             />
           ) : null}

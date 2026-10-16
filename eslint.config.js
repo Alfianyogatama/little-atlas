@@ -13,7 +13,16 @@ const publicDataPattern = {
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'spikes', 'prototype', 'docs', 'playwright-report', 'test-results', '.tmp'],
+    ignores: [
+      'dist',
+      'spikes',
+      'prototype',
+      'docs',
+      'playwright-report',
+      'test-results',
+      '.tmp',
+      'src/paraglide',
+    ],
   },
   js.configs.recommended,
   tseslint.configs.strict,
