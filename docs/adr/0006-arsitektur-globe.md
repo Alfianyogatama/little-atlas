@@ -124,7 +124,9 @@ Kalau `prefers-reduced-motion` aktif: tidak ada putar otomatis, negara terpilih 
 ### Performa
 
 - Waktu bangun scene dengan data nyata sekitar 150–170 ms di laptop pengembang.
-- Pengukuran di MatePad 11.5 SE menunggu uji pemilik: FPS minimal 55 saat globe diputar dan saat negara melompat, serta suhu tablet setelah 5 menit bermain.
+- Uji pemilik 16 Oktober 2026 di MatePad 11.5 SE dengan browser Chrome: selama 5 menit bermain (globe diputar, negara diketuk, bendera tampil), FPS di atas 55 dan tablet tidak terasa panas.
+- Uji di Huawei Browser, browser acuan, belum dilakukan. Pemilik memutuskan menerima hasil Chrome untuk issue #4 (16 Oktober 2026), dan uji Huawei Browser dicatat sebagai pekerjaan tertunda di issue deferred uji Huawei Browser (#29).
+- Waktu bangun scene di tablet belum diukur.
 
 ## Alternatif yang ditolak
 
