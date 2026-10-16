@@ -245,8 +245,10 @@ function GlobeInner(props: InnerProps) {
       const fly = flyRef.current;
       flyRef.current = null;
       fly?.done();
+      const wrapper = wrapperRef.current;
+      if (debugRef.current && wrapper) wrapper.dataset.flying = 'false';
     },
-    [],
+    [wrapperRef],
   );
 
   // Proyeksi bujur/lintang ke layar untuk overlay DOM (ikon rumah).
@@ -502,6 +504,7 @@ function GlobeInner(props: InnerProps) {
           flyRef.current = null;
           controls.enabled = true;
           fly.done();
+          if (debugRef.current && wrapper) wrapper.dataset.flying = 'false';
         }
         invalidate();
       } else {
@@ -598,6 +601,9 @@ function GlobeInner(props: InnerProps) {
             done: resolve,
           };
           controls.enabled = false;
+          // Sinkron: penerbangan bisa selesai di antara dua frame saat beban tinggi.
+          const wrapper = wrapperRef.current;
+          if (debugRef.current && wrapper) wrapper.dataset.flying = 'true';
           invalidate();
         });
       },
@@ -609,7 +615,7 @@ function GlobeInner(props: InnerProps) {
         return { atMin: base <= min + EDGE, atMax: base >= max - EDGE };
       },
     };
-  }, [camera, data, invalidate]);
+  }, [camera, data, invalidate, wrapperRef]);
 
   return null;
 }

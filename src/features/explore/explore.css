@@ -1,0 +1,55 @@
+.explore {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+}
+
+.explore__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.explore__calm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.explore__calm svg {
+  width: 96px;
+  height: 96px;
+  fill: currentColor;
+  opacity: 0.6;
+}
+
+.explore__home {
+  position: absolute;
+  top: max(var(--space-4), env(safe-area-inset-top));
+  right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+.explore__dock {
+  position: absolute;
+  left: max(var(--space-4), env(safe-area-inset-left));
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.explore__dock > * {
+  pointer-events: auto;
+}
+
+/* Layar sempit: tombol zoom turun ke kolom kanan tepat di bawah tombol rumah. */
+@media (max-width: 820px) {
+  .explore .zoom-stack {
+    top: calc(max(var(--space-4), env(safe-area-inset-top)) + var(--touch-min) + var(--space-3));
+    transform: none;
+  }
+}

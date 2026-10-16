@@ -339,6 +339,63 @@ for (const [width, height] of [
   });
 }
 
+for (const [width, height] of [
+  [375, 812],
+  [768, 1024],
+] as const) {
+  test(`TC-F03-14 tombol zoom tidak menimpa kartu dan tombolnya di ${width}x${height}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height });
+    const card = await openJapanCard(page);
+    // Tunggu kartu stabil: kotaknya sama pada dua pembacaan berturut-turut (animasi masuk selesai).
+    let last = '';
+    await expect
+      .poll(async () => {
+        const now = JSON.stringify(await card.boundingBox());
+        const stable = now === last;
+        last = now;
+        return stable;
+      })
+      .toBe(true);
+    const boxOf = async (locator: Locator, label: string) => {
+      const box = await locator.boundingBox();
+      if (!box) throw new Error(`${label} tidak terlihat`);
+      return box;
+    };
+    const others = [
+      { label: 'kartu', box: await boxOf(card, 'kartu') },
+      {
+        label: 'Tutup kartu',
+        box: await boxOf(
+          page.getByRole('button', { name: idMessages.explore_close_card }),
+          'Tutup kartu',
+        ),
+      },
+      {
+        label: 'Kembali ke Indonesia',
+        box: await boxOf(
+          page.getByRole('button', { name: idMessages.explore_home }),
+          'Kembali ke Indonesia',
+        ),
+      },
+    ];
+    for (const name of [idMessages.globe_zoom_in, idMessages.globe_zoom_out]) {
+      const zoom = await boxOf(page.getByRole('button', { name }), name);
+      expect(zoom.x, `"${name}" keluar kiri viewport`).toBeGreaterThanOrEqual(0);
+      expect(zoom.y, `"${name}" keluar atas viewport`).toBeGreaterThanOrEqual(0);
+      expect(zoom.x + zoom.width, `"${name}" keluar kanan viewport`).toBeLessThanOrEqual(width);
+      expect(zoom.y + zoom.height, `"${name}" keluar bawah viewport`).toBeLessThanOrEqual(height);
+      for (const { label, box } of others) {
+        const overlapX = Math.min(zoom.x + zoom.width, box.x + box.width) - Math.max(zoom.x, box.x);
+        const overlapY =
+          Math.min(zoom.y + zoom.height, box.y + box.height) - Math.max(zoom.y, box.y);
+        expect(overlapX > 0 && overlapY > 0, `"${name}" menimpa ${label}`).toBe(false);
+      }
+    }
+  });
+}
+
 test.describe('bahasa Inggris', () => {
   test.use({ locale: 'en-US' });
 

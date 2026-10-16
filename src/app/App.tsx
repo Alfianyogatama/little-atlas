@@ -1,5 +1,5 @@
-import { GlobeDemo } from './GlobeDemo';
+import { ExploreScreen } from '@/features/explore/ExploreScreen';
 
 export function App() {
-  return <GlobeDemo />;
+  return <ExploreScreen />;
 }

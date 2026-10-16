@@ -37,6 +37,13 @@
   --space-5: 24px;
   --space-6: 32px;
   --card-max: 560px;
+  --card-pad-block: 20px;
+  --card-pad-inline: 22px;
+  --card-icon: 56px;
+  --flag-card: 190px;
+  --flag-card-min: 120px;
+  --card-close-offset: 18px;
+  --glyph: 28px;
   --font-display: 'Baloo 2', 'Nunito', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
   --kid-title-size: 40px;
   --kid-title-line: 40px;

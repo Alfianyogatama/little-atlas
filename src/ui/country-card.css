@@ -2,7 +2,7 @@
   position: relative;
   box-sizing: border-box;
   width: min(100%, var(--card-max));
-  padding: 20px 22px 22px;
+  padding: var(--card-pad-block) var(--card-pad-inline) calc(var(--card-pad-block) + 2px);
   display: flex;
   align-items: center;
   gap: var(--space-5);
@@ -16,7 +16,7 @@
 
 .hd-card__flag {
   flex: none;
-  width: clamp(120px, 40vw, 190px);
+  width: clamp(var(--flag-card-min), 40vw, var(--flag-card));
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: var(--radius-flag);
@@ -52,8 +52,8 @@
 
 .hd-card__fact-icon {
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: var(--card-icon);
+  height: var(--card-icon);
   border-radius: var(--radius-full);
   border: var(--toy-stroke) solid var(--ink);
   box-sizing: border-box;
@@ -62,8 +62,8 @@
 
 .hd-card__close {
   position: absolute;
-  top: -18px;
-  right: -10px;
+  top: calc(-1 * var(--card-close-offset));
+  right: 0;
 }
 
 @keyframes hd-card-in {

@@ -25,8 +25,8 @@
 }
 
 .hd-toy.is-icon svg {
-  width: 28px;
-  height: 28px;
+  width: var(--glyph);
+  height: var(--glyph);
   fill: currentColor;
 }
 
@@ -42,8 +42,8 @@
 }
 
 .hd-toy:not(.is-icon) svg {
-  width: 28px;
-  height: 28px;
+  width: var(--glyph);
+  height: var(--glyph);
   fill: currentColor;
 }
 
