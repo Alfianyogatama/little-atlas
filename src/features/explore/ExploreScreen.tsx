@@ -2,7 +2,7 @@ import { GlobeHemisphereEastIcon } from '@phosphor-icons/react/dist/csr/GlobeHem
 import { HouseIcon } from '@phosphor-icons/react/dist/csr/House';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale } from '@/app/i18n/useLocale';
-import { APP_LOCALES, type AppLocale } from '@/domain/locale';
+import { readDebugParams } from '@/domain/debug';
 import type { Insets } from '@/domain/geo';
 import { Globe, type GlobeFrame, type GlobeHandle } from '@/globe/Globe';
 import { DebugOverlay, type DebugOverlayHandle } from '@/globe/DebugOverlay';
@@ -53,17 +53,6 @@ function offsetTopIn(el: HTMLElement, ancestor: HTMLElement): number {
   return top;
 }
 
-function readParams(): { debug: boolean; lookAt: string | null; lang: AppLocale | null } {
-  const params = new URLSearchParams(window.location.search);
-  const debug = params.get('debug') === '1';
-  const lang = debug ? params.get('lang') : null;
-  return {
-    debug,
-    lookAt: debug ? params.get('lookAt') : null,
-    lang: APP_LOCALES.find((l) => l === lang) ?? null,
-  };
-}
-
 function createService(): ContentService | null {
   try {
     return createBrowserContentService();
@@ -73,7 +62,10 @@ function createService(): ContentService | null {
 }
 
 export function ExploreScreen() {
-  const { debug, lookAt, lang } = useMemo(() => readParams(), []);
+  const { debug, lookAt, lang } = useMemo(
+    () => readDebugParams(new URLSearchParams(window.location.search), __DEBUG_ENABLED__),
+    [],
+  );
   const locale = useLocale();
   const [data, setData] = useState<GlobeData | null>(null);
   const [reported, setStatus] = useState<Status>('loading');
@@ -213,7 +205,7 @@ export function ExploreScreen() {
               />
             ) : null}
           </div>
-          {debug ? (
+          {__DEBUG_ENABLED__ && debug ? (
             <DebugOverlay
               ref={debugRef}
               labels={{

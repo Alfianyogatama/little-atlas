@@ -29,13 +29,16 @@ Proyek ini memakai Bun (ADR-001). Jangan memakai npm, pnpm, atau yarn.
 ```bash
 bun install              # pasang dependensi
 bun run dev              # server pengembangan
-bun run build            # build produksi
+bun run build            # build produksi (mode debug mati)
+bun run build:e2e        # build dengan mode debug aktif ke dist-e2e, untuk Playwright
+bun run check:bundle     # periksa anggaran ukuran bundle
+bun run check:debug-off  # pastikan overlay debug tidak ada di bundle produksi
 bun run preview --host   # uji build produksi dari tablet di Wi-Fi yang sama
 bun run typecheck        # tsc tanpa emit
 bun run lint             # ESLint
 bun run format           # Prettier
 bun run test             # Vitest
-bun run test:e2e         # Playwright
+bun run test:e2e         # Playwright, memakai build debug dist-e2e di port 4174
 bun run content          # skrip build-content: data peta, bendera, dan aset
 ```
 

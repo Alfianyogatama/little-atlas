@@ -2,8 +2,9 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import { defineConfig } from 'vite';
+import { isDebugEnabled } from './scripts/build-flags';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     // Vitest tidak memuat plugin: `pretest` sudah menjalankan i18n:compile, dan plugin
@@ -22,6 +23,9 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  define: {
+    __DEBUG_ENABLED__: JSON.stringify(isDebugEnabled({ mode, vercelEnv: process.env.VERCEL_ENV })),
+  },
   build: { manifest: true },
   server: { host: true },
-});
+}));

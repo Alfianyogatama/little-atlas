@@ -8,6 +8,8 @@ Diperbarui pada 15 Oktober 2026: mencatat keputusan pemilik di issue #3 (build-c
 
 Diperbarui pada 16 Oktober 2026: insets kamera, siklus hidup `flyTo`, zoom diabaikan saat terbang, dan atribut debug baru dari issue #5 (lihat bagian "Revisi 16 Oktober 2026 (issue #5)").
 
+Diperbarui pada 16 Oktober 2026: mode debug dimatikan di produksi lewat flag build `__DEBUG_ENABLED__`, merevisi K7 di #4 (lihat bagian "Revisi 16 Oktober 2026 (issue #32)").
+
 Keputusannya: negara timbul dipakai di produksi, tapi semua negara digabung menjadi satu mesh, dan data peta serta bendera disiapkan saat build.
 
 ## Hasil uji
@@ -116,7 +118,7 @@ Kalau `prefers-reduced-motion` aktif: tidak ada putar otomatis, negara terpilih 
 
 ### Mode debug
 
-`?debug=1` tersedia juga di build produksi. Mode ini hanya membaca: overlay menampilkan FPS, jumlah draw call, dan waktu bangun scene, dan wrapper globe diberi atribut data (`data-draw-calls`, `data-camera-lonlat`, `data-camera-distance`, `data-flag`, `data-auto-rotate`, `data-jumping`) yang dipakai tes e2e. Mode debug tidak membaca dan tidak menampilkan data anak.
+`?debug=1` hanya aktif di build yang mengaktifkan debug (dev, build e2e, preview Vercel) dan mati di produksi; ini merevisi K7 di #4, yang dulu membiarkannya tersedia di produksi (lihat "Revisi 16 Oktober 2026 (issue #32)"). Mode ini hanya membaca: overlay menampilkan FPS, jumlah draw call, dan waktu bangun scene, dan wrapper globe diberi atribut data (`data-draw-calls`, `data-camera-lonlat`, `data-camera-distance`, `data-flag`, `data-auto-rotate`, `data-jumping`) yang dipakai tes e2e. Mode debug tidak membaca dan tidak menampilkan data anak.
 
 ### Warna dan font
 
@@ -150,7 +152,7 @@ Zoom diabaikan selama globe terbang (keputusan pemilik di #5). `zoomBy` kembali 
 
 ### Atribut debug baru
 
-Hanya ada dalam mode `?debug=1`, dipakai tes e2e:
+Hanya ada dalam mode `?debug=1` di build yang mengaktifkan debug (lihat revisi issue #32), dipakai tes e2e:
 
 - `data-flying`: `true` selama terbang. Ditulis sinkron di `flyTo` dan saat penerbangan selesai atau di-unmount, tidak menunggu frame, karena penerbangan bisa selesai di antara dua frame saat beban tinggi.
 - `data-globe-screen`: `cx,cy,radius` bola dalam piksel layar, dihitung dari proyeksi kamera. Dipakai tes untuk memastikan bola tidak tertimpa kartu atau tombol.
@@ -158,6 +160,32 @@ Hanya ada dalam mode `?debug=1`, dipakai tes e2e:
 ## Revisi 16 Oktober 2026 (issue #25)
 
 Format ikon negara, tanpa mengubah keputusan globe: ikon berupa WebP 256×256 di path `/content/icons/<kode>.webp` (kode huruf kecil), dipakai di kartu negara dan bukan di globe, sehingga draw call globe tidak bertambah. Emoji dilarang sebagai ikon. Produksinya di [ADR-009](0009-produksi-ilustrasi-ikon.md).
+
+## Revisi 16 Oktober 2026 (issue #32)
+
+Pemilik memutuskan mode debug mati di produksi. Ini merevisi keputusan K7 di #4 (dulu `?debug=1` tersedia di produksi untuk mengukur FPS di MatePad). FPS kini diukur lewat URL preview Vercel. Keputusan lain tidak berubah.
+
+Flag build `__DEBUG_ENABLED__` dipasang lewat `define` di `vite.config.ts`, dihitung `isDebugEnabled({ mode, vercelEnv })` di `scripts/build-flags.ts`:
+
+| Konteks | Nilai flag |
+| --- | --- |
+| `bun run dev` (development) | true |
+| `bun run build:e2e` (`--mode e2e`, hasil di `dist-e2e`, disajikan `preview:e2e` di port 4174 untuk Playwright) | true |
+| Vercel preview (`VERCEL_ENV=preview`) | true |
+| `bun run build` biasa | false |
+| Vercel production (`VERCEL_ENV=production`) | false, mematikan mutlak |
+
+- `readDebugParams(query, enabled)` di `src/domain/debug/`: kalau flag mati, `debug`, `lookAt`, dan `lang` diabaikan. `lang=` tetap khusus debug.
+- Overlay dibuang dari bundle produksi: render dijaga `__DEBUG_ENABLED__` dan `DebugOverlay` memakai `/* @__PURE__ */`. `bun run check:debug-off` memindai `dist/assets/*.js` untuk penanda `debug-overlay`, dan CI menjalankannya setelah `check:bundle`.
+- Atribut data debug di Globe tetap ada di kode, tetapi hanya ditulis saat mode debug aktif.
+- Tidak ada tes e2e produksi terpisah (keputusan pemilik). Port 4173 tetap untuk `bun run preview --host` milik pemilik, dan build itu tanpa debug.
+- Catatan operasional: opsi Vercel "Automatically expose System Environment Variables" harus menyala. Deploy production berasal dari merge ke `main`, bukan "Promote" preview; kalau Promote tidak membangun ulang, debug ikut aktif.
+
+Tes:
+
+- TC-ADR006-05: `findDebugMarkers` (`scripts/check-debug-off.test.ts`).
+- TC-ADR006-06: `readDebugParams` (`src/domain/debug/params.test.ts`).
+- TC-ADR006-07: `isDebugEnabled` (`scripts/build-flags.test.ts`).
 
 ## Alternatif yang ditolak
 

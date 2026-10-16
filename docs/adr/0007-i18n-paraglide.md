@@ -27,7 +27,7 @@ F-06.3: tidak ada teks antarmuka yang tertanam di kode, dan setiap key punya ter
 
 ### Pengujian
 
-- Pemicu debug `?debug=1&lang=en` mengganti bahasa saat runtime untuk tes e2e. Parameter ini hanya dibaca dalam mode debug.
+- Pemicu debug `?debug=1&lang=en` mengganti bahasa saat runtime untuk tes e2e. Parameter ini hanya dibaca dalam mode debug, yaitu di build yang mengaktifkan debug (dev, build e2e, preview Vercel; ADR-006, issue #32).
 - Playwright memakai `locale: 'id-ID'` secara global, sehingga default `id` terbukti dari bahasa peramban, dan tes bahasa lain menimpanya per tes.
 
 ## Konsekuensi
