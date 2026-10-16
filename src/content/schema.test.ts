@@ -4,6 +4,7 @@ import {
   CountryCatalogSchema,
   FavoritesSchema,
   GridIndexSchema,
+  IconManifestSchema,
   MapDataSchema,
   NameOverridesSchema,
   UnMembersSchema,
@@ -159,5 +160,80 @@ describe('ContinentFactsSchema', () => {
   });
   it('kunci selain AQ ditolak', () => {
     bad(ContinentFactsSchema, { ...aqFacts, ID: aqFacts.AQ });
+  });
+});
+
+describe('IconManifestSchema', () => {
+  const hex64 = 'a'.repeat(64);
+  const entry = (code: string): Record<string, unknown> => ({
+    file: `icons/${code.toLowerCase()}.webp`,
+    sha256: hex64,
+    bytes: 12000,
+    width: 256,
+    height: 256,
+    source: 'gemini-api',
+    model: 'gemini-image-test',
+    promptHash: hex64,
+    attempt: 1,
+    checker: { model: 'gemini-vision-test', verdict: { seen: 'kanguru' } },
+    status: 'approved',
+    generatedAt: '2026-10-15T10:00:00.000Z',
+    reviewedAt: '2026-10-15T11:00:00.000Z',
+  });
+  const manifest = (): Record<string, unknown> => ({
+    styleVersion: 1,
+    styleHash: hex64,
+    icons: { AU: entry('AU'), AQ: entry('AQ') },
+  });
+  const withIcon = (code: string, patch: Record<string, unknown>): unknown => ({
+    ...manifest(),
+    icons: { [code]: { ...entry(code), ...patch } },
+  });
+
+  it('manifest valid diterima, termasuk sumber manual tanpa model dan tanpa checker', () => {
+    expect(IconManifestSchema.safeParse(manifest()).success).toBe(true);
+    expect(
+      IconManifestSchema.safeParse(withIcon('AU', { source: 'manual', model: null, checker: null }))
+        .success,
+    ).toBe(true);
+  });
+  it('styleHash yang bukan 64 hex ditolak', () => {
+    expect(IconManifestSchema.safeParse({ ...manifest(), styleHash: 'abc' }).success).toBe(false);
+    expect(IconManifestSchema.safeParse({ ...manifest(), styleHash: 'Z'.repeat(64) }).success).toBe(
+      false,
+    );
+  });
+  it('file harus icons/<kode kecil>.webp sesuai kodenya', () => {
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/id.webp' })).success).toBe(
+      false,
+    );
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/AU.webp' })).success).toBe(
+      false,
+    );
+    expect(IconManifestSchema.safeParse(withIcon('AU', { file: 'icons/au.png' })).success).toBe(
+      false,
+    );
+  });
+  it('kunci selain Alpha2 huruf besar ditolak', () => {
+    expect(
+      IconManifestSchema.safeParse({ ...manifest(), icons: { au: entry('au') } }).success,
+    ).toBe(false);
+    expect(
+      IconManifestSchema.safeParse({ ...manifest(), icons: { AUS: entry('AUS') } }).success,
+    ).toBe(false);
+  });
+  it.each([
+    ['ukuran bukan 256', { width: 128 }],
+    ['tinggi bukan 256', { height: 512 }],
+    ['status bukan approved', { status: 'pending' }],
+    ['source tak dikenal', { source: 'dalle' }],
+    ['attempt 0', { attempt: 0 }],
+    ['attempt bukan bilangan bulat', { attempt: 1.5 }],
+    ['sha256 bukan 64 hex', { sha256: 'xyz' }],
+    ['promptHash bukan 64 hex', { promptHash: 'xyz' }],
+    ['generatedAt bukan ISO', { generatedAt: 'kemarin' }],
+    ['reviewedAt hilang', { reviewedAt: undefined }],
+  ])('entri ditolak: %s', (_n, patch) => {
+    expect(IconManifestSchema.safeParse(withIcon('AU', patch)).success).toBe(false);
   });
 });

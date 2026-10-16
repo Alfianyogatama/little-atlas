@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "prompt": "Flat icon illustration for children aged 3 to 7. A single object centered in the frame, made of simple rounded shapes. Solid saturated colors with no gradients, no textures, and no shadows. A thick outline in dark blue #1D3A6E around every shape. Friendly, cute, and never frightening. The object fills most of the square canvas with a small margin on all sides.",
+  "avoid": [
+    "text",
+    "letters",
+    "numbers",
+    "flags",
+    "logos",
+    "watermarks",
+    "gradients",
+    "textures",
+    "shadows",
+    "realistic photo style",
+    "scary faces",
+    "people",
+    "multiple objects"
+  ],
+  "background": "a plain, solid, single-color magenta #FF00FF background with no other elements (it will be removed later)",
+  "ink": "#1D3A6E"
+}

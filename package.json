@@ -19,6 +19,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "content": "bun scripts/build-content.ts",
+    "icons:generate": "bun scripts/icons/generate-cli.ts",
+    "icons:review": "bun scripts/icons/review-server.ts",
     "content:check": "bun scripts/check-content.ts",
     "check:bundle": "bun scripts/check-bundle-size.ts"
   },
@@ -34,6 +36,9 @@
     "@eslint/js": "10.0.1",
     "@inlang/paraglide-js": "2.25.4",
     "@inlang/plugin-message-format": "4.4.4",
+    "@jsquash/jpeg": "1.6.0",
+    "@jsquash/png": "3.1.1",
+    "@jsquash/webp": "1.5.0",
     "@playwright/test": "1.63.0",
     "@resvg/resvg-wasm": "2.6.2",
     "@testing-library/dom": "10.4.2",

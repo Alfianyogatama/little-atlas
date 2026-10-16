@@ -114,3 +114,43 @@ export const ContinentFactsSchema = z
   })
   .strict();
 export type ContinentFacts = z.infer<typeof ContinentFactsSchema>;
+
+const Hex64 = z.string().regex(/^[0-9a-f]{64}$/, 'harus 64 karakter heksadesimal huruf kecil');
+
+const IconEntrySchema = z.object({
+  file: z.string(),
+  sha256: Hex64,
+  bytes: z.number().int().positive(),
+  width: z.literal(256),
+  height: z.literal(256),
+  source: z.enum(['gemini-api', 'manual']),
+  model: z.string().min(1).nullable(),
+  promptHash: Hex64,
+  attempt: z.number().int().min(1),
+  checker: z
+    .object({ model: z.string().min(1), verdict: z.record(z.string(), z.unknown()) })
+    .nullable(),
+  status: z.literal('approved'),
+  generatedAt: z.iso.datetime(),
+  reviewedAt: z.iso.datetime(),
+});
+
+/** Manifest ikon kurasi: kunci Alpha2, berkas `icons/<kode kecil>.webp`, 256x256, sudah disetujui. */
+export const IconManifestSchema = z
+  .object({
+    styleVersion: z.number().int().min(1),
+    styleHash: Hex64,
+    icons: z.record(Alpha2, IconEntrySchema),
+  })
+  .superRefine((m, ctx) => {
+    for (const [code, e] of Object.entries(m.icons)) {
+      if (e.file !== `icons/${code.toLowerCase()}.webp`) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['icons', code, 'file'],
+          message: `file harus icons/${code.toLowerCase()}.webp`,
+        });
+      }
+    }
+  });
+export type IconManifest = z.infer<typeof IconManifestSchema>;
