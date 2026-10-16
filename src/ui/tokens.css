@@ -24,6 +24,7 @@
   --sky-bottom: #ddf3ff;
   --toy-shadow: rgba(29, 58, 110, 0.18);
   --touch-min: 64px;
+  --toy-stroke: 3px; /* garis tepi tombol mainan, di dalam kotak 64 px */
   --radius-full: 999px;
   --space-3: 12px;
   --space-4: 16px;

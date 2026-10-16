@@ -2,8 +2,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   padding: 0;
-  border: 0;
+  border: var(--toy-stroke) solid var(--ink);
   color: var(--ink);
   background: var(--toy);
   cursor: pointer;
@@ -42,7 +43,10 @@
 }
 
 .hd-toy[aria-disabled='true'] {
-  opacity: 0.45;
+  background: var(--toy-edge);
+  color: var(--ink);
+  transform: translateY(5px);
+  box-shadow: 0 4px 8px var(--toy-shadow);
   cursor: default;
 }
 
