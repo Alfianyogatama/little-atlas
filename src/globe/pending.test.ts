@@ -47,3 +47,40 @@ describe('createReadyQueue: permintaan sebelum siap tidak hilang', () => {
     expect(task).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('createReadyQueue.dispose: tidak ada yang menggantung setelah unmount', () => {
+  it('tugas yang sedang menunggu langsung selesai tanpa dijalankan', async () => {
+    const queue = createReadyQueue();
+    const taskA = vi.fn(() => Promise.resolve());
+    const taskB = vi.fn(() => Promise.resolve());
+    const a = queue.run(taskA);
+    const b = queue.run(taskB);
+    queue.dispose();
+    await expect(Promise.all([a, b])).resolves.toEqual([undefined, undefined]);
+    expect(taskA).not.toHaveBeenCalled();
+    expect(taskB).not.toHaveBeenCalled();
+  });
+
+  it('run setelah dispose langsung selesai tanpa menjalankan tugas, juga saat sudah siap', async () => {
+    const queue = createReadyQueue();
+    queue.markReady();
+    queue.dispose();
+    const task = vi.fn(() => Promise.resolve());
+    await expect(queue.run(task)).resolves.toBeUndefined();
+    expect(task).not.toHaveBeenCalled();
+  });
+
+  it('markReady setelah dispose tidak menjalankan apa pun', async () => {
+    const queue = createReadyQueue();
+    const task = vi.fn(() => Promise.resolve());
+    const p = queue.run(task);
+    queue.dispose();
+    await p;
+    queue.markReady();
+    const later = vi.fn(() => Promise.resolve());
+    await queue.run(later);
+    await Promise.resolve();
+    expect(task).not.toHaveBeenCalled();
+    expect(later).not.toHaveBeenCalled();
+  });
+});

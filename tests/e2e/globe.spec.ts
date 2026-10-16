@@ -185,3 +185,80 @@ test('TC-NFR-privasi tidak ada permintaan ke origin lain saat memilih Jepang', a
   );
   expect(external).toEqual([]);
 });
+
+// Pengamat dipasang sebelum halaman dimuat agar penerbangan singkat tidak terlewat.
+// Bila clickZoomIn, tombol "Perbesar" diklik tepat saat data-flying pertama kali true.
+async function watchFlying(page: Page, clickZoomIn: boolean): Promise<void> {
+  await page.addInitScript(`
+    window.__flySeen = false;
+    window.__zoomClicked = false;
+    new MutationObserver((records) => {
+      for (const r of records) {
+        if (r.target.dataset.flying !== 'true') continue;
+        window.__flySeen = true;
+        if (${clickZoomIn} && !window.__zoomClicked) {
+          const button = document.querySelector('button[aria-label="Perbesar"]');
+          if (button) {
+            button.click();
+            window.__zoomClicked = true;
+          }
+        }
+      }
+    }).observe(document, { attributes: true, attributeFilter: ['data-flying'], subtree: true });
+  `);
+}
+
+test('TC-ADR006-02 data-flying true selama flyTo lalu kembali false', async ({ page }) => {
+  await watchFlying(page, false);
+  await openAt(page, '&lookAt=JP');
+  await expect.poll(() => page.evaluate('window.__flySeen')).toBe(true);
+  await expect(page.locator(holder)).toHaveAttribute('data-flying', 'false');
+});
+
+for (const width of [375, 768, 1280]) {
+  test(`TC-ADR006-03 data-globe-screen berupa cx,cy,r yang masuk akal di ${width}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: width === 1280 ? 800 : 720 });
+    await openAt(page, '');
+    await expect(page.locator(holder)).toHaveAttribute(
+      'data-globe-screen',
+      /^-?\d+,-?\d+,\d+$/,
+    );
+    const raw = (await page.locator(holder).getAttribute('data-globe-screen')) ?? '';
+    const [cx = NaN, cy = NaN, r = NaN] = raw.split(',').map(Number);
+    expect([cx, cy, r].every(Number.isFinite)).toBe(true);
+    expect(cx).toBeGreaterThan(0);
+    expect(cx).toBeLessThan(width);
+    expect(r).toBeGreaterThan(50);
+  });
+}
+
+test('TC-F02-07 zoom saat globe terbang diabaikan', async ({ page, browser }) => {
+  // Halaman A: tanpa zoom.
+  await watchFlying(page, false);
+  await openAt(page, '&lookAt=JP');
+  await expect.poll(() => page.evaluate('window.__flySeen')).toBe(true);
+  await expect(page.locator(holder)).toHaveAttribute('data-flying', 'false');
+  const baseline = await cameraDistance(page);
+
+  // Halaman B: klik Perbesar saat data-flying=true.
+  const other = await browser.newPage();
+  try {
+    await watchFlying(other, true);
+    await openAt(other, '&lookAt=JP');
+    await expect.poll(() => other.evaluate('window.__flySeen')).toBe(true);
+    // Bukti klik benar-benar terjadi saat terbang; bila tidak, tes ini tidak bermakna.
+    expect(await other.evaluate('window.__zoomClicked')).toBe(true);
+    await expect(other.locator(holder)).toHaveAttribute('data-flying', 'false');
+    await other.evaluate(`new Promise((resolve) => {
+      let n = 0;
+      const tick = () => (++n >= 30 ? resolve() : requestAnimationFrame(tick));
+      requestAnimationFrame(tick);
+    })`);
+    const afterClick = await cameraDistance(other);
+    expect(Math.abs(afterClick - baseline)).toBeLessThanOrEqual(0.01);
+  } finally {
+    await other.close();
+  }
+});

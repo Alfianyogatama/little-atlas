@@ -3,5 +3,13 @@
   "globe_zoom_out": "Perkecil",
   "debug_fps": "FPS",
   "debug_draw_calls": "Draw call",
-  "debug_build_ms": "Bangun scene (ms)"
+  "debug_build_ms": "Bangun scene (ms)",
+  "explore_close_card": "Tutup kartu",
+  "explore_listen_again": "Dengar lagi",
+  "explore_home": "Kembali ke Indonesia",
+  "explore_intro": "Ini {name}!",
+  "explore_intro_home": "Ini Indonesia, rumah kita!",
+  "explore_ocean": "Ini laut. Airnya biru!",
+  "explore_flag_alt": "Bendera {name}",
+  "explore_card_label": "Kartu {name}"
 }
