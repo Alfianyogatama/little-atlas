@@ -1,0 +1,7 @@
+{
+  "globe_zoom_in": "Perbesar",
+  "globe_zoom_out": "Perkecil",
+  "debug_fps": "FPS",
+  "debug_draw_calls": "Draw call",
+  "debug_build_ms": "Bangun scene (ms)"
+}

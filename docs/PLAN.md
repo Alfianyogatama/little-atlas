@@ -302,6 +302,8 @@ Empat belas issue berikut menutup Fase 0 dan Fase 1. Setiap issue adalah vertica
 | 13 | 1 | Mesin level Tebak Bendera, level 1–3, skor kemiripan bendera saat build | Tes unit untuk aturan naik dan turun level; e2e anak naik dari level 1 ke 2 |
 | 14 | 1 | Mode Latihan topik Peta dan Bendera: Kartu Kenalan, Coba Sendiri, petunjuk 3 tahap | Tes unit: jawaban latihan tidak mengubah bintang, level, atau penguasaan; e2e ketiga tahap petunjuk |
 
+Catatan urutan (keputusan pemilik, 15 Oktober 2026): nomor di tabel adalah nomor backlog, bukan nomor issue GitHub. Issue i18n (backlog 6, GitHub #7) dikerjakan setelah globe (backlog 3, GitHub #4) dan sebelum Jelajah (backlog 4, GitHub #5). Ilustrasi ikon Favorit (GitHub #25) memblokir Jelajah (#5), karena emoji tidak boleh tampil sebagai ikon.
+
 ## Risiko dan keputusan terbuka
 
 Risiko terbesar adalah kualitas audio membaca, karena seluruh Goal 1 bergantung pada bunyi huruf dan suku kata yang benar.

@@ -1,0 +1,7 @@
+{
+  "globe_zoom_in": "Zoom in",
+  "globe_zoom_out": "Zoom out",
+  "debug_fps": "FPS",
+  "debug_draw_calls": "Draw calls",
+  "debug_build_ms": "Scene build (ms)"
+}

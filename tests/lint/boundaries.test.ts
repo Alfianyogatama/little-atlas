@@ -1,9 +1,14 @@
 import { resolve } from 'node:path';
 import { ESLint } from 'eslint';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const root = resolve(import.meta.dirname, '../..');
 const eslint = new ESLint({ cwd: root });
+
+// Biaya inisialisasi ESLint (parser + config) ditanggung hook, bukan tes pertama.
+beforeAll(async () => {
+  await eslint.lintText('export {};\n', { filePath: resolve(root, 'src/domain/warmup.ts') });
+});
 
 async function lintRules(code: string, relPath: string): Promise<string[]> {
   const [result] = await eslint.lintText(code, { filePath: resolve(root, relPath) });

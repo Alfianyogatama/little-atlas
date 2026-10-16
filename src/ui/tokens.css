@@ -1,0 +1,41 @@
+/* Sumber: design system Little Atlas, token v1. Ini subset globe; set lengkap di issue tersendiri. */
+:root {
+  --ocean: #2fa9da;
+  --ocean-light: #5fc8ea;
+  --land-pink: #ff8fab;
+  --land-orange: #ffb86b;
+  --land-green: #8bd86b;
+  --land-lilac: #b49bf2;
+  --land-sand: #e9b98a;
+  --land-select: #fff95e;
+  --coral: #ff4d6d;
+  --land-neutral: #c9ced6;
+  --land-ice: #f2faff;
+  --globe-border: #ffffff;
+}
+
+/* Token UI tombol dan langit (design system v1). */
+:root {
+  --toy: #ffffff;
+  --toy-edge: #b9d7ee;
+  --ink: #1d3a6e;
+  --focus-ring: #d62f63;
+  --sky-top: #8fd3ff;
+  --sky-bottom: #ddf3ff;
+  --toy-shadow: rgba(29, 58, 110, 0.18);
+  --touch-min: 64px;
+  --radius-full: 999px;
+  --space-3: 12px;
+  --space-4: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --toy: #2e3780;
+    --toy-edge: #161c52;
+    --ink: #fff4d6;
+    --focus-ring: #ff7aa2;
+    --sky-top: #141b4d;
+    --sky-bottom: #2d2f7a;
+  }
+}
