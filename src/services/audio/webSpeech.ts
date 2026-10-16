@@ -13,6 +13,7 @@ export interface UtteranceLike {
   pitch: number;
   voice: VoiceLike | null;
   onend: (() => void) | null;
+  onerror: (() => void) | null;
 }
 
 export interface SynthLike {
@@ -59,10 +60,16 @@ export function createWebSpeechAudio({ synth, makeUtterance }: Deps): AudioServi
       utterance.lang = voice.lang;
       utterance.rate = RATE;
       utterance.pitch = PITCH;
-      utterance.onend = () => {
+      // onend dan onerror bisa sama-sama terpanggil; lanjutkan antrean sekali saja per utterance.
+      let settled = false;
+      const advance = () => {
+        if (settled) return;
+        settled = true;
         if (token !== generation) return;
         playFrom(synthesis, segments, i + 1, token);
       };
+      utterance.onend = advance;
+      utterance.onerror = advance;
       synthesis.speak(utterance);
       return;
     }
