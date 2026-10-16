@@ -8,7 +8,7 @@ export default defineConfig({
   retries: 0,
   reporter: [['html', { open: 'never', outputFolder: 'playwright-report' }]],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: 'http://localhost:4174',
     trace: 'retain-on-failure',
     // Bahasa dasar aplikasi id; bahasa perangkat diikuti sesuai P1 (#7), jadi tes default memakai id-ID.
     locale: 'id-ID',
@@ -23,9 +23,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // CI menjalankan build sendiri sebelum tes.
-    command: isCI ? 'bun run preview' : 'bun run build && bun run preview',
-    port: 4173,
+    // Satu build debug (--mode e2e) ke dist-e2e, terpisah dari dist produksi dan port 4173 milik pemilik.
+    // CI membangun sendiri sebelum tes (langkah build:e2e di ci.yml); lokal membangun di sini.
+    command: isCI ? 'bun run preview:e2e' : 'bun run build:e2e && bun run preview:e2e',
+    port: 4174,
     reuseExistingServer: !isCI,
   },
 });

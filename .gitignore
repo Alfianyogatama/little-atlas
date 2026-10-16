@@ -1,6 +1,7 @@
 # Dependensi dan hasil build
 node_modules/
 dist/
+dist-e2e/
 
 # Rahasia dan konfigurasi lokal
 .env

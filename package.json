@@ -9,6 +9,9 @@
     "prebuild": "bun run i18n:compile",
     "build": "vite build",
     "preview": "vite preview --port 4173 --strictPort",
+    "prebuild:e2e": "bun run i18n:compile",
+    "build:e2e": "vite build --mode e2e --outDir dist-e2e",
+    "preview:e2e": "vite preview --outDir dist-e2e --port 4174 --strictPort",
     "pretypecheck": "bun run i18n:compile",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit && tsc -p tsconfig.domain.json --noEmit",
     "prelint": "bun run i18n:compile",
@@ -23,7 +26,8 @@
     "icons:reprocess": "bun scripts/icons/reprocess-cli.ts",
     "icons:review": "bun scripts/icons/review-server.ts",
     "content:check": "bun scripts/check-content.ts",
-    "check:bundle": "bun scripts/check-bundle-size.ts"
+    "check:bundle": "bun scripts/check-bundle-size.ts",
+    "check:debug-off": "bun scripts/check-debug-off.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",

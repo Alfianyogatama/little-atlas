@@ -31,7 +31,11 @@ jobs:
       - run: bun run test
       - run: bun run build
       - run: bun run check:bundle
+      - run: bun run check:debug-off
       - run: bunx playwright install --with-deps chromium
+      - run: bun run build:e2e
+      - name: Pastikan penanda debug terdeteksi di build e2e
+        run: '! bun scripts/check-debug-off.ts dist-e2e'
       - run: bun run test:e2e
       - if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

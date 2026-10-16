@@ -15,6 +15,7 @@ export default tseslint.config(
   {
     ignores: [
       'dist',
+      'dist-e2e',
       'spikes',
       'prototype',
       'docs',
