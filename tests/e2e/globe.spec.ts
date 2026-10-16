@@ -185,3 +185,76 @@ test('TC-NFR-privasi tidak ada permintaan ke origin lain saat memilih Jepang', a
   );
   expect(external).toEqual([]);
 });
+
+// Pengamat dipasang sebelum halaman dimuat agar penerbangan singkat tidak terlewat.
+// Bila URL memuat clickZoom=1, tombol "Perbesar" diklik tepat saat data-flying pertama kali true.
+async function watchFlying(page: Page): Promise<void> {
+  await page.addInitScript(`
+    window.__flySeen = false;
+    window.__zoomClicked = false;
+    new MutationObserver((records) => {
+      for (const r of records) {
+        if (r.target.dataset.flying !== 'true') continue;
+        window.__flySeen = true;
+        if (location.search.includes('clickZoom=1') && !window.__zoomClicked) {
+          const button = document.querySelector('button[aria-label="Perbesar"]');
+          if (button) {
+            button.click();
+            window.__zoomClicked = true;
+          }
+        }
+      }
+    }).observe(document, { attributes: true, attributeFilter: ['data-flying'], subtree: true });
+  `);
+}
+
+test('TC-ADR006-02 data-flying true selama flyTo lalu kembali false', async ({ page }) => {
+  await watchFlying(page);
+  await openAt(page, '&lookAt=JP');
+  await expect.poll(() => page.evaluate('window.__flySeen')).toBe(true);
+  await expect(page.locator(holder)).toHaveAttribute('data-flying', 'false');
+});
+
+for (const width of [375, 768, 1280]) {
+  test(`TC-ADR006-03 data-globe-screen berupa cx,cy,r yang masuk akal di ${width}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: width === 1280 ? 800 : 720 });
+    await openAt(page, '');
+    await expect(page.locator(holder)).toHaveAttribute('data-globe-screen', /^-?\d+,-?\d+,\d+$/);
+    const raw = (await page.locator(holder).getAttribute('data-globe-screen')) ?? '';
+    const [cx = NaN, cy = NaN, r = NaN] = raw.split(',').map(Number);
+    expect([cx, cy, r].every(Number.isFinite)).toBe(true);
+    expect(cx).toBeGreaterThan(0);
+    expect(cx).toBeLessThan(width);
+    expect(r).toBeGreaterThan(50);
+  });
+}
+
+test('TC-F02-07 zoom saat globe terbang diabaikan', async ({ page }) => {
+  // Satu halaman, dua pemuatan berurutan: tidak pernah ada dua globe hidup bersamaan.
+  await watchFlying(page);
+
+  // A: tanpa zoom.
+  await openAt(page, '&lookAt=JP');
+  await expect.poll(() => page.evaluate('window.__flySeen')).toBe(true);
+  await expect(page.locator(holder)).toHaveAttribute('data-flying', 'false');
+  const baseline = await cameraDistance(page);
+
+  // B: klik Perbesar saat data-flying=true.
+  await openAt(page, '&lookAt=JP&clickZoom=1');
+  await expect.poll(() => page.evaluate('window.__flySeen')).toBe(true);
+  // Bukti klik benar-benar terjadi saat terbang; bila tidak, tes ini tidak bermakna.
+  expect(await page.evaluate('window.__zoomClicked')).toBe(true);
+  await expect(page.locator(holder)).toHaveAttribute('data-flying', 'false');
+  // Penghalang: zoom yang salah diterapkan selesai pada frame pertama setelah terbang
+  // (tween berbasis jam dinding), jadi 5 frame cukup. 30 frame terlalu lama di renderer
+  // perangkat lunak yang berebut CPU (hanya 2-4 frame per 2 detik saat beban paralel).
+  await page.evaluate(`new Promise((resolve) => {
+    let n = 0;
+    const tick = () => (++n >= 5 ? resolve() : requestAnimationFrame(tick));
+    requestAnimationFrame(tick);
+  })`);
+  const afterClick = await cameraDistance(page);
+  expect(Math.abs(afterClick - baseline)).toBeLessThanOrEqual(0.01);
+});

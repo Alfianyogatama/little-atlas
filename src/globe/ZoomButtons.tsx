@@ -2,7 +2,7 @@ import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus';
 import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus';
 import { forwardRef, useCallback, useImperativeHandle, useState, type RefObject } from 'react';
 import '../ui/toy.css';
-import '../ui/globe-demo.css';
+import './globe.css';
 import type { GlobeHandle } from './Globe';
 
 export interface ZoomButtonsProps {

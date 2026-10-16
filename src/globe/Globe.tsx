@@ -210,6 +210,19 @@ function GlobeInner(props: InnerProps) {
         const [lon, lat] = vecToLonLat([dir.x, dir.y, dir.z]);
         wrapper.dataset.cameraLonlat = `${lon.toFixed(2)},${lat.toFixed(2)}`;
         wrapper.dataset.cameraDistance = camera.position.length().toFixed(3);
+        if (camera instanceof PerspectiveCamera) {
+          const rect = wrapper.getBoundingClientRect();
+          const center = new Vector3(0, 0, 0).project(camera);
+          const distance = camera.position.length();
+          const halfFov = (camera.fov * Math.PI) / 360;
+          const radius =
+            distance > 1
+              ? ((rect.height / 2) * Math.tan(Math.asin(1 / distance))) / Math.tan(halfFov)
+              : 0;
+          const cx = rect.left + ((center.x + 1) / 2) * rect.width;
+          const cy = rect.top + ((1 - center.y) / 2) * rect.height;
+          wrapper.dataset.globeScreen = `${Math.round(cx)},${Math.round(cy)},${Math.round(radius)}`;
+        }
       }
       if (!readyRef.current) {
         readyRef.current = true;
@@ -225,6 +238,18 @@ function GlobeInner(props: InnerProps) {
       sceneRef.current = null;
     };
   }, [data, palette, threeScene, gl, invalidate, wrapperRef, camera]);
+
+  // Unmount: penerbangan yang berjalan diselesaikan agar promise flyTo tidak menggantung.
+  useEffect(
+    () => () => {
+      const fly = flyRef.current;
+      flyRef.current = null;
+      fly?.done();
+      const wrapper = wrapperRef.current;
+      if (debugRef.current && wrapper) wrapper.dataset.flying = 'false';
+    },
+    [wrapperRef],
+  );
 
   // Proyeksi bujur/lintang ke layar untuk overlay DOM (ikon rumah).
   useEffect(() => {
@@ -479,6 +504,7 @@ function GlobeInner(props: InnerProps) {
           flyRef.current = null;
           controls.enabled = true;
           fly.done();
+          if (debugRef.current && wrapper) wrapper.dataset.flying = 'false';
         }
         invalidate();
       } else {
@@ -524,12 +550,14 @@ function GlobeInner(props: InnerProps) {
     if (debugRef.current && wrapper) {
       wrapper.dataset.autoRotate = String(Boolean(controls?.autoRotate));
       wrapper.dataset.jumping = String(jumping);
+      wrapper.dataset.flying = String(flyRef.current !== null);
     }
   });
 
   useImperativeHandle(apiRef, () => {
     const currentDistance = (): number => camera.position.length();
     const zoomBy = (dir: 'in' | 'out') => {
+      if (flyRef.current) return;
       const base = zoomRef.current?.to ?? currentDistance();
       const { min, max } = limitsRef.current;
       const { distance } = zoomStep(base, dir, min, max);
@@ -573,6 +601,9 @@ function GlobeInner(props: InnerProps) {
             done: resolve,
           };
           controls.enabled = false;
+          // Sinkron: penerbangan bisa selesai di antara dua frame saat beban tinggi.
+          const wrapper = wrapperRef.current;
+          if (debugRef.current && wrapper) wrapper.dataset.flying = 'true';
           invalidate();
         });
       },
@@ -584,7 +615,7 @@ function GlobeInner(props: InnerProps) {
         return { atMin: base <= min + EDGE, atMax: base >= max - EDGE };
       },
     };
-  }, [camera, data, invalidate]);
+  }, [camera, data, invalidate, wrapperRef]);
 
   return null;
 }
@@ -596,6 +627,15 @@ export const Globe = forwardRef<GlobeHandle, GlobeProps>(function Globe(props, r
   const [supported] = useState(hasWebGL);
   const { onError } = props;
   const [queue] = useState(createReadyQueue);
+
+  // Dispose ditunda satu tick: simulasi unmount StrictMode memasang ulang efek secara sinkron.
+  const disposeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => {
+    clearTimeout(disposeTimer.current);
+    return () => {
+      disposeTimer.current = setTimeout(() => queue.dispose(), 0);
+    };
+  }, [queue]);
 
   useEffect(() => {
     if (!supported) onError?.({ kind: 'webgl' });

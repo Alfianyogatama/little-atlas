@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import '../ui/globe-demo.css';
+import './globe.css';
 
 export interface DebugOverlayProps {
   labels: { fps: string; drawCalls: string; buildMs: string };

@@ -26,12 +26,36 @@
   --touch-min: 64px;
   --toy-stroke: 3px; /* garis tepi tombol mainan, di dalam kotak 64 px */
   --radius-full: 999px;
+  --panel: #ffffff;
+  --radius-flag: 12px;
+  --radius-toy: 22px;
+  --radius-card: 32px;
+  --space-1: 4px;
+  --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --card-max: 560px;
+  --card-pad-block: 20px;
+  --card-pad-inline: 22px;
+  --card-icon: 56px;
+  --flag-card: 190px;
+  --flag-card-min: 120px;
+  --card-close-offset: 18px;
+  --glyph: 28px;
+  --font-display: 'Baloo 2', 'Nunito', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --kid-title-size: 40px;
+  --kid-title-line: 40px;
+  --kid-body-size: 22px;
+  --kid-body-line: 28px;
+  --kid-button-size: 22px;
+  --kid-button-line: 24px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --panel: #232a66;
     --toy: #2e3780;
     --toy-edge: #161c52;
     --ink: #fff4d6;

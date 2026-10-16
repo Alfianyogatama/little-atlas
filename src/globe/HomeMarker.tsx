@@ -1,6 +1,6 @@
 import { HouseIcon } from '@phosphor-icons/react/dist/csr/House';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
-import '../ui/globe-demo.css';
+import './globe.css';
 import type { GlobeFrame } from './Globe';
 
 export interface HomeMarkerProps {

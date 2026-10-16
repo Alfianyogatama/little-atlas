@@ -3,5 +3,13 @@
   "globe_zoom_out": "Zoom out",
   "debug_fps": "FPS",
   "debug_draw_calls": "Draw calls",
-  "debug_build_ms": "Scene build (ms)"
+  "debug_build_ms": "Scene build (ms)",
+  "explore_close_card": "Close card",
+  "explore_listen_again": "Listen again",
+  "explore_home": "Back to Indonesia",
+  "explore_intro": "This is {name}!",
+  "explore_intro_home": "This is Indonesia, our home!",
+  "explore_ocean": "This is the sea. The water is blue!",
+  "explore_flag_alt": "Flag of {name}",
+  "explore_card_label": "{name} card"
 }
