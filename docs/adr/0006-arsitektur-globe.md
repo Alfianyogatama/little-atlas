@@ -6,6 +6,8 @@ Diperbarui pada 15 Oktober 2026: menambahkan keputusan renderer dan bahasa shade
 
 Diperbarui pada 15 Oktober 2026: mencatat keputusan pemilik di issue #3 (build-content). Deteksi ketukan memakai titik-dalam-poligon planar, bukan geoContains; format dan cara muat data hasil build ditetapkan; geometri ekstrusi dibuat di issue globe (#4); hasil build di-commit dan diperiksa di CI. Juga mencatat implementasi globe di issue #4: lima objek renderable dengan 4–5 draw call, ikon rumah sebagai overlay DOM, kontrol dan deteksi ketukan, pewarnaan tetangga di browser, bendera billboard, kamera awal, reduced motion, mode debug, warna dari token, dan penundaan font self-host (lihat bagian "Implementasi globe (issue #4)"). Keputusan lain tidak berubah.
 
+Diperbarui pada 16 Oktober 2026: insets kamera, siklus hidup `flyTo`, zoom diabaikan saat terbang, dan atribut debug baru dari issue #5 (lihat bagian "Revisi 16 Oktober 2026 (issue #5)").
+
 Keputusannya: negara timbul dipakai di produksi, tapi semua negara digabung menjadi satu mesh, dan data peta serta bendera disiapkan saat build.
 
 ## Hasil uji
@@ -127,6 +129,31 @@ Kalau `prefers-reduced-motion` aktif: tidak ada putar otomatis, negara terpilih 
 - Uji pemilik 16 Oktober 2026 di MatePad 11.5 SE dengan browser Chrome: selama 5 menit bermain (globe diputar, negara diketuk, bendera tampil), FPS di atas 55 dan tablet tidak terasa panas.
 - Uji di Huawei Browser, browser acuan, belum dilakukan. Pemilik memutuskan menerima hasil Chrome untuk issue #4 (16 Oktober 2026), dan uji Huawei Browser dicatat sebagai pekerjaan tertunda di issue deferred uji Huawei Browser (#29).
 - Waktu bangun scene di tablet belum diukur.
+
+## Revisi 16 Oktober 2026 (issue #5)
+
+Bagian ini mencatat perubahan globe untuk layar Jelajah. Keputusan di bagian sebelumnya tidak berubah.
+
+### Insets
+
+- `insets` memberi tahu globe area yang tertutup UI, sehingga bola dipusatkan di area bebas. Inset bawah diambil dari tinggi kartu negara plus jarak 16 px. Tingginya diukur tanpa transform, supaya animasi masuk kartu tidak mengubah ukuran yang terbaca.
+- Di layar sempit (lebar ≤820 px) inset kanan 96 px dipasang untuk kolom tombol zoom, supaya tombol tidak menimpa bola.
+
+### Siklus hidup flyTo
+
+- Saat Globe di-unmount, penerbangan yang berjalan diselesaikan dengan `fly.done()`, sehingga promise `flyTo` tidak menggantung.
+- `ReadyQueue.dispose()` ditunda dengan `setTimeout(0)`. StrictMode melepas lalu memasang ulang efek secara sinkron; dispose langsung akan membuang antrean `flyTo` dan zoom yang masih menunggu kontrol siap.
+
+### Zoom saat terbang
+
+Zoom diabaikan selama globe terbang (keputusan pemilik di #5). `zoomBy` kembali tanpa efek kalau ada penerbangan yang berjalan, dan `flyTo` membatalkan zoom yang sedang beranimasi.
+
+### Atribut debug baru
+
+Hanya ada dalam mode `?debug=1`, dipakai tes e2e:
+
+- `data-flying`: `true` selama terbang. Ditulis sinkron di `flyTo` dan saat penerbangan selesai atau di-unmount, tidak menunggu frame, karena penerbangan bisa selesai di antara dua frame saat beban tinggi.
+- `data-globe-screen`: `cx,cy,radius` bola dalam piksel layar, dihitung dari proyeksi kamera. Dipakai tes untuk memastikan bola tidak tertimpa kartu atau tombol.
 
 ## Alternatif yang ditolak
 
