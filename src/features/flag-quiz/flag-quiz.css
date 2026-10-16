@@ -1,0 +1,143 @@
+.quiz {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--sky-top), var(--sky-bottom));
+}
+
+.quiz__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.quiz__calm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.quiz__calm svg {
+  width: 96px;
+  height: 96px;
+  fill: currentColor;
+  opacity: 0.6;
+}
+
+/* Tombol mode kiri atas dan bintang kanan atas, di atas bola (z-index lewat urutan DOM). */
+.quiz__modes {
+  position: absolute;
+  z-index: 1;
+  top: max(var(--space-4), env(safe-area-inset-top));
+  left: max(var(--space-4), env(safe-area-inset-left));
+}
+
+.quiz__stars {
+  position: absolute;
+  z-index: 1;
+  top: max(var(--space-4), env(safe-area-inset-top));
+  right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+.quiz__dock {
+  position: absolute;
+  left: max(var(--space-4), env(safe-area-inset-left));
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.quiz__region {
+  box-sizing: border-box;
+  width: min(100%, var(--quiz-region-max));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  pointer-events: auto;
+  animation: quiz-dock-in 0.2s ease-out;
+}
+
+/* Gelembung soal: panel dengan teks kid-question dan tombol Dengar lagi. */
+.quiz__bubble {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--card-pad-block) var(--card-pad-inline);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3) var(--space-5);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: 0 14px 40px var(--toy-shadow);
+  font-family: var(--font-display);
+}
+
+.quiz__ask {
+  flex: 1 1 auto;
+  margin: 0;
+  min-width: 0;
+  font-size: var(--kid-question-size);
+  line-height: var(--kid-question-line);
+  font-weight: 800;
+}
+
+/* Font lebar: tombol turun ke baris sendiri (di tengah) alih-alih memeras soal jadi dua baris. */
+.quiz__bubble .hd-toy {
+  flex: none;
+  margin-inline: auto;
+  white-space: nowrap;
+}
+
+/* Layar sempit: tombol zoom turun ke kolom kanan tepat di bawah bintang. */
+@media (max-width: 820px) {
+  .quiz .zoom-stack {
+    top: calc(max(var(--space-4), env(safe-area-inset-top)) + var(--touch-min) + var(--space-3));
+    transform: none;
+  }
+}
+
+/* Di bawah 768px soal dan Dengar lagi tidak muat sebaris; tombol turun agar soal terpanjang tetap satu baris (di HP dua baris diterima). */
+@media (max-width: 767px) {
+  .quiz__bubble {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: var(--space-3);
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .quiz__region {
+    gap: var(--space-5);
+  }
+}
+
+@media (min-width: 521px) {
+  .quiz__region {
+    gap: var(--space-6);
+  }
+}
+
+@keyframes quiz-dock-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz__region {
+    animation: none;
+  }
+}

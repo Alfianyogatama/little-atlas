@@ -52,6 +52,20 @@
   --kid-body-line: 28px;
   --kid-button-size: 22px;
   --kid-button-line: 24px;
+  --kid-question-size: 28px;
+  --kid-question-line: 32px;
+}
+
+/* Token Tebak Bendera: hadiah (matahari), jawaban benar (hijau), ukuran bendera pilihan. */
+:root {
+  --sun: #ffd84d;
+  --sun-edge: #e0a800;
+  --on-sun: #3a2a00;
+  --good: #3cc46b;
+  --good-edge: #25934c;
+  --flag-choice: 150px;
+  /* Lebar gelembung soal: soal terpanjang kolam level 1 + Dengar lagi sebaris, dengan sisa untuk font lebih lebar. */
+  --quiz-region-max: 760px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,5 +78,7 @@
     --sky-top: #141b4d;
     --sky-bottom: #2d2f7a;
     --icon-slot: #ddf3ff;
+    --sun-edge: #c99400;
+    --good-edge: #1f7a3f;
   }
 }

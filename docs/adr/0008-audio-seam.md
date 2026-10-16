@@ -4,6 +4,8 @@ Status: diterima pada 16 Oktober 2026, dari rencana issue #5 (Jelajah) yang dise
 
 Diperbarui pada 16 Oktober 2026: `onerror` pada utterance kini ikut melanjutkan antrean segmen, sama seperti `onend`. Keputusan seam tidak berubah.
 
+Diperbarui pada 16 Oktober 2026: ID segmen suara Tebak Bendera dari issue #6 dicatat sebagai kontrak dengan #8 (lihat "ID segmen Tebak Bendera (issue #6)").
+
 Keputusannya: fitur berbicara lewat antarmuka `AudioService` (`speak` dan `stop`). Implementasi pertamanya Web Speech yang hanya memakai suara lokal perangkat, dan Howler dari #8 nanti dipasang di balik antarmuka yang sama.
 
 ## Konteks
@@ -28,6 +30,24 @@ Jelajah (#5) harus bersuara: F-03 (kartu negara dibacakan) dan F-07 (umpan balik
 ### Batas arsitektur
 
 Fitur tidak menyentuh `speechSynthesis`. Aturan `boundaries` di lint menjaganya: fitur hanya mengimpor `services/audio` lewat antarmukanya (AGENTS.md aturan 2).
+
+### ID segmen Tebak Bendera (issue #6)
+
+Dibuat di `toSegments` di `src/features/flag-quiz/useFlagQuiz.ts`. `XX` adalah kode negara alpha-2 huruf besar, `N` angka.
+
+| ID | Kapan | Isi |
+| --- | --- | --- |
+| `ask:XX` | Soal dibacakan dan "Dengar lagi" | "Ini {nama}. Mana benderanya?" |
+| `praise:N` | Jawaban benar, N = 1 sampai 4 | Kata pujian (Hebat!, Pintar!, Betul!, Keren!) |
+| `praiseFlag:XX` | Menyusul `praise:N` | "Itu bendera {nama}." |
+| `celebrate:N` | Setiap kelipatan 5 bintang, N = jumlah bintang | "Hore! Kamu dapat {N} bintang! Hebat sekali!" |
+| `tryAgain` | Jawaban keliru | "Coba lagi ya!" |
+
+Jawaban benar berupa daftar dua segmen (`praise:N` lalu `praiseFlag:XX`); perayaan hanya satu segmen `celebrate:N`. ID ini menjadi nama klip sprite di #8, jadi mengubah formatnya berarti mengubah nama klip.
+
+Risiko:
+
+- R5: `celebrate:N` tidak terbatas karena N naik terus, sehingga tidak bisa dibuat penuh sebagai klip sprite. #8 memutuskan caranya (misalnya klip hanya untuk kelipatan 5 sampai batas tertentu, atau cadangan Web Speech seperti di ADR-003 untuk N di luar sprite).
 
 ## Konsekuensi
 

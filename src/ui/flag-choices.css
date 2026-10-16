@@ -1,0 +1,93 @@
+.hd-choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+}
+
+.hd-choice {
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
+  padding: var(--space-2);
+  border: var(--toy-stroke) solid var(--ink);
+  border-radius: var(--radius-toy);
+  background: var(--toy);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.08s,
+    box-shadow 0.08s;
+  box-shadow:
+    0 6px 0 var(--toy-edge),
+    0 10px 18px var(--toy-shadow);
+}
+
+.hd-choice__flag {
+  display: block;
+  width: min(26vw, var(--flag-choice));
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-flag);
+  box-shadow: 0 0 0 2px var(--toy-shadow);
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.hd-choice:active:not([aria-disabled='true']) {
+  transform: translateY(5px);
+  box-shadow:
+    0 1px 0 var(--toy-edge),
+    0 4px 8px var(--toy-shadow);
+}
+
+.hd-choice:focus-visible {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.hd-choice[data-state='correct'] {
+  background: var(--good);
+  box-shadow:
+    0 6px 0 var(--good-edge),
+    0 10px 18px var(--toy-shadow);
+}
+
+/* Pilihan yang sudah dicoba: memudar dan bergoyang sekali, tanpa warna atau tanda "salah". */
+.hd-choice[data-state='dimmed'] {
+  opacity: 0.35;
+  cursor: default;
+  animation: hd-choice-wobble 0.4s ease-in-out;
+}
+
+@keyframes hd-choice-wobble {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(7px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd-choice {
+    transition: none;
+  }
+
+  .hd-choice[data-state='dimmed'] {
+    animation: none;
+  }
+}

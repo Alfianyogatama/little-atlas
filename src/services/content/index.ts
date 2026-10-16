@@ -74,7 +74,7 @@ function parseOrThrow<T>(
   return result.data;
 }
 
-export async function loadGlobeData(deps: GlobeDataDeps): Promise<GlobeData> {
+async function fetchGlobeData(deps: GlobeDataDeps): Promise<GlobeData> {
   const [mapRaw, gridRaw] = await Promise.all([
     fetchJson(deps.fetch, MAP_URL),
     fetchJson(deps.fetch, GRID_URL),
@@ -83,6 +83,20 @@ export async function loadGlobeData(deps: GlobeDataDeps): Promise<GlobeData> {
   const grid = parseOrThrow(GridIndexSchema, gridRaw, 'grid.json');
   const catalog = parseOrThrow(CountryCatalogSchema, countriesJson, 'countries.json');
   return { map, grid, catalog };
+}
+
+const globeDataCache = new WeakMap<object, Promise<GlobeData>>();
+
+/** Data globe di-memo per `deps`; promise yang ditolak dihapus supaya panggilan berikutnya memuat ulang. */
+export function loadGlobeData(deps: GlobeDataDeps): Promise<GlobeData> {
+  const hit = globeDataCache.get(deps);
+  if (hit) return hit;
+  const promise = fetchGlobeData(deps);
+  globeDataCache.set(deps, promise);
+  promise.catch(() => {
+    if (globeDataCache.get(deps) === promise) globeDataCache.delete(deps);
+  });
+  return promise;
 }
 
 const flagCaches = new WeakMap<object, Map<string, Promise<FlagImage | null>>>();

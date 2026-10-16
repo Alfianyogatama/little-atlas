@@ -4,6 +4,8 @@ Status: diterima pada 14 Oktober 2026.
 
 Diperbarui pada 15 Oktober 2026: memperjelas isi jendela jawaban di tabel `progress` dan aturan pengosongannya saat level berubah, baik oleh aturan naik dan turun level (F-04.7) maupun oleh orang tua (F-10.2), serta perilaku di level terendah dan tertinggi. Skema versi 1 belum diimplementasi, jadi tidak ada migrasi.
 
+Diperbarui pada 16 Oktober 2026: bintang Tebak Bendera di issue #6 sementara hanya di memori sesi, dan satu pertanyaan terbuka untuk #14 (lihat bagian "Revisi 16 Oktober 2026 (issue #6)").
+
 Keputusannya: semua progres dan pengaturan disimpan di IndexedDB lewat Dexie, dibungkus antarmuka repository, divalidasi Zod saat dibaca, dan tidak pernah dikirim ke server.
 
 ## Konteks
@@ -58,6 +60,16 @@ Pengaturan bahasa, suara, dan huruf berlaku untuk satu perangkat. Kunci level be
 
 - Tes unit repository memakai fake-indexeddb di Vitest.
 - Tes e2e memastikan data bertahan setelah halaman dimuat ulang (F-11.1).
+
+## Revisi 16 Oktober 2026 (issue #6)
+
+Skema dan keputusan penyimpanan di atas tidak berubah. Issue #6 (Tebak Bendera) datang sebelum persistensi (#10), jadi ada penyimpanan sementara:
+
+- Bintang hanya di memori sesi, dipegang `App` (bertahan saat ganti mode, hilang saat reload). Tidak ada tulis ke IndexedDB maupun localStorage, dan `halo-dunia-stars` belum dibaca.
+- Selama bintang lebih dari 0, `useWarnOnUnload` (`src/app/useWarnOnUnload.ts`) memasang `beforeunload` dengan `preventDefault` dan `returnValue = ''`, sehingga browser menampilkan dialog bawaannya. Tanpa teks baru. Pemasangan dilepas saat bintang 0 atau saat unmount.
+- Keduanya diganti di #10: bintang masuk `progress` lewat repository, migrasi `halo-dunia-stars` mengikuti bagian "Migrasi", dan peringatan `beforeunload` dihapus karena progres sudah tersimpan.
+
+Pertanyaan terbuka untuk #14: kalau anak menjawab keliru dulu lalu benar di soal yang sama, apa yang dicatat sebagai satu entri di jendela 10 jawaban (benar atau salah)? Skema `progress` saat ini hanya mengenal satu entri benar atau salah per jawaban, dan di #6 percobaan keliru tidak dicatat sama sekali. Putusan ini menentukan hasil aturan naik dan turun level (F-04.7), jadi perlu keputusan pemilik sebelum #14.
 
 ## Alternatif yang ditolak
 

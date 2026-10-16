@@ -10,6 +10,8 @@ Diperbarui pada 16 Oktober 2026: insets kamera, siklus hidup `flyTo`, zoom diaba
 
 Diperbarui pada 16 Oktober 2026: mode debug dimatikan di produksi lewat flag build `__DEBUG_ENABLED__`, merevisi K7 di #4 (lihat bagian "Revisi 16 Oktober 2026 (issue #32)").
 
+Diperbarui pada 16 Oktober 2026: Globe per layar, Globe Tebak Bendera tanpa bendera dan tanpa putar otomatis, serta memo data globe dari issue #6 (lihat bagian "Revisi 16 Oktober 2026 (issue #6)").
+
 Keputusannya: negara timbul dipakai di produksi, tapi semua negara digabung menjadi satu mesh, dan data peta serta bendera disiapkan saat build.
 
 ## Hasil uji
@@ -186,6 +188,20 @@ Tes:
 - TC-ADR006-05: `findDebugMarkers` (`scripts/check-debug-off.test.ts`).
 - TC-ADR006-06: `readDebugParams` (`src/domain/debug/params.test.ts`).
 - TC-ADR006-07: `isDebugEnabled` (`scripts/build-flags.test.ts`).
+
+## Revisi 16 Oktober 2026 (issue #6)
+
+Bagian ini mencatat penggunaan globe di layar Tebak Bendera. Keputusan di bagian sebelumnya tidak berubah.
+
+- Setiap layar punya Globe sendiri (K3-A). Berganti mode Jelajah dan Tebak Bendera me-remount Globe, dan scene dibangun ulang. Tidak ada stage bersama.
+- `loadGlobeData` di `src/services/content/index.ts` di-memo per `deps`: satu promise dipakai bersama, jadi remount tidak memuat ulang `map.json` dan `grid.json`. Promise yang ditolak dihapus dari memo, sehingga panggilan berikutnya mencoba lagi.
+- Globe kuis tidak diberi `loadFlag` (K11), supaya bendera jawaban tidak berkibar di globe dan membocorkan jawabannya. `data-flag` bernilai `none`. Globe kuis juga `autoRotate={false}`; kamera hanya terbang ke negara soal (`selected={{ code: target, seq: round }}`).
+- Ketukan di globe saat kuis tidak berbuat apa-apa (K6, `onTap` diabaikan). Memutar dan zoom tetap bisa; tombol rumah tidak dipasang. Inset bawah diambil dari tinggi dock soal, dengan pola yang sama dengan inset kartu negara di #5.
+- Atribut debug `data-quiz-round`, `data-quiz-phase`, dan `data-quiz-target` ada di root kuis, hanya saat `?debug=1` di build yang mengaktifkan debug.
+
+Risiko:
+
+- R1: biaya remount di MatePad belum diukur (waktu bangun scene di tablet memang belum diukur, lihat "Performa"). Kalau terasa lambat saat ganti mode, alternatifnya satu stage Globe bersama untuk semua layar. Ukur sebelum #11 dan #15 menambah layar yang memakai globe.
 
 ## Alternatif yang ditolak
 

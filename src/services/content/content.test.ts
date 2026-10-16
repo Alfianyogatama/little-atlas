@@ -110,6 +110,109 @@ describe('loadGlobeData', () => {
   });
 });
 
+describe('loadGlobeData: memo (#6, K3-A)', () => {
+  function setup() {
+    const fetch = routedFetch({
+      '/content/map.json': () => jsonResponse(validMap),
+      '/content/grid.json': () => jsonResponse(validGrid),
+    });
+    return { fetch };
+  }
+
+  it('dua panggilan berturut-turut dengan deps sama mengembalikan promise yang sama', async () => {
+    const deps = setup();
+    const a = loadGlobeData(deps);
+    const b = loadGlobeData(deps);
+    expect(b).toBe(a);
+    expect(await a).toBe(await b);
+  });
+
+  it('muat dasar hanya sekali: map.json dan grid.json masing-masing satu fetch', async () => {
+    const deps = setup();
+    await loadGlobeData(deps);
+    await loadGlobeData(deps);
+    expect(deps.fetch).toHaveBeenCalledTimes(2);
+    const urls = deps.fetch.mock.calls.map((call) => String(call[0])).sort();
+    expect(urls).toEqual(['/content/grid.json', '/content/map.json']);
+  });
+
+  it('panggilan setelah selesai tetap mengembalikan promise dan data yang sama', async () => {
+    const deps = setup();
+    const first = loadGlobeData(deps);
+    const data = await first;
+    const second = loadGlobeData(deps);
+    expect(second).toBe(first);
+    expect(await second).toBe(data);
+    expect(deps.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('deps berbeda tidak berbagi memo', async () => {
+    const one = setup();
+    const two = setup();
+    await loadGlobeData(one);
+    await loadGlobeData(two);
+    expect(one.fetch).toHaveBeenCalledTimes(2);
+    expect(two.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('promise ditolak tidak di-cache: panggilan berikutnya memuat ulang dan bisa berhasil', async () => {
+    let online = false;
+    const fetch = vi.fn(async (input: RequestInfo | URL) => {
+      if (!online) throw new TypeError('Failed to fetch');
+      return String(input) === '/content/map.json'
+        ? jsonResponse(validMap)
+        : jsonResponse(validGrid);
+    });
+    const failed = loadGlobeData({ fetch });
+    const err = await catchError(failed);
+    expect(err).toBeInstanceOf(GlobeDataError);
+    expect((err as GlobeDataError).kind).toBe('network');
+    const callsAfterFailure = fetch.mock.calls.length;
+    expect(callsAfterFailure).toBeGreaterThanOrEqual(1);
+
+    online = true;
+    const retry = loadGlobeData({ fetch });
+    expect(retry).not.toBe(failed);
+    const data = await retry;
+    expect(data.map.features).toHaveLength(1);
+    expect(fetch.mock.calls.length).toBe(callsAfterFailure + 2);
+  });
+
+  it('promise ditolak tidak di-cache untuk deps yang sama', async () => {
+    let online = false;
+    const fetch = vi.fn(async (input: RequestInfo | URL) => {
+      if (!online) throw new TypeError('Failed to fetch');
+      return String(input) === '/content/map.json'
+        ? jsonResponse(validMap)
+        : jsonResponse(validGrid);
+    });
+    const deps = { fetch };
+    const failed = loadGlobeData(deps);
+    expect(await catchError(failed)).toBeInstanceOf(GlobeDataError);
+    const callsAfterFailure = fetch.mock.calls.length;
+
+    online = true;
+    const retry = loadGlobeData(deps);
+    expect(retry).not.toBe(failed);
+    expect((await retry).map.features).toHaveLength(1);
+    expect(fetch.mock.calls.length).toBe(callsAfterFailure + 2);
+    // Setelah berhasil, hasil di-cache lagi.
+    expect(loadGlobeData(deps)).toBe(retry);
+  });
+
+  it('dua pemanggil yang menunggu promise gagal yang sama sama-sama menerima galat', async () => {
+    const fetch = vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    });
+    const deps = { fetch };
+    const a = loadGlobeData(deps);
+    const b = loadGlobeData(deps);
+    expect(b).toBe(a);
+    expect(await catchError(a)).toBeInstanceOf(GlobeDataError);
+    expect(await catchError(b)).toBeInstanceOf(GlobeDataError);
+  });
+});
+
 describe('loadFlagImage', () => {
   const image = { width: 64, height: 43 };
   const pngResponse = () =>

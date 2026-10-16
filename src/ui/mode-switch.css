@@ -1,0 +1,18 @@
+.hd-mode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 100%;
+}
+
+.hd-mode .hd-toy {
+  white-space: nowrap;
+}
+
+/* Layar sempit: dua tombol bertumpuk supaya teks penuh tetap terbaca. */
+@media (max-width: 520px) {
+  .hd-mode {
+    flex-direction: column;
+  }
+}

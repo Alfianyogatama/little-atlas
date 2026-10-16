@@ -1,0 +1,29 @@
+.hd-confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hd-confetti__piece {
+  position: absolute;
+  top: calc(-1 * var(--space-5));
+  width: var(--space-3);
+  height: var(--space-4);
+  border-radius: var(--space-1);
+  background: var(--piece-color);
+  animation-name: hd-confetti-fall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+@keyframes hd-confetti-fall {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--piece-drift), 105vh) rotate(var(--piece-spin));
+  }
+}
