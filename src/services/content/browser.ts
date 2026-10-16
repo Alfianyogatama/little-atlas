@@ -1,6 +1,15 @@
 import countriesJson from '@/content/generated/countries.json';
 import { CountryCatalogSchema } from '@/content/schema';
-import { loadFlagImage, loadGlobeData, type ContentService, type FlagDeps } from './index';
+import {
+  loadFlagImage,
+  loadGlobeData,
+  type ContentService,
+  type FlagDeps,
+  type GlobeDataDeps,
+} from './index';
+
+// Satu deps tingkat modul: Jelajah dan Kuis berbagi memo loadGlobeData.
+const globeDataDeps: GlobeDataDeps = { fetch: (input) => globalThis.fetch(input) };
 
 export function createBrowserContentService(): ContentService {
   const fetchFn: FlagDeps['fetch'] = (input) => globalThis.fetch(input);
@@ -11,7 +20,7 @@ export function createBrowserContentService(): ContentService {
     catalog: CountryCatalogSchema.parse(countriesJson),
   };
   return {
-    loadGlobeData: () => loadGlobeData({ fetch: fetchFn }),
+    loadGlobeData: () => loadGlobeData(globeDataDeps),
     loadFlagImage: (code) => loadFlagImage(code, flagDeps),
   };
 }

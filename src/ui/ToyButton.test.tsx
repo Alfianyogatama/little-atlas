@@ -55,3 +55,33 @@ describe('ToyButton', () => {
     expect(btn.classList.contains('hd-toy')).toBe(true);
   });
 });
+
+describe('ToyButton pressed (mode aktif, #6)', () => {
+  it('(f) pressed true: aria-pressed="true"', () => {
+    render(<ToyButton label="Jelajah" icon={icon} showLabel pressed onPress={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Jelajah' }).getAttribute('aria-pressed')).toBe(
+      'true',
+    );
+  });
+
+  it('(g) pressed false: aria-pressed="false" (bukan atribut hilang)', () => {
+    render(<ToyButton label="Jelajah" icon={icon} showLabel pressed={false} onPress={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Jelajah' }).getAttribute('aria-pressed')).toBe(
+      'false',
+    );
+  });
+
+  it('(h) tanpa prop pressed: tidak ada aria-pressed', () => {
+    render(<ToyButton label="Jelajah" icon={icon} showLabel onPress={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Jelajah' }).hasAttribute('aria-pressed')).toBe(
+      false,
+    );
+  });
+
+  it('(i) pressed tetap memanggil onPress saat diklik', () => {
+    const onPress = vi.fn();
+    render(<ToyButton label="Jelajah" icon={icon} showLabel pressed onPress={onPress} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Jelajah' }));
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+});

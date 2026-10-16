@@ -1,0 +1,67 @@
+.hd-stars {
+  display: inline-flex;
+}
+
+.hd-stars__pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0 var(--space-4);
+  gap: var(--space-2);
+  border: var(--toy-stroke) solid var(--ink);
+  border-radius: var(--radius-full);
+  background: var(--sun);
+  color: var(--on-sun);
+  box-shadow:
+    0 6px 0 var(--sun-edge),
+    0 10px 18px var(--toy-shadow);
+  font-family: var(--font-display);
+  font-size: var(--kid-button-size);
+  line-height: var(--kid-button-line);
+  font-weight: 800;
+}
+
+.hd-stars__icon {
+  display: inline-flex;
+}
+
+.hd-stars__icon svg {
+  width: var(--glyph);
+  height: var(--glyph);
+  fill: currentColor;
+}
+
+.hd-stars__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hd-stars__pill[data-bump] {
+  animation: hd-stars-bump 0.45s ease-out;
+}
+
+@keyframes hd-stars-bump {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd-stars__pill[data-bump] {
+    animation: none;
+  }
+}

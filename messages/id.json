@@ -11,5 +11,21 @@
   "explore_intro_home": "Ini Indonesia, rumah kita!",
   "explore_ocean": "Ini laut. Airnya biru!",
   "explore_flag_alt": "Bendera {name}",
-  "explore_card_label": "Kartu {name}"
+  "explore_card_label": "Kartu {name}",
+  "mode_explore": "Jelajah",
+  "mode_quiz": "Tebak Bendera",
+  "quiz_ask_text": "Mana bendera {name}?",
+  "quiz_ask_speech": "Ini {name}. Mana benderanya?",
+  "quiz_listen_again": "Dengar lagi",
+  "quiz_choice_label": "Bendera {name}",
+  "quiz_praise_1": "Hebat!",
+  "quiz_praise_2": "Pintar!",
+  "quiz_praise_3": "Betul!",
+  "quiz_praise_4": "Keren!",
+  "quiz_praise_flag": "Itu bendera {name}.",
+  "quiz_try_again": "Coba lagi ya!",
+  "quiz_stars_label": "Bintang: {count}",
+  "quiz_celebrate_text": "Hore! {count} bintang!",
+  "quiz_celebrate_speech": "Hore! Kamu dapat {count} bintang! Hebat sekali!",
+  "quiz_region_label": "Soal Tebak Bendera"
 }

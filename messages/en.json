@@ -11,5 +11,21 @@
   "explore_intro_home": "This is Indonesia, our home!",
   "explore_ocean": "This is the sea. The water is blue!",
   "explore_flag_alt": "Flag of {name}",
-  "explore_card_label": "{name} card"
+  "explore_card_label": "{name} card",
+  "mode_explore": "Explore",
+  "mode_quiz": "Guess the Flag",
+  "quiz_ask_text": "Which flag is {name}?",
+  "quiz_ask_speech": "This is {name}. Which one is its flag?",
+  "quiz_listen_again": "Listen again",
+  "quiz_choice_label": "Flag of {name}",
+  "quiz_praise_1": "Great job!",
+  "quiz_praise_2": "Clever!",
+  "quiz_praise_3": "That's right!",
+  "quiz_praise_4": "Awesome!",
+  "quiz_praise_flag": "That is the flag of {name}.",
+  "quiz_try_again": "Let's try again!",
+  "quiz_stars_label": "Stars: {count}",
+  "quiz_celebrate_text": "Hooray! {count} stars!",
+  "quiz_celebrate_speech": "Hooray! You got {count} stars! Amazing!",
+  "quiz_region_label": "Flag quiz"
 }

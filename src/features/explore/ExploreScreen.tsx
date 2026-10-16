@@ -14,6 +14,8 @@ import { createBrowserContentService } from '@/services/content/browser';
 import { loadExploreContent } from '@/services/content/explore';
 import { setAppLocale } from '@/services/i18n/locale';
 import { CountryCard } from '@/ui/CountryCard';
+import { ModeSwitch, type AppMode } from '@/ui/ModeSwitch';
+import { StarCounter } from '@/ui/StarCounter';
 import { ToyButton } from '@/ui/ToyButton';
 import { HOME_CODE, useExplore } from './useExplore';
 import './explore.css';
@@ -61,7 +63,12 @@ function createService(): ContentService | null {
   }
 }
 
-export function ExploreScreen() {
+export interface ExploreScreenProps {
+  stars: number;
+  onModeChange: (mode: AppMode) => void;
+}
+
+export function ExploreScreen({ stars, onModeChange }: ExploreScreenProps) {
   const { debug, lookAt, lang } = useMemo(
     () => readDebugParams(new URLSearchParams(window.location.search), __DEBUG_ENABLED__),
     [],
@@ -156,6 +163,12 @@ export function ExploreScreen() {
 
   return (
     <main className="explore" data-state={status}>
+      <div className="explore__modes">
+        <ModeSwitch mode="explore" onChange={onModeChange} />
+      </div>
+      <div className="explore__stars">
+        <StarCounter count={stars} />
+      </div>
       {showGlobe ? (
         <div ref={stageRef} className="explore__stage" onPointerDown={explore.interact}>
           <Globe

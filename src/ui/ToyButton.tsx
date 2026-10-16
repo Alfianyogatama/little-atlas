@@ -7,6 +7,8 @@ export interface ToyButtonProps {
   onPress: () => void;
   showLabel?: boolean;
   disabled?: boolean;
+  /** Tombol pilihan mode: true = sedang aktif (bergaya sun), false = tidak aktif. Tanpa prop = tombol biasa. */
+  pressed?: boolean;
   className?: string;
 }
 
@@ -16,6 +18,7 @@ export function ToyButton({
   onPress,
   showLabel = false,
   disabled = false,
+  pressed,
   className,
 }: ToyButtonProps) {
   const classes = ['hd-toy', showLabel ? null : 'is-icon', className].filter(Boolean).join(' ');
@@ -25,6 +28,7 @@ export function ToyButton({
       className={classes}
       aria-label={showLabel ? undefined : label}
       aria-disabled={disabled || undefined}
+      aria-pressed={pressed}
       onClick={() => {
         if (!disabled) onPress();
       }}
