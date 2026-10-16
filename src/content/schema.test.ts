@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AudioManifestSchema,
+  AudioSpriteMapSchema,
   ContinentFactsSchema,
   CountryCatalogSchema,
   FavoritesSchema,
@@ -255,5 +257,243 @@ describe('IconManifestSchema', () => {
     ['reviewedAt hilang', { reviewedAt: undefined }],
   ])('entri ditolak: %s', (_n, patch) => {
     expect(IconManifestSchema.safeParse(withIcon('AU', patch)).success).toBe(false);
+  });
+});
+
+/**
+ * Peta sprite audio (issue #8, TC-AUD-MAP-1..6) dan manifest audio (issue #49).
+ * Pola ClipId diambil dari ID segmen nyata di useExplore.ts (intro:XX, introHome, ocean, fact:XX)
+ * dan useFlagQuiz.ts (ask:XX, praise:1..4, praiseFlag:XX, celebrate:N, celebrateMany, tryAgain).
+ */
+const spriteEntry = (src: string, durationMs = 10000) => ({ src, bytes: 4096, durationMs });
+const clipEntry = (sprite: string, startMs: number, durationMs: number) => ({
+  sprite,
+  startMs,
+  durationMs,
+});
+const spriteMap = (over: Record<string, unknown> = {}) => ({
+  version: 1,
+  locale: 'id',
+  sprites: {
+    core: spriteEntry('core-0a1b2c3d.mp3'),
+    'fact-1': spriteEntry('fact-1-deadbeef.mp3', 8000),
+    'intro-asia-1': spriteEntry('intro-asia-1-00ff00ff.mp3', 5000),
+    'quiz-1-1': spriteEntry('quiz-1-1-12345678.mp3', 6000),
+  },
+  clips: {
+    introHome: clipEntry('core', 0, 2000),
+    ocean: clipEntry('core', 2250, 1500),
+    'praise:1': clipEntry('core', 4000, 800),
+    'praise:4': clipEntry('core', 5050, 800),
+    tryAgain: clipEntry('core', 6100, 1200),
+    'celebrate:5': clipEntry('core', 7550, 1000),
+    'celebrate:100': clipEntry('core', 8800, 1200),
+    celebrateMany: clipEntry('quiz-1-1', 0, 2000),
+    'fact:JP': clipEntry('fact-1', 0, 3000),
+    'intro:JP': clipEntry('intro-asia-1', 0, 2000),
+    'intro:AQ': clipEntry('intro-asia-1', 2250, 2000),
+    'ask:JP': clipEntry('quiz-1-1', 2250, 1500),
+    'praiseFlag:JP': clipEntry('quiz-1-1', 4000, 2000),
+  },
+  ...over,
+});
+const withClips = (clips: Record<string, unknown>) => spriteMap({ clips });
+const withSprites = (sprites: Record<string, unknown>) => spriteMap({ sprites });
+
+describe('AudioSpriteMapSchema', () => {
+  it('TC-AUD-MAP-1 peta valid dengan semua bentuk ClipId nyata diterima', () => {
+    ok(AudioSpriteMapSchema, spriteMap());
+  });
+  it('TC-AUD-MAP-1 locale en dan peta tanpa klip diterima', () => {
+    ok(AudioSpriteMapSchema, spriteMap({ locale: 'en' }));
+    ok(AudioSpriteMapSchema, spriteMap({ clips: {} }));
+  });
+  it.each([
+    ['versi bukan 1', { version: 2 }],
+    ['locale tak dikenal', { locale: 'fr' }],
+    ['locale hilang', { locale: undefined }],
+    ['sprites hilang', { sprites: undefined }],
+    ['clips hilang', { clips: undefined }],
+  ])('TC-AUD-MAP-1 peta ditolak: %s', (_n, patch) => {
+    bad(AudioSpriteMapSchema, spriteMap(patch));
+  });
+  it('TC-AUD-MAP-1 klip yang berdempetan persis (akhir = awal berikutnya) tidak dianggap tumpang tindih', () => {
+    ok(
+      AudioSpriteMapSchema,
+      withClips({ introHome: clipEntry('core', 0, 1000), ocean: clipEntry('core', 1000, 1000) }),
+    );
+  });
+  it('TC-AUD-MAP-1 klip yang berakhir tepat di durasi sprite diterima', () => {
+    ok(AudioSpriteMapSchema, withClips({ ocean: clipEntry('core', 9000, 1000) }));
+  });
+
+  it('TC-AUD-MAP-2 dua klip satu sprite yang tumpang tindih 1 ms ditolak', () => {
+    bad(
+      AudioSpriteMapSchema,
+      withClips({ introHome: clipEntry('core', 0, 1001), ocean: clipEntry('core', 1000, 1000) }),
+    );
+  });
+  it('TC-AUD-MAP-2 tumpang tindih terdeteksi walau klip yang lebih awal didaftarkan belakangan', () => {
+    bad(
+      AudioSpriteMapSchema,
+      withClips({ ocean: clipEntry('core', 1000, 1000), introHome: clipEntry('core', 0, 1500) }),
+    );
+  });
+  it('TC-AUD-MAP-2 klip yang terkandung penuh di klip lain ditolak', () => {
+    bad(
+      AudioSpriteMapSchema,
+      withClips({ introHome: clipEntry('core', 0, 5000), ocean: clipEntry('core', 1000, 500) }),
+    );
+  });
+  it('TC-AUD-MAP-2 tumpang tindih yang bukan tetangga di urutan pendaftaran tetap ditolak', () => {
+    bad(
+      AudioSpriteMapSchema,
+      withClips({
+        introHome: clipEntry('core', 0, 4000),
+        ocean: clipEntry('core', 5000, 1000),
+        tryAgain: clipEntry('core', 3000, 3000),
+      }),
+    );
+  });
+  it('TC-AUD-MAP-2 rentang waktu sama di sprite berbeda bukan tumpang tindih', () => {
+    ok(
+      AudioSpriteMapSchema,
+      withClips({ introHome: clipEntry('core', 0, 2000), 'fact:JP': clipEntry('fact-1', 0, 2000) }),
+    );
+  });
+
+  it('TC-AUD-MAP-3 klip yang menunjuk sprite tak dikenal ditolak', () => {
+    bad(AudioSpriteMapSchema, withClips({ introHome: clipEntry('tidak-ada', 0, 1000) }));
+  });
+
+  it('TC-AUD-MAP-4 klip yang melewati durasi sprite 1 ms ditolak', () => {
+    bad(AudioSpriteMapSchema, withClips({ ocean: clipEntry('core', 9000, 1001) }));
+  });
+  it('TC-AUD-MAP-4 klip yang dimulai setelah sprite berakhir ditolak', () => {
+    bad(AudioSpriteMapSchema, withClips({ ocean: clipEntry('core', 10500, 100) }));
+  });
+  it('TC-AUD-MAP-4 batas dihitung per sprite, bukan memakai durasi sprite lain', () => {
+    bad(AudioSpriteMapSchema, withClips({ 'intro:JP': clipEntry('intro-asia-1', 4500, 1000) }));
+  });
+
+  it.each([
+    ['naik direktori', '../core-0a1b2c3d.mp3'],
+    ['naik direktori di tengah', 'a/../core-0a1b2c3d.mp3'],
+    ['subfolder', 'sub/core-0a1b2c3d.mp3'],
+    ['path absolut', '/core-0a1b2c3d.mp3'],
+    ['URL absolut', 'https://example.org/core-0a1b2c3d.mp3'],
+    ['tanpa hash', 'core.mp3'],
+    ['hash 7 digit', 'core-0a1b2c3.mp3'],
+    ['hash 9 digit', 'core-0a1b2c3d4.mp3'],
+    ['hash huruf besar', 'core-0A1B2C3D.mp3'],
+    ['hash bukan heksadesimal', 'core-0a1b2c3g.mp3'],
+    ['ekstensi bukan mp3', 'core-0a1b2c3d.wav'],
+    ['nama huruf besar', 'Core-0a1b2c3d.mp3'],
+    ['kosong', ''],
+  ])('TC-AUD-MAP-5 src ditolak: %s', (_n, src) => {
+    bad(AudioSpriteMapSchema, withSprites({ core: spriteEntry(src) }));
+  });
+  it.each([
+    ['bytes 0', { bytes: 0 }],
+    ['bytes pecahan', { bytes: 10.5 }],
+    ['durasi 0', { durationMs: 0 }],
+    ['durasi negatif', { durationMs: -1 }],
+  ])('TC-AUD-MAP-5 entri sprite ditolak: %s', (_n, patch) => {
+    bad(
+      AudioSpriteMapSchema,
+      withSprites({ core: { ...spriteEntry('core-0a1b2c3d.mp3'), ...patch } }),
+    );
+  });
+  it.each([
+    ['huruf besar', 'Core'],
+    ['naik direktori', '../x'],
+    ['spasi', 'quiz 1'],
+    ['kosong', ''],
+  ])('TC-AUD-MAP-5 kunci grup sprite ditolak: %s', (_n, key) => {
+    bad(AudioSpriteMapSchema, withSprites({ [key]: spriteEntry('core-0a1b2c3d.mp3') }));
+  });
+  it.each([
+    ['startMs negatif', { startMs: -1 }],
+    ['startMs pecahan', { startMs: 0.5 }],
+    ['durationMs 0', { durationMs: 0 }],
+    ['durationMs negatif', { durationMs: -5 }],
+  ])('TC-AUD-MAP-5 entri klip ditolak: %s', (_n, patch) => {
+    bad(AudioSpriteMapSchema, withClips({ ocean: { ...clipEntry('core', 0, 1000), ...patch } }));
+  });
+
+  it.each([
+    ['kode negara huruf kecil', 'intro:jp'],
+    ['kode negara 3 huruf', 'intro:JPN'],
+    ['kode negara 1 huruf', 'intro:J'],
+    ['awalan huruf besar', 'Intro:JP'],
+    ['intro tanpa kode', 'intro'],
+    ['intro dengan titik dua kosong', 'intro:'],
+    ['fact tanpa kode', 'fact:'],
+    ['awalan tak dikenal', 'name:JP'],
+    ['ask huruf kecil', 'ask:jp'],
+    ['praise tanpa nomor', 'praise:'],
+    ['praise bukan angka', 'praise:x'],
+    ['celebrate tanpa angka', 'celebrate:'],
+    ['celebrate bukan angka', 'celebrate:abc'],
+    ['celebrateMany dengan sufiks', 'celebrateMany:5'],
+    ['ocean huruf besar', 'Ocean'],
+    ['tryAgain dengan spasi', 'tryAgain '],
+    ['naik direktori', '../intro:JP'],
+    ['garis miring', 'intro/JP'],
+    ['kosong', ''],
+  ])('TC-AUD-MAP-6 ClipId ditolak: %s', (_n, id) => {
+    bad(AudioSpriteMapSchema, withClips({ [id]: clipEntry('core', 0, 1000) }));
+  });
+});
+
+const manifestEntry = (over: Record<string, unknown> = {}) => ({
+  id: 'intro:JP',
+  locale: 'id',
+  text: 'Ini Jepang!',
+  textHash: 'a'.repeat(64),
+  attempt: 1,
+  raw: '.tmp/audio/raw/id/intro-JP-1.wav',
+  whisper: { transcript: 'ini jepang', score: 0.97, flag: 'ok' },
+  durationMs: 1800,
+  reviewedAt: '2026-10-16T10:00:00.000Z',
+  ...over,
+});
+const manifest = (clips: unknown[] = [manifestEntry()]) => ({ version: 1, clips });
+
+describe('AudioManifestSchema', () => {
+  it('TC-AUD-MAP-1 manifest valid dengan beberapa klip diterima', () => {
+    ok(
+      AudioManifestSchema,
+      manifest([
+        manifestEntry(),
+        manifestEntry({ id: 'celebrateMany', text: 'Hore!', locale: 'en' }),
+        manifestEntry({ id: 'celebrate:100', text: 'Hore, seratus!' }),
+      ]),
+    );
+    ok(AudioManifestSchema, manifest([]));
+  });
+  it.each([
+    ['id salah format', { id: 'intro:jp' }],
+    ['id kosong', { id: '' }],
+    ['locale tak dikenal', { locale: 'fr' }],
+    ['teks kosong', { text: '' }],
+    ['teks hilang', { text: undefined }],
+    ['textHash bukan 64 hex', { textHash: 'xyz' }],
+    ['textHash huruf besar', { textHash: 'A'.repeat(64) }],
+    ['attempt 0', { attempt: 0 }],
+    ['attempt pecahan', { attempt: 1.5 }],
+    ['raw hilang', { raw: undefined }],
+    ['whisper hilang', { whisper: undefined }],
+    ['whisper tanpa transkrip', { whisper: { score: 0.9, flag: 'ok' } }],
+    ['skor whisper di atas 1', { whisper: { transcript: 'x', score: 1.5, flag: 'ok' } }],
+    ['skor whisper negatif', { whisper: { transcript: 'x', score: -0.1, flag: 'ok' } }],
+    ['durasi 0', { durationMs: 0 }],
+    ['reviewedAt bukan ISO', { reviewedAt: 'kemarin' }],
+    ['reviewedAt hilang', { reviewedAt: undefined }],
+  ])('TC-AUD-MAP-6 entri manifest ditolak: %s', (_n, patch) => {
+    bad(AudioManifestSchema, manifest([manifestEntry(patch)]));
+  });
+  it('TC-AUD-MAP-6 satu entri buruk menggagalkan seluruh manifest', () => {
+    bad(AudioManifestSchema, manifest([manifestEntry(), manifestEntry({ id: 'bukan-id' })]));
   });
 });

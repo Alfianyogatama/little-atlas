@@ -25,6 +25,10 @@ const COPY: Record<string, { id: string; en: string }> = {
     id: 'Hore! Kamu dapat {count} bintang! Hebat sekali!',
     en: 'Hooray! You got {count} stars! Amazing!',
   },
+  quiz_celebrate_many_speech: {
+    id: 'Hore! Bintangmu banyak sekali! Hebat!',
+    en: 'Hooray! You have so many stars! Amazing!',
+  },
   quiz_region_label: { id: 'Soal Tebak Bendera', en: 'Flag quiz' },
 };
 
@@ -32,8 +36,8 @@ const id = idMessages as Record<string, unknown>;
 const en = enMessages as Record<string, unknown>;
 
 describe('copy Tebak Bendera (#6): teks persis seperti yang disetujui pemilik', () => {
-  it('tabel copy mencakup 16 key', () => {
-    expect(Object.keys(COPY)).toHaveLength(16);
+  it('tabel copy mencakup 17 key', () => {
+    expect(Object.keys(COPY)).toHaveLength(17);
   });
 
   it.each(Object.entries(COPY))('%s: id dan en sesuai tabel', (key, text) => {

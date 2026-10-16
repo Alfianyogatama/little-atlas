@@ -175,3 +175,106 @@ export const IconManifestSchema = z
     }
   });
 export type IconManifest = z.infer<typeof IconManifestSchema>;
+
+const AudioLocale = z.enum(['id', 'en']);
+/** Kunci grup sprite: huruf kecil, angka, tanda hubung (mis. `core`, `intro-asia-1`). */
+const GroupKey = z.string().regex(/^[a-z0-9-]+$/, 'kunci grup harus huruf kecil, angka, atau -');
+/** ID klip sesuai segmen di useExplore.ts/useFlagQuiz.ts (ADR-008). */
+const ClipId = z
+  .string()
+  .regex(
+    /^(?:introHome|ocean|tryAgain|celebrateMany|(?:intro|fact|ask|praiseFlag):[A-Z]{2}|(?:praise|celebrate):\d+)$/,
+    'ID klip tidak dikenal',
+  );
+const PositiveInt = z.number().int().positive();
+
+/** Peta sprite audio per locale: berkas MP3 di `public/audio/<loc>/` dan posisi tiap klip di dalamnya. */
+export const AudioSpriteMapSchema = z
+  .object({
+    version: z.literal(1),
+    locale: AudioLocale,
+    sprites: z.record(
+      GroupKey,
+      z.object({
+        src: z.string().regex(/^[a-z0-9-]+-[0-9a-f]{8}\.mp3$/, 'src harus <grup>-<hash8>.mp3'),
+        bytes: PositiveInt,
+        durationMs: PositiveInt,
+      }),
+    ),
+    clips: z.record(
+      ClipId,
+      z.object({
+        sprite: GroupKey,
+        startMs: z.number().int().min(0),
+        durationMs: PositiveInt,
+      }),
+    ),
+  })
+  .superRefine((m, ctx) => {
+    const bySprite = new Map<string, { id: string; start: number; end: number }[]>();
+    for (const [id, clip] of Object.entries(m.clips)) {
+      const sprite = m.sprites[clip.sprite];
+      if (!sprite) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['clips', id, 'sprite'],
+          message: `sprite '${clip.sprite}' tidak ada`,
+        });
+        continue;
+      }
+      const end = clip.startMs + clip.durationMs;
+      if (end > sprite.durationMs) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['clips', id],
+          message: `klip melewati durasi sprite '${clip.sprite}'`,
+        });
+      }
+      const list = bySprite.get(clip.sprite) ?? [];
+      list.push({ id, start: clip.startMs, end });
+      bySprite.set(clip.sprite, list);
+    }
+    for (const [name, list] of bySprite) {
+      list.sort((a, b) => a.start - b.start);
+      let maxEnd = -1;
+      let maxId = '';
+      for (const c of list) {
+        if (c.start < maxEnd) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['clips', c.id],
+            message: `klip '${c.id}' tumpang tindih dengan '${maxId}' di sprite '${name}'`,
+          });
+        }
+        if (c.end > maxEnd) {
+          maxEnd = c.end;
+          maxId = c.id;
+        }
+      }
+    }
+  });
+export type AudioSpriteMap = z.infer<typeof AudioSpriteMapSchema>;
+
+/** Manifest klip audio kurasi (issue #49): satu entri per klip yang sudah ditinjau. */
+export const AudioManifestSchema = z.object({
+  version: z.literal(1),
+  clips: z.array(
+    z.object({
+      id: ClipId,
+      locale: AudioLocale,
+      text: z.string().min(1),
+      textHash: Hex64,
+      attempt: z.number().int().min(1),
+      /** Berkas mentah di .tmp/audio/raw yang menghasilkan klip ini. */
+      raw: z.string().min(1),
+      whisper: z.object({
+        transcript: z.string(),
+        score: z.number().min(0).max(1),
+        flag: z.string().min(1),
+      }),
+      durationMs: PositiveInt,
+      reviewedAt: z.iso.datetime(),
+    }),
+  ),
+});
+export type AudioManifest = z.infer<typeof AudioManifestSchema>;

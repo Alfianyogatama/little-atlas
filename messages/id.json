@@ -27,5 +27,6 @@
   "quiz_stars_label": "Bintang: {count}",
   "quiz_celebrate_text": "Hore! {count} bintang!",
   "quiz_celebrate_speech": "Hore! Kamu dapat {count} bintang! Hebat sekali!",
+  "quiz_celebrate_many_speech": "Hore! Bintangmu banyak sekali! Hebat!",
   "quiz_region_label": "Soal Tebak Bendera"
 }

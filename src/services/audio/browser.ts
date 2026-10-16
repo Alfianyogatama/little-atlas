@@ -1,7 +1,48 @@
 import type { AudioService } from './index';
-import { createWebSpeechAudio, type SynthLike, type UtteranceLike } from './webSpeech';
+import { createHowlerClips, type HowlFactory } from './howlerClips';
+import { createLayeredAudio } from './layered';
+import { createLocalVoice, type SynthLike, type UtteranceLike } from './webSpeech';
 
+interface AudioSessionLike {
+  type: string;
+}
+
+/** Howler (K8) hanya dimuat saat grup sprite pertama dibutuhkan, supaya tidak masuk chunk awal. */
+const howlFactory: HowlFactory = async (options) => {
+  const { Howl } = await import('howler');
+  return new Howl(options);
+};
+
+/**
+ * Peta belum ada (null): 404, atau 200 yang bukan JSON (vercel.json me-rewrite path yang belum ada ke
+ * index.html) atau JSON yang gagal di-parse. Status tidak ok lain dan galat jaringan menolak.
+ */
+async function fetchJson(url: string): Promise<unknown> {
+  const response = await fetch(url);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`Gagal memuat ${url}: ${String(response.status)}`);
+  const contentType = response.headers.get('content-type');
+  if (contentType !== null && !contentType.toLowerCase().includes('json')) return null;
+  try {
+    return (await response.json()) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+let instance: AudioService | null = null;
+
+/** Singleton modul: listener voiceschanged dan referensi utterance cukup satu per halaman. */
 export function createBrowserAudio(): AudioService {
+  instance ??= buildBrowserAudio();
+  return instance;
+}
+
+function buildBrowserAudio(): AudioService {
+  // Agar suara tetap keluar saat sakelar senyap iOS aktif.
+  if (typeof navigator !== 'undefined' && 'audioSession' in navigator) {
+    (navigator as Navigator & { audioSession: AudioSessionLike }).audioSession.type = 'playback';
+  }
   const native =
     typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null;
   const canSpeak = native !== null && typeof SpeechSynthesisUtterance !== 'undefined';
@@ -58,7 +99,7 @@ export function createBrowserAudio(): AudioService {
       }
     : null;
 
-  return createWebSpeechAudio({
+  const voice = createLocalVoice({
     synth,
     makeUtterance: (text) => {
       const u: UtteranceLike = {
@@ -74,4 +115,6 @@ export function createBrowserAudio(): AudioService {
       return u;
     },
   });
+
+  return createLayeredAudio({ clips: createHowlerClips({ fetchJson, howlFactory }), voice });
 }

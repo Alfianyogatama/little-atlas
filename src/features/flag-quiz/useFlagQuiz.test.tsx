@@ -3,6 +3,7 @@ import { act, cleanup, renderHook } from '@testing-library/react';
 import { StrictMode, type RefObject } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NEXT_QUESTION_DELAY_MS } from '@/domain/quiz';
+import { m } from '@/paraglide/messages.js';
 import type { GlobeHandle } from '@/globe/Globe';
 import type { AudioService, SpeechSegment } from '@/services/audio';
 import { useFlagQuiz } from './useFlagQuiz';
@@ -20,7 +21,7 @@ afterEach(() => {
 });
 
 /** Hook dengan AudioService dan globeRef tiruan; flyTo baru selesai saat `land()` dipanggil. */
-function setup(options: { strict?: boolean } = {}) {
+function setup(options: { strict?: boolean; initialStars?: number } = {}) {
   const speak = vi.fn<(segments: readonly SpeechSegment[]) => void>();
   const stop = vi.fn<() => void>();
   const audio: AudioService = { speak, stop };
@@ -47,7 +48,7 @@ function setup(options: { strict?: boolean } = {}) {
         pool: POOL,
         catalog: null,
         globeRef,
-        initialStars: 0,
+        initialStars: options.initialStars ?? 0,
         previousTarget: null,
         seed: 7,
         onStarsChange,
@@ -186,5 +187,67 @@ describe('useFlagQuiz', () => {
       h.result.current.answer(target);
     });
     expect(h.onStarsChange).toHaveBeenCalledWith(1);
+  });
+});
+
+/**
+ * R5 (issue #8, K4): perayaan bintang memakai klip utuh `celebrate:N` untuk N = 5..100;
+ * di atas 100 dipakai segmen `celebrateMany` dengan teks baru (angka tetap tampil di layar).
+ */
+describe('useFlagQuiz R5: ID segmen perayaan', () => {
+  /** Mulai dari `before` bintang, jawab benar sekali, kembalikan segmen yang diucapkan. */
+  async function celebrationAt(before: number) {
+    const h = setup({ initialStars: before });
+    act(() => {
+      h.result.current.start();
+    });
+    await h.land(0);
+    h.speak.mockClear();
+    act(() => {
+      h.result.current.answer(targetOf(h.result));
+    });
+    expect(h.onStarsChange).toHaveBeenCalledWith(before + 1);
+    const calls = h.speak.mock.calls;
+    expect(calls).toHaveLength(1);
+    return calls[0]?.[0] ?? [];
+  }
+
+  it.each([5, 100])(
+    'TC-R5-1 %i bintang: satu segmen `celebrate:%i` dengan teks angka',
+    async (n) => {
+      const segments = await celebrationAt(n - 1);
+      expect(segments).toEqual([
+        { id: `celebrate:${n}`, text: m.quiz_celebrate_speech({ count: n }), locale: 'id' },
+      ]);
+    },
+  );
+
+  it.each([105, 200])(
+    'TC-R5-2 %i bintang: satu segmen `celebrateMany`, teks tanpa angka',
+    async (n) => {
+      const segments = await celebrationAt(n - 1);
+      expect(segments).toEqual([
+        {
+          id: 'celebrateMany',
+          text: 'Hore! Bintangmu banyak sekali! Hebat!',
+          locale: 'id',
+        },
+      ]);
+    },
+  );
+
+  it('TC-R5-3 kontrol: 101 bintang bukan kelipatan 5, hanya pujian biasa', async () => {
+    const h = setup({ initialStars: 100 });
+    act(() => {
+      h.result.current.start();
+    });
+    await h.land(0);
+    h.speak.mockClear();
+    act(() => {
+      h.result.current.answer(targetOf(h.result));
+    });
+    const ids = h.speak.mock.calls.flatMap(([segments]) => segments.map((s) => s.id));
+    expect(ids.some((id) => id.startsWith('celebrate'))).toBe(false);
+    expect(ids.some((id) => id.startsWith('praiseFlag:'))).toBe(true);
   });
 });
