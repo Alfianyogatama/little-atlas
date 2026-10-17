@@ -45,10 +45,35 @@ test.describe('bahasa perangkat id-ID (default)', () => {
 test.describe('bahasa perangkat en-US', () => {
   test.use({ locale: 'en-US' });
 
-  test('TC-F06-02 html lang en dan tombol zoom berbahasa Inggris', async ({ page }) => {
-    await open(page);
+  // REMAP #53: TC-F06-02 dulu mengandalkan locale browser en-US untuk memilih Inggris.
+  // Bahasa perangkat tidak lagi dipakai; Inggris kini hanya lewat ?debug=1&lang=en.
+  test('TC-F06-02 html lang en dan tombol zoom berbahasa Inggris (lewat lang=en)', async ({
+    page,
+  }) => {
+    await open(page, '?debug=1&lang=en');
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(page.getByRole('button', { name: enMessages.globe_zoom_in })).toBeVisible();
     await expect(page.getByRole('button', { name: enMessages.globe_zoom_out })).toBeVisible();
+  });
+
+  test('TC-E2E-I18N-INIT-1 browser en-US tanpa lang tetap berbahasa Indonesia', async ({
+    page,
+  }) => {
+    expect(await page.evaluate(() => navigator.languages[0])).toBe('en-US');
+    await open(page, '?debug=1');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'id');
+    await expect(page.getByRole('button', { name: idMessages.globe_zoom_in })).toBeVisible();
+    await expect(page.getByRole('button', { name: idMessages.globe_zoom_out })).toBeVisible();
+    await expect(page.getByRole('button', { name: enMessages.globe_zoom_in })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: enMessages.globe_zoom_out })).toHaveCount(0);
+  });
+
+  test('TC-E2E-I18N-INIT-1 kontrol: context sama dengan ?debug=1&lang=en berbahasa Inggris', async ({
+    page,
+  }) => {
+    await open(page, '?debug=1&lang=en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.getByRole('button', { name: enMessages.globe_zoom_in })).toBeVisible();
+    await expect(page.getByRole('button', { name: idMessages.globe_zoom_in })).toHaveCount(0);
   });
 });

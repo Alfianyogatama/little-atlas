@@ -27,7 +27,6 @@ export function subscribeLocale(fn: () => void): () => void {
 export function bootLocale(): AppLocale {
   const locale = resolveInitialLocale({
     stored: null, // diisi #10 lewat repository
-    preferred: navigator.languages ?? [navigator.language],
   });
   setAppLocale(locale);
   return locale;

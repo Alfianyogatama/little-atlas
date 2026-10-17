@@ -1,9 +1,21 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getAppLocale, setAppLocale, subscribeLocale } from './locale';
+import { bootLocale, getAppLocale, setAppLocale, subscribeLocale } from './locale';
 
 afterEach(() => {
+  vi.restoreAllMocks();
   setAppLocale('id');
+});
+
+// #53: bahasa perangkat tidak dipakai; bahasa awal selalu id.
+describe('bootLocale', () => {
+  it('TC-I18N-INIT-5 navigator.languages en-US diabaikan: hasil id dan html lang id', () => {
+    vi.spyOn(navigator, 'languages', 'get').mockReturnValue(['en-US']);
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('en-US');
+    expect(bootLocale()).toBe('id');
+    expect(getAppLocale()).toBe('id');
+    expect(document.documentElement.lang).toBe('id');
+  });
 });
 
 describe('service locale', () => {

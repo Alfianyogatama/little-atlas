@@ -476,10 +476,9 @@ for (const [width, height] of [
 }
 
 test.describe('bahasa Inggris', () => {
-  test.use({ locale: 'en-US' });
-
+  // REMAP #53: dulu test.use({ locale: 'en-US' }) memilih Inggris; sekarang lewat lang=en.
   test('TC-F03-13 kartu, tombol, dan suara berbahasa Inggris', async ({ page }) => {
-    await openAt(page, '&lookAt=JP');
+    await openAt(page, '&lang=en&lookAt=JP');
     await waitFlightDone(page, japan.anchor);
     await tapGlobeCenter(page);
     const card = page.getByRole('region', {
