@@ -9,24 +9,10 @@ function toAppLocale(value: string): AppLocale | null {
   return APP_LOCALES.find((locale) => locale === normalized) ?? null;
 }
 
-function languageSubtag(tag: string): string {
-  return tag.split(/[-_]/)[0] ?? '';
-}
-
-export function resolveInitialLocale({
-  stored,
-  preferred,
-}: {
-  stored: string | null;
-  preferred: readonly string[];
-}): AppLocale {
+export function resolveInitialLocale({ stored }: { stored: string | null }): AppLocale {
   if (stored !== null) {
     const fromStored = toAppLocale(stored);
     if (fromStored !== null) return fromStored;
-  }
-  for (const tag of preferred) {
-    const fromTag = toAppLocale(languageSubtag(tag));
-    if (fromTag !== null) return fromTag;
   }
   return BASE_LOCALE;
 }

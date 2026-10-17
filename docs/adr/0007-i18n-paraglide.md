@@ -1,6 +1,6 @@
 # ADR-007: i18n dengan Paraglide
 
-Status: diterima pada 16 Oktober 2026, dari rencana issue #7 yang disetujui pemilik.
+Status: diterima pada 16 Oktober 2026, dari rencana issue #7 yang disetujui pemilik. Direvisi 17 Oktober 2026 (issue #53): bahasa perangkat tidak lagi dipakai.
 
 Keputusannya: semua teks antarmuka lewat Paraglide JS dengan strategi `globalVariable` + `baseLocale`. Bahasa diganti saat runtime tanpa reload dan tanpa me-remount globe, dan satu service menjadi satu-satunya pengubah bahasa.
 
@@ -21,14 +21,14 @@ F-06.3: tidak ada teks antarmuka yang tertanam di kode, dan setiap key punya ter
 ### Strategi locale
 
 - `baseLocale` `id`, locale `["id", "en"]`, strategi `["globalVariable", "baseLocale"]`. Tanpa localStorage, cookie, atau URL. Penyimpanan pilihan bahasa nanti lewat repository di #10 (ADR-002).
-- Urutan bahasa awal: pilihan tersimpan, lalu bahasa perangkat (`navigator.languages`), lalu `id`. Aturannya fungsi murni `resolveInitialLocale({ stored, preferred })` di `src/domain/locale/`.
+- Urutan bahasa awal: pilihan tersimpan, lalu bahasa perangkat (`navigator.languages`), lalu `id`. Aturannya fungsi murni `resolveInitialLocale({ stored, preferred })` di `src/domain/locale/`. Urutan ini direvisi pada 17 Oktober 2026; lihat bagian Revisi di bawah.
 - `src/services/i18n/locale.ts` adalah satu-satunya pemanggil `setLocale` dan satu-satunya penulis `<html lang>`. Ganti bahasa memakai `setLocale(locale, { reload: false })`, lalu service memberi tahu pelanggan lewat `subscribeLocale`.
 - Komponen yang memanggil `m.*` wajib memanggil `useLocale()` (berbasis `useSyncExternalStore`) supaya labelnya tidak basi setelah bahasa berganti. Globe tidak di-remount.
 
 ### Pengujian
 
 - Pemicu debug `?debug=1&lang=en` mengganti bahasa saat runtime untuk tes e2e. Parameter ini hanya dibaca dalam mode debug, yaitu di build yang mengaktifkan debug (dev, build e2e, preview Vercel; ADR-006, issue #32).
-- Playwright memakai `locale: 'id-ID'` secara global, sehingga default `id` terbukti dari bahasa peramban, dan tes bahasa lain menimpanya per tes.
+- Playwright memakai `locale: 'id-ID'` secara global, sehingga default `id` terbukti dari bahasa peramban, dan tes bahasa lain menimpanya per tes (direvisi 17 Oktober 2026: tes bahasa Inggris kini memakai `?debug=1&lang=en`; lihat Revisi 17 Oktober 2026).
 
 ## Konsekuensi
 
@@ -43,3 +43,11 @@ F-06.3: tidak ada teks antarmuka yang tertanam di kode, dan setiap key punya ter
 - `allowJs` supaya hasil generate JavaScript bisa diketik: melonggarkan konfigurasi TypeScript strict untuk seluruh repo.
 - Strategi `localStorage`: memberi Paraglide akses penyimpanan langsung, padahal penyimpanan harus lewat repository (ADR-002, AGENTS.md aturan 2 dan 3).
 - URL CDN untuk plugin inlang: build bergantung pada jaringan dan pihak luar, bertentangan dengan syarat build tanpa jaringan.
+
+## Revisi 17 Oktober 2026 (issue #53)
+
+Urutan bahasa awal berubah menjadi: pilihan tersimpan, lalu `id`. Bahasa perangkat (`navigator.languages`) tidak dipakai. Fungsi murninya kini `resolveInitialLocale({ stored })` di `src/domain/locale/`; pilihan tersimpan yang valid (`id` atau `en`, tanpa membedakan huruf besar kecil) tetap menang.
+
+Alasannya: pemilik menguji preview #49 pada 17 Oktober 2026. Huawei MatePad 11.5 SE yang bahasa OS-nya Inggris membuka game dalam bahasa Inggris, sementara audio Inggris belum ada (batch 3 #49), sehingga game diam di perangkat acuan. Anak harus mulai dalam bahasa Indonesia, dan orang tua yang memilih bahasa lain lewat pengaturan (#9). Keputusan ini dari pemilik.
+
+Yang tidak berubah: `?debug=1&lang=en` tetap memaksa bahasa untuk debug dan e2e, dan `stored` tetap diisi oleh #10 lewat repository. Playwright tetap memakai `locale: 'id-ID'`; tes bahasa Inggris memakai parameter debug, bukan bahasa peramban.
