@@ -87,6 +87,8 @@ Bagian ini mencatat implementasi Howler yang sudah jalan di `src/services/audio/
 
 `intro:ID` tidak pernah diputar karena ketukan ID memberi `introHome`, jadi tidak ada klipnya.
 
+Antrean memberi jeda 400 ms (`SEGMENT_GAP_MS`) antarsegmen yang terdengar, atas masukan uji MatePad 17 Oktober 2026 ("Betul!" lalu "Itu bendera ..." terasa bertabrakan); F-07.4 tetap: segmen tidak menumpuk, dan `speak`/`stop` membatalkan jeda yang sedang berjalan.
+
 Risiko terbuka dicatat di issue #50: unlock di Safari iPad, `has()` tanpa timeout (menunggu fetch peta), cadangan HTML5 Audio, dan pemakaian memori.
 
 ## Alternatif yang ditolak
