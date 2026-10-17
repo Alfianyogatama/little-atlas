@@ -8,7 +8,7 @@ import { assertVoiceConfigured, loadVoice, styleHash } from './voice';
 
 // Kontrak tambahan yang ditetapkan tes ini:
 // - voice.json = { version: 1, voice: string, promptMode: 'transcript' | 'system' | 'plain', style: { id: string, en: string } };
-//   sampai pemilik memilih suara, `voice` bernilai "ISI-SETELAH-SAMPEL". promptMode wajib (nilai repo 'transcript').
+//   sampai pemilik memilih suara, `voice` bernilai "ISI-SETELAH-SAMPEL". promptMode wajib (nilai repo 'plain', keputusan pemilik 17 Okt 2026).
 // - loadVoice(path) membaca dan memvalidasi dengan Zod (versi harus 1, semua string tidak kosong);
 //   berkas rusak atau tidak sesuai skema melempar.
 // - assertVoiceConfigured(v) melempar bila v.voice berawalan "ISI-SETELAH-"; selain itu tidak.
@@ -92,9 +92,11 @@ describe('loadVoice dan assertVoiceConfigured', () => {
 
   // REMAP TC-AUD49-VOICE-3: gaya repo lama (satu kalimat) diganti gaya ketat "baca persis tanpa menambah kata"
   // karena model TTS menambah kata dan membaca "Hore!" sebagai "Hooray!"; nilai lama tidak lagi dikunci.
-  it('TC-AUD49-VOICE-3: voice.json di repo memakai promptMode transcript dan gaya yang ditetapkan', () => {
+  // REMAP TC-AUD49-VOICE-3 (17 Okt 2026): pemilik memilih promptMode `plain` setelah mendengar sampel Leda
+  // (mode transcript masih menambah kata, mis. "Ayo, ini Indonesia..."); gaya persis tetap dikunci.
+  it('TC-AUD49-VOICE-3: voice.json di repo memakai promptMode plain dan gaya yang ditetapkan', () => {
     const v = loadVoice(fileURLToPath(new URL('./voice.json', import.meta.url)));
-    expect(v.promptMode).toBe('transcript');
+    expect(v.promptMode).toBe('plain');
     expect(v.style).toEqual(REPO_STYLE);
   });
 
@@ -105,10 +107,11 @@ describe('loadVoice dan assertVoiceConfigured', () => {
     expect(v.promptMode).toBe('plain');
   });
 
-  it('TC-AUD49-VOICE-4: voice.json di repo: suara Leda, transcript, gaya id dan en ketat persis', () => {
+  // REMAP TC-AUD49-VOICE-4 (17 Okt 2026): promptMode repo 'transcript' -> 'plain' (keputusan pemilik, lihat di atas).
+  it('TC-AUD49-VOICE-4: voice.json di repo: suara Leda, plain, gaya id dan en ketat persis', () => {
     const v = loadVoice(fileURLToPath(new URL('./voice.json', import.meta.url)));
     expect(v.voice).toBe('Leda');
-    expect(v.promptMode).toBe('transcript');
+    expect(v.promptMode).toBe('plain');
     expect(v.style.id).toBe(REPO_STYLE.id);
     expect(v.style.en).toBe(REPO_STYLE.en);
   });
