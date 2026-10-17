@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { PromptMode } from './voice';
 
 const DEFAULT_RATE = 24000;
 const WAV_HEADER_BYTES = 44;
@@ -8,18 +9,29 @@ export interface TtsPayloadInput {
   locale: string;
   voice: string;
   style: string;
+  promptMode: PromptMode;
   seed?: number;
 }
 
-/** Body generateContent Gemini untuk TTS. `locale` hanya memilih style di pemanggil, tidak masuk body. */
+/**
+ * Body generateContent Gemini untuk TTS. `locale` hanya memilih style di pemanggil, tidak masuk body.
+ * Gaya tidak boleh digabung "gaya: teks" karena ikut dibacakan. Mode `transcript` memisahkannya lewat
+ * catatan sutradara di prompt; mode `system` lewat systemInstruction.
+ */
 export function buildTtsPayload({
   text,
   voice,
   style,
+  promptMode,
   seed,
 }: TtsPayloadInput): Record<string, unknown> {
+  const prompt =
+    promptMode === 'transcript'
+      ? `### DIRECTOR'S NOTES\n${style}\n\n### TRANSCRIPT\n${text}`
+      : text;
   return {
-    contents: [{ role: 'user', parts: [{ text: `${style}: ${text}` }] }],
+    ...(promptMode === 'system' ? { systemInstruction: { parts: [{ text: style }] } } : {}),
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
     generationConfig: {
       responseModalities: ['AUDIO'],
       speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } },

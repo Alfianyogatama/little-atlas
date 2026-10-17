@@ -3,10 +3,12 @@ import { describe, expect, it } from 'vitest';
 import { buildTtsPayload, extractPcm, pcmToWav, readWav } from './tts';
 
 // Kontrak tambahan yang ditetapkan tes ini (modul murni, tanpa jaringan dan tanpa berkas):
-// - buildTtsPayload({ text, locale, voice, style, seed? }) menghasilkan body generateContent Gemini:
-//   { contents: [{ role: 'user', parts: [{ text: `${style}: ${text}` }] }],
-//     generationConfig: { responseModalities: ['AUDIO'],
-//       speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } }.
+// - buildTtsPayload({ text, locale, voice, style, promptMode, seed? }) menghasilkan body generateContent Gemini.
+//   promptMode 'transcript': contents[0].parts[0].text = "### DIRECTOR'S NOTES\n" + style +
+//   "\n\n### TRANSCRIPT\n" + text, tanpa systemInstruction. promptMode 'system': systemInstruction =
+//   { parts: [{ text: style }] } dan contents[0].parts[0].text = text persis (gaya tidak masuk contents).
+//   generationConfig: { responseModalities: ['AUDIO'],
+//     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } di kedua mode.
 //   `style` adalah string gaya untuk locale itu (pemanggil yang memilih). `generationConfig.seed = seed`
 //   hanya bila seed diberikan; tanpa seed kuncinya tidak ada sama sekali. `locale` tidak masuk body.
 // - extractPcm(res) mengambil inlineData berawalan mime audio/L16 (atau audio/pcm) dari
@@ -15,7 +17,8 @@ import { buildTtsPayload, extractPcm, pcmToWav, readWav } from './tts';
 // - pcmToWav(pcm, rate) = header RIFF 44 byte + PCM 16-bit mono little-endian.
 //   readWav(bytes) = { pcm, rate, channels, bitsPerSample }; menolak berkas bukan RIFF/WAVE dan bukan PCM 16-bit.
 
-const STYLE_ID = 'pelan, ceria, dan jelas untuk anak balita';
+const STYLE_ID =
+  'Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler.';
 const bytesOf = (...n: number[]): Uint8Array => Uint8Array.from(n);
 const b64 = (b: Uint8Array): string => Buffer.from(b).toString('base64');
 const audioResponse = (mimeType: string, data: Uint8Array): unknown => ({
@@ -26,30 +29,85 @@ const ascii = (b: Uint8Array, from: number, to: number): string =>
 const view = (b: Uint8Array): DataView => new DataView(b.buffer, b.byteOffset, b.byteLength);
 
 describe('buildTtsPayload', () => {
-  it('TC-AUD49-TTS-1: payload persis untuk id dengan suara Aoede; seed hanya bila diberikan', () => {
-    const base = {
-      text: 'Ini Indonesia, rumah kita!',
-      locale: 'id',
-      voice: 'Aoede',
-      style: STYLE_ID,
-    };
+  const TEXT = 'Ini Indonesia, rumah kita!';
+  const generationConfig = {
+    responseModalities: ['AUDIO'],
+    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Aoede' } } },
+  };
+  const base = { text: TEXT, locale: 'id', voice: 'Aoede', style: STYLE_ID } as const;
+
+  // REMAP TC-AUD49-TTS-1: format lama `${style}: ${text}` membuat model membacakan instruksi gaya
+  // (transkrip Whisper sampel asli memuat kalimat gaya). Kontrak baru: catatan sutradara terpisah.
+  it('TC-AUD49-TTS-1: payload persis mode transcript untuk id dengan suara Aoede; seed hanya bila diberikan', () => {
     const expected = {
-      contents: [{ role: 'user', parts: [{ text: `${STYLE_ID}: Ini Indonesia, rumah kita!` }] }],
-      generationConfig: {
-        responseModalities: ['AUDIO'],
-        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Aoede' } } },
-      },
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: `### DIRECTOR'S NOTES\n${STYLE_ID}\n\n### TRANSCRIPT\n${TEXT}` }],
+        },
+      ],
+      generationConfig,
     };
 
-    const without = buildTtsPayload(base);
+    const without = buildTtsPayload({ ...base, promptMode: 'transcript' });
     expect(without).toEqual(expected);
+    expect(Object.keys(without)).not.toContain('systemInstruction');
     expect(Object.keys((without as typeof expected).generationConfig)).not.toContain('seed');
 
-    const withSeed = buildTtsPayload({ ...base, seed: 2 });
+    const withSeed = buildTtsPayload({ ...base, promptMode: 'transcript', seed: 2 });
     expect(withSeed).toEqual({
       ...expected,
       generationConfig: { ...expected.generationConfig, seed: 2 },
     });
+  });
+
+  it('TC-AUD49-TTS-1: payload persis mode system; seed hanya bila diberikan', () => {
+    const expected = {
+      systemInstruction: { parts: [{ text: STYLE_ID }] },
+      contents: [{ role: 'user', parts: [{ text: TEXT }] }],
+      generationConfig,
+    };
+
+    const without = buildTtsPayload({ ...base, promptMode: 'system' });
+    expect(without).toEqual(expected);
+    expect(Object.keys((without as typeof expected).generationConfig)).not.toContain('seed');
+
+    expect(buildTtsPayload({ ...base, promptMode: 'system', seed: 5 })).toEqual({
+      ...expected,
+      generationConfig: { ...generationConfig, seed: 5 },
+    });
+  });
+
+  it('TC-AUD49-TTS-10: mode system tidak memuat gaya di contents; mode transcript tidak punya systemInstruction', () => {
+    const sys = buildTtsPayload({ ...base, promptMode: 'system' }) as {
+      contents: { parts: { text: string }[] }[];
+    };
+    const sysContents = JSON.stringify(sys.contents);
+    expect(sysContents).not.toContain(STYLE_ID);
+    expect(sysContents).not.toContain('Speak Indonesian');
+    expect(sys.contents[0]?.parts[0]?.text).toBe(TEXT);
+
+    const tr = buildTtsPayload({ ...base, promptMode: 'transcript' });
+    expect('systemInstruction' in tr).toBe(false);
+    expect(JSON.stringify(tr)).not.toContain('systemInstruction');
+  });
+
+  it('TC-AUD49-TTS-10: teks klip tidak pernah diawali gaya di kedua mode; gaya en dipakai apa adanya', () => {
+    const styleEn =
+      'Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler.';
+    for (const promptMode of ['transcript', 'system'] as const) {
+      const p = buildTtsPayload({
+        text: 'This is Japan.',
+        locale: 'en',
+        voice: 'Leda',
+        style: styleEn,
+        promptMode,
+      }) as { contents: { parts: { text: string }[] }[] };
+      const sent = p.contents[0]?.parts[0]?.text ?? '';
+      expect(sent.startsWith(styleEn)).toBe(false);
+      expect(sent.endsWith('This is Japan.')).toBe(true);
+      expect(sent).not.toContain(`${styleEn}: `);
+    }
   });
 });
 

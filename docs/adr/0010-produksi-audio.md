@@ -24,7 +24,7 @@ MatePad acuan tidak punya TTS yang berfungsi, jadi cadangan Web Speech diam (ADR
 ### Pembuatan
 
 - Peran `tts` di `scripts/ai/models.json` menentukan model. `request(role, payload, { cacheTag })` memakai tag hanya untuk hash cache (satu tag per take), tidak pernah di body, sehingga ambil ulang setelah klip ditolak tidak kena cache. `seed` dikirim hanya bila flag di `models.json` aktif.
-- Gaya diambil dari ADR-003 ("pelan, ceria, dan jelas untuk anak balita"), suara terpilih disimpan di `scripts/audio/voice.json`, dipilih pemilik dari sampel Aoede, Leda, dan Kore.
+- Gaya ditulis dalam bahasa Inggris (ADR-003: "pelan, ceria, dan jelas untuk anak balita") dan dipisah dari teks yang dibacakan. Format "gaya: teks" terbukti ikut dibacakan (17 Okt 2026, sampel pertama). Mode `transcript` mengirim "### DIRECTOR'S NOTES" lalu "### TRANSCRIPT" dalam satu prompt; mode `system` mengirim gaya lewat `systemInstruction`. Mode dipilih lewat `promptMode` di `voice.json` dan `styleHash` memuatnya, sehingga ganti mode membuat klip lama tampak usang. Suara terpilih disimpan di `scripts/audio/voice.json`, dipilih pemilik dari sampel Aoede, Leda, dan Kore.
 - Raw WAV di `.tmp/audio/raw/<loc>/`, tidak di-commit. Laporan pending ditulis tiap klip, jadi proses bisa dilanjutkan. Kuota harian habis: skrip berhenti dengan kode 2 dan progres aman. Dengan `--takes 2`, core dan celebrate dibuat dua take; sisanya satu.
 
 ### Pemeriksaan
@@ -76,7 +76,7 @@ Hanya teks konten publik (nama negara, fakta, kalimat kuis) yang dikirim ke Gemi
 
 ## Risiko
 
-- Instruksi gaya bisa ikut terbaca oleh TTS. Whisper menandainya `beda`; alternatifnya memindahkan gaya ke instruksi sistem.
+- Instruksi gaya bisa ikut terbaca oleh TTS (terjadi pada format "gaya: teks", 17 Okt 2026). Gaya kini dipisah lewat mode `transcript` atau `system` (`promptMode`), tetapi belum terbukti bersih di semua klip. Whisper tetap menandainya `beda`; bila mode `transcript` masih bocor, pakai mode `system`.
 - Dukungan `seed` TTS belum terverifikasi, jadi hanya di balik flag.
 - Penanganan gapless MP3 di WebKit tidak diketahui. Margin jendela klip menampungnya, tetapi perlu didengar di perangkat.
 - Pemeriksa Whisper tidak menilai kualitas suara. Tinjauan manusia tetap satu-satunya gerbang untuk intonasi.

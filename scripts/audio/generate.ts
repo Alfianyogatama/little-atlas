@@ -30,7 +30,7 @@ export interface GenerateOptions {
     model: string;
     seed: boolean;
   };
-  voice: Pick<Voice, 'voice' | 'style'>;
+  voice: Pick<Voice, 'voice' | 'promptMode' | 'style'>;
   now: () => Date;
   sleep: (ms: number) => Promise<void>;
   delayMs: number;
@@ -98,6 +98,7 @@ export async function runGenerate(opts: GenerateOptions): Promise<GenerateResult
             locale,
             voice: opts.voice.voice,
             style: opts.voice.style[locale],
+            promptMode: opts.voice.promptMode,
             ...(opts.models.seed ? { seed: take } : {}),
           }),
           { cacheTag: `take-${take}` },

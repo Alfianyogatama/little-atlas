@@ -21,12 +21,12 @@ import { styleHash } from './voice';
 // Kontrak tambahan yang ditetapkan tes ini (semua lewat DI, tanpa jaringan, tanpa ffmpeg):
 // - runGenerate(opts): Promise<{ done, skipped, total, stopped: null | 'rpd' | 'free_tier' }> dengan
 //   opts = { locale, entries, takes, dryRun, rawDir, reportPath, approved(id, textHash), client, models
-//   { assertConfigured(role), model, seed }, voice { voice, style { id, en } }, now, sleep, delayMs, log }.
+//   { assertConfigured(role), model, seed }, voice { voice, promptMode, style { id, en } }, now, sleep, delayMs, log }.
 //   total = jumlah entri masukan; skipped = entri yang dilewati; done = klip yang berhasil dibuat.
 // - Target take per entri: `takes` untuk kategori core dan celebrate, 1 untuk kategori lain. Entri dilewati bila
 //   approved(id, textHash) true, atau jumlah item laporan dengan id + textHash sama dan rejected === null
 //   sudah >= target. Take baru = take maksimum untuk id + textHash (termasuk yang ditolak) + 1.
-// - Permintaan: client.request('tts', buildTtsPayload({ text, locale, voice, style: style[locale], seed? }),
+// - Permintaan: client.request('tts', buildTtsPayload({ text, locale, voice, style: style[locale], promptMode, seed? }),
 //   { cacheTag: 'take-<n>' }); seed = n hanya bila models.seed true, selain itu kuncinya tidak ada.
 // - Respons -> extractPcm -> pcmToWav -> rawDir/<locale>/<rawFileName(id, textHash, n)> -> upsertItem
 //   SEGERA (sebelum permintaan berikutnya). Item: file = '<locale>/<rawFileName>', model = models.model,
@@ -44,8 +44,11 @@ import { styleHash } from './voice';
 //   Mengimpor generate-cli tidak boleh menjalankan main().
 
 const NOW = new Date('2026-10-17T10:00:00.000Z');
-const STYLE = { id: 'pelan, ceria, dan jelas untuk anak balita', en: 'slow, cheerful, and clear' };
-const VOICE = { voice: 'Aoede', style: STYLE };
+const STYLE = {
+  id: 'Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler.',
+  en: 'Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler.',
+};
+const VOICE = { voice: 'Aoede', promptMode: 'transcript', style: STYLE } as const;
 const PCM_BYTES = 24000; // 12000 sampel pada 24 kHz = 500 ms
 
 const googleError = (quotaId: string): string =>
@@ -118,7 +121,11 @@ interface Over {
   takes?: number;
   dryRun?: boolean;
   seed?: boolean;
-  voice?: { voice: string; style: { id: string; en: string } };
+  voice?: {
+    voice: string;
+    promptMode: 'transcript' | 'system';
+    style: { id: string; en: string };
+  };
   approved?: (id: string, hash: string) => boolean;
   respond?: (n: number) => unknown;
   configError?: Error;
@@ -211,7 +218,13 @@ describe('runGenerate: entri baru', () => {
     expect(t.calls[0]?.role).toBe('tts');
     expect(t.calls[0]?.cacheTag).toBe('take-1');
     expect(t.calls[0]?.payload).toEqual(
-      buildTtsPayload({ text: FACT.text, locale: 'id', voice: 'Aoede', style: STYLE.id }),
+      buildTtsPayload({
+        text: FACT.text,
+        locale: 'id',
+        voice: 'Aoede',
+        style: STYLE.id,
+        promptMode: 'transcript',
+      }),
     );
 
     const file = `id/${rawFileName(FACT.id, FACT.textHash, 1)}`;
@@ -247,7 +260,13 @@ describe('runGenerate: entri baru', () => {
     const t = setup({ locale: 'en', entries: [intro] });
     await t.run();
     expect(t.calls[0]?.payload).toEqual(
-      buildTtsPayload({ text: 'This is Japan.', locale: 'en', voice: 'Aoede', style: STYLE.en }),
+      buildTtsPayload({
+        text: 'This is Japan.',
+        locale: 'en',
+        voice: 'Aoede',
+        style: STYLE.en,
+        promptMode: 'transcript',
+      }),
     );
     expect(rawFiles('en')).toEqual([rawFileName('intro:JP', intro.textHash, 1)]);
     expect(report('en').items[0]?.file).toBe(`en/${rawFileName('intro:JP', intro.textHash, 1)}`);
@@ -598,12 +617,55 @@ describe('runGenerate: kuota dan error', () => {
   });
 });
 
+describe('runGenerate: promptMode', () => {
+  it('TC-AUD49-GEN-11: promptMode transcript diteruskan; gaya ada di contents, tanpa systemInstruction', async () => {
+    const t = setup({ entries: [FACT], voice: { ...VOICE, promptMode: 'transcript' } });
+    await t.run();
+    const p = t.calls[0]?.payload as {
+      systemInstruction?: unknown;
+      contents: { parts: { text: string }[] }[];
+    };
+    expect(p.systemInstruction).toBeUndefined();
+    expect(p.contents[0]?.parts[0]?.text).toBe(
+      `### DIRECTOR'S NOTES\n${STYLE.id}\n\n### TRANSCRIPT\n${FACT.text}`,
+    );
+  });
+
+  it('TC-AUD49-GEN-11: promptMode system diteruskan; gaya di systemInstruction, contents hanya teks klip', async () => {
+    const t = setup({ entries: [FACT], voice: { ...VOICE, promptMode: 'system' } });
+    await t.run();
+    expect(t.calls[0]?.payload).toEqual(
+      buildTtsPayload({
+        text: FACT.text,
+        locale: 'id',
+        voice: 'Aoede',
+        style: STYLE.id,
+        promptMode: 'system',
+      }),
+    );
+    const p = t.calls[0]?.payload as {
+      systemInstruction: { parts: { text: string }[] };
+      contents: { parts: { text: string }[] }[];
+    };
+    expect(p.systemInstruction.parts[0]?.text).toBe(STYLE.id);
+    expect(p.contents[0]?.parts[0]?.text).toBe(FACT.text);
+  });
+
+  it('TC-AUD49-GEN-11: styleHash laporan memuat promptMode (en juga)', async () => {
+    const sysVoice = { ...VOICE, promptMode: 'system' } as const;
+    const t = setup({ entries: [FACT], voice: sysVoice });
+    await t.run();
+    expect(report().items[0]?.styleHash).toBe(styleHash(sysVoice, 'id'));
+    expect(report().items[0]?.styleHash).not.toBe(styleHash(VOICE, 'id'));
+  });
+});
+
 describe('runGenerate: dry-run dan konfigurasi', () => {
   it('TC-AUD49-GEN-7: dry-run tanpa request, tanpa berkas, tanpa assertConfigured, log lengkap', async () => {
     const t = setup({
       entries: [FACT, INTRO],
       dryRun: true,
-      voice: { voice: 'ISI-SETELAH-SAMPEL', style: STYLE },
+      voice: { voice: 'ISI-SETELAH-SAMPEL', promptMode: 'transcript', style: STYLE },
       approved: (id) => id === 'intro:FR',
     });
     const result = await t.run();
@@ -634,7 +696,10 @@ describe('runGenerate: dry-run dan konfigurasi', () => {
   });
 
   it('TC-AUD49-GEN-7: voice placeholder pada run sungguhan melempar sebelum request pertama', async () => {
-    const t = setup({ entries: [FACT], voice: { voice: 'ISI-SETELAH-SAMPEL', style: STYLE } });
+    const t = setup({
+      entries: [FACT],
+      voice: { voice: 'ISI-SETELAH-SAMPEL', promptMode: 'transcript', style: STYLE },
+    });
     await expect(t.run()).rejects.toThrow('ISI-SETELAH-');
     expect(t.request).not.toHaveBeenCalled();
     expect(existsSync(rawDir)).toBe(false);

@@ -1,8 +1,9 @@
 {
   "version": 1,
   "voice": "ISI-SETELAH-SAMPEL",
+  "promptMode": "transcript",
   "style": {
-    "id": "Ucapkan dengan pelan, ceria, dan jelas untuk anak balita",
-    "en": "Say slowly, cheerfully, and clearly for a toddler"
+    "id": "Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler.",
+    "en": "Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler."
   }
 }
