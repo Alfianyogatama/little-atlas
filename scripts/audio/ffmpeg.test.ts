@@ -1,9 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { encodeArgs, measureArgs, normalizeArgs, parseLoudnorm, type FfmpegRunner } from './ffmpeg';
+import {
+  encodeArgs,
+  MEASURE_LOOPS,
+  measureArgs,
+  normalizeArgs,
+  parseLoudnorm,
+  type FfmpegRunner,
+} from './ffmpeg';
 
 // Kontrak tambahan yang ditetapkan tes ini (T9, issue #49; PLAN-49 L2):
 // - Pembangun argumen murni; tidak memanggil ffmpeg. Tanpa awalan -hide_banner (persis seperti L2).
-// - measureArgs(inPath) -> ['-nostdin','-i',inPath,'-af',<trim,loudnorm json>,'-f','null','-'].
+// - measureArgs(inPath) -> ['-nostdin','-stream_loop','9','-i',inPath,'-af',<trim,loudnorm json>,'-f','null','-'].
+//   REMAP (bug klip pendek): input ukur diulang 10x (MEASURE_LOOPS = 9) karena loudnorm menghasilkan
+//   input_i -inf pada klip < ~3 dtk (mis. praise:1 'Hebat!' 0,8 dtk). Normalisasi tetap pada klip asli satu kali.
 // - normalizeArgs(inPath, inputI) -> gain = -16 - inputI dB, angka tetap 2 desimal (toFixed(2)),
 //   mis. inputI -23.4 -> `volume=7.40dB`; keluaran PCM s16le mono 24 kHz ke stdout.
 // - encodeArgs() -> PCM s16le dari stdin ke MP3 48 kbps bitexact (tanpa metadata) ke stdout.
@@ -41,9 +50,11 @@ video:0KiB audio:384KiB subtitle:0KiB other streams:0KiB global headers:0KiB mux
 `;
 
 describe('argumen ffmpeg', () => {
-  it('TC-AUD49-SPR-6: argumen ukur persis', () => {
+  it('TC-AUD49-SPR-6: argumen ukur persis (REMAP: ditambah -stream_loop 9 untuk klip pendek)', () => {
     expect(measureArgs('/tmp/in.wav')).toEqual([
       '-nostdin',
+      '-stream_loop',
+      '9',
       '-i',
       '/tmp/in.wav',
       '-af',
@@ -52,6 +63,18 @@ describe('argumen ffmpeg', () => {
       'null',
       '-',
     ]);
+  });
+
+  it('TC-AUD49-SPR-9: -stream_loop sebelum -i pada ukur; normalisasi tidak mengulang klip', () => {
+    expect(MEASURE_LOOPS).toBe(9);
+    const measure = measureArgs('/tmp/in.wav');
+    const loop = measure.indexOf('-stream_loop');
+    expect(loop).toBeGreaterThanOrEqual(0);
+    expect(measure[loop + 1]).toBe(String(MEASURE_LOOPS));
+    expect(loop).toBeLessThan(measure.indexOf('-i'));
+    expect(measure.filter((a) => a === '-stream_loop')).toHaveLength(1);
+    expect(normalizeArgs('/tmp/in.wav', -23.4)).not.toContain('-stream_loop');
+    expect(encodeArgs()).not.toContain('-stream_loop');
   });
 
   it('TC-AUD49-SPR-6: argumen normalisasi persis, gain = -16 - input_i dengan 2 desimal', () => {

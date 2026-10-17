@@ -42,7 +42,7 @@ MatePad acuan tidak punya TTS yang berfungsi, jadi cadangan Web Speech diam (ADR
 
 - Grup deterministik: `core-n`, `celebrate-n`, `fact-n`, `intro-<benua>-n`, `quiz-<level>-n`, masing-masing paling lama 45 detik. `celebrate` dipisah dari `core` karena 20 klipnya saja sekitar 70 detik.
 - Tata letak: lead 100 ms, klip, jeda 250 ms antar klip. Jendela klip dimulai 20 ms sebelum awal dan berakhir 100 ms setelah akhir, untuk menampung priming LAME (sekitar 46 ms) tanpa memotong awal kata.
-- Per klip: hening awal dan akhir dipangkas, loudness diukur dan diratakan ke -16 LUFS dengan gain linear plus limiter, bukan kompresi dinamis.
+- Per klip: hening awal dan akhir dipangkas, loudness diukur dan diratakan ke -16 LUFS dengan gain linear plus limiter, bukan kompresi dinamis. Pengukuran memakai input yang diulang 10 kali (`-stream_loop 9`) karena `loudnorm` butuh sekitar 3 detik dan mengembalikan `-inf` pada klip pendek; normalisasi tetap memakai klip asli satu kali.
 - Encode MP3 mono 24 kHz 48 kbps, bitexact (tanpa metadata dan stempel waktu), sehingga hasilnya bisa diulang. Nama berkas `<grup>-<hash8>.mp3`, `hash8` dari byte MP3. Urutan tulis: MP3 baru, `sprites.json` (divalidasi `AudioSpriteMapSchema`), lalu hapus MP3 lama.
 
 ### Gerbang `content:check`

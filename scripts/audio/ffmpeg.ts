@@ -12,9 +12,17 @@ const TARGET_I = -16;
 const TRIM =
   'silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse';
 
+/**
+ * loudnorm butuh sekitar 3 detik audio untuk mengukur; klip pendek (mis. 'Hebat!' 0,8 detik)
+ * menghasilkan input_i -inf. Input diulang hanya untuk pengukuran; normalisasi memakai klip asli.
+ */
+export const MEASURE_LOOPS = 9;
+
 export function measureArgs(inPath: string): string[] {
   return [
     '-nostdin',
+    '-stream_loop',
+    String(MEASURE_LOOPS),
     '-i',
     inPath,
     '-af',

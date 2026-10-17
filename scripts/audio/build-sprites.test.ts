@@ -317,6 +317,32 @@ describe('buildSprites (T10, issue #49)', () => {
     },
   );
 
+  it('TC-AUD49-PUB-8: loudnorm input_i -inf pada satu klip melempar error berisi id klip dan path raw', async () => {
+    const base = fakeFfmpeg();
+    const bad = CLIPS[1];
+    if (!bad) throw new Error('fixture');
+    const runner: FfmpegRunner = async (args, stdin) => {
+      if (args.includes('null') && args.includes(rawPath(bad))) {
+        const json = JSON.stringify({ input_i: '-inf', input_tp: '-3.00', input_lra: '0.00' });
+        return { code: 0, stdout: new Uint8Array(), stderr: `[Parsed_loudnorm_4]\n${json}\n` };
+      }
+      return base.runner(args, stdin);
+    };
+    const { result } = run(CLIPS, {}, { runner, calls: base.calls });
+    await expect(result).rejects.toThrow(`${bad.id} (${bad.raw})`);
+    await expect(result).rejects.toThrow(/input_i bukan angka hingga: -inf/);
+    await expect(result).rejects.not.toThrow(/introHome/);
+  });
+
+  it('TC-AUD49-PUB-8: ffmpeg exit 1 pada normalize melempar error berisi id klip, path raw, dan stderr', async () => {
+    const first = CLIPS[0];
+    if (!first) throw new Error('fixture');
+    const ffmpeg = fakeFfmpeg({ stage: 'normalize', stderr: 'kegagalan-normalize-abc' });
+    const { result } = run(CLIPS, {}, ffmpeg);
+    await expect(result).rejects.toThrow(`${first.id} (${first.raw})`);
+    await expect(result).rejects.toThrow(/kegagalan-normalize-abc/);
+  });
+
   it('TC-AUD49-PUB-7: manifest tanpa entri locale itu menghasilkan files kosong dan map null', async () => {
     const onlyEn = manifestOf(CLIPS, { locale: 'en' });
     const a = run(CLIPS, { manifest: onlyEn });

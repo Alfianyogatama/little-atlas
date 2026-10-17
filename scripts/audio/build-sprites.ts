@@ -67,10 +67,16 @@ export async function buildSprites(input: BuildSpritesInput): Promise<BuildSprit
   const inputs: SpriteClipInput[] = [];
   for (const { entry, raw } of eligible) {
     const path = join(rawDir, raw);
-    const measured = await runStage(ffmpeg, 'measure', entry.id, measureArgs(path));
-    const { inputI } = parseLoudnorm(measured.stderr);
-    const normalized = await runStage(ffmpeg, 'normalize', entry.id, normalizeArgs(path, inputI));
-    const pcm = normalized.stdout;
+    let pcm: Uint8Array;
+    try {
+      const measured = await runStage(ffmpeg, 'measure', entry.id, measureArgs(path));
+      const { inputI } = parseLoudnorm(measured.stderr);
+      const normalized = await runStage(ffmpeg, 'normalize', entry.id, normalizeArgs(path, inputI));
+      pcm = normalized.stdout;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`${entry.id} (${raw}): ${message}`, { cause: error });
+    }
     const samples = Math.floor(pcm.length / 2);
     if (samples === 0) throw new Error(`klip ${entry.id} kosong setelah dipangkas`);
     pcmById.set(entry.id, pcm);
