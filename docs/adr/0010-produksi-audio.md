@@ -77,6 +77,7 @@ Hanya teks konten publik (nama negara, fakta, kalimat kuis) yang dikirim ke Gemi
 ## Risiko
 
 - Instruksi gaya bisa ikut terbaca oleh TTS (terjadi pada format "gaya: teks", 17 Okt 2026). Gaya kini dipisah lewat mode `transcript` atau `system` (`promptMode`), tetapi belum terbukti bersih di semua klip. Whisper tetap menandainya `beda`; bila mode `transcript` masih bocor, pakai mode `system`.
+- Model `gemini-3.8-flash-lite-tts` menolak `systemInstruction` (400 "Developer instruction is not enabled for this model"), jadi mode `system` tidak bisa dipakai dengan model ini. Mode `plain` (teks saja, tanpa gaya) tersedia lewat `promptMode` dan `--mode plain`. Catatan gaya di `voice.json` kini meminta pembacaan kata demi kata, karena model sempat menambah kata dan membaca "Hore" seperti "Hooray".
 - Dukungan `seed` TTS belum terverifikasi, jadi hanya di balik flag.
 - Penanganan gapless MP3 di WebKit tidak diketahui. Margin jendela klip menampungnya, tetapi perlu didengar di perangkat.
 - Pemeriksa Whisper tidak menilai kualitas suara. Tinjauan manusia tetap satu-satunya gerbang untuk intonasi.

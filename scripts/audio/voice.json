@@ -3,7 +3,7 @@
   "voice": "Leda",
   "promptMode": "transcript",
   "style": {
-    "id": "Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler.",
-    "en": "Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler."
+    "id": "Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler. Read the transcript exactly as written, word for word. Do not add, remove, or translate any words. Pronounce every word, including interjections, in Indonesian.",
+    "en": "Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler. Read the transcript exactly as written, word for word. Do not add, remove, or change any words."
   }
 }

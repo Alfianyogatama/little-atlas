@@ -38,8 +38,10 @@ export function parseArgs(argv: string[]): SamplesArgs {
       if (!Number.isInteger(v) || v < 1) throw new Error('--limit harus bilangan bulat >= 1.');
       out.limit = v;
     } else if (a === '--mode') {
-      const parsed = PromptModeSchema.safeParse(valueOf(argv, i++, a, 'transcript atau system'));
-      if (!parsed.success) throw new Error('--mode harus transcript atau system.');
+      const parsed = PromptModeSchema.safeParse(
+        valueOf(argv, i++, a, 'transcript, system, atau plain'),
+      );
+      if (!parsed.success) throw new Error('--mode harus transcript, system, atau plain.');
       out.mode = parsed.data;
     } else throw new Error(`Argumen tidak dikenal: ${a ?? ''}`);
   }

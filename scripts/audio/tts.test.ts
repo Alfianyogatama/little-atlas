@@ -7,6 +7,7 @@ import { buildTtsPayload, extractPcm, pcmToWav, readWav } from './tts';
 //   promptMode 'transcript': contents[0].parts[0].text = "### DIRECTOR'S NOTES\n" + style +
 //   "\n\n### TRANSCRIPT\n" + text, tanpa systemInstruction. promptMode 'system': systemInstruction =
 //   { parts: [{ text: style }] } dan contents[0].parts[0].text = text persis (gaya tidak masuk contents).
+//   promptMode 'plain': contents[0].parts[0].text = text persis, tanpa gaya dan tanpa systemInstruction.
 //   generationConfig: { responseModalities: ['AUDIO'],
 //     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } } } di kedua mode.
 //   `style` adalah string gaya untuk locale itu (pemanggil yang memilih). `generationConfig.seed = seed`
@@ -75,6 +76,26 @@ describe('buildTtsPayload', () => {
     expect(buildTtsPayload({ ...base, promptMode: 'system', seed: 5 })).toEqual({
       ...expected,
       generationConfig: { ...generationConfig, seed: 5 },
+    });
+  });
+
+  it('TC-AUD49-TTS-11: payload persis mode plain; teks tanpa gaya, tanpa systemInstruction; seed hanya bila diberikan', () => {
+    const expected = {
+      contents: [{ role: 'user', parts: [{ text: TEXT }] }],
+      generationConfig,
+    };
+
+    const without = buildTtsPayload({ ...base, promptMode: 'plain' });
+    expect(without).toEqual(expected);
+    expect(Object.keys(without)).not.toContain('systemInstruction');
+    expect(JSON.stringify(without)).not.toContain('systemInstruction');
+    expect(JSON.stringify(without)).not.toContain(STYLE_ID);
+    expect(JSON.stringify(without)).not.toContain('DIRECTOR');
+    expect(Object.keys((without as typeof expected).generationConfig)).not.toContain('seed');
+
+    expect(buildTtsPayload({ ...base, promptMode: 'plain', seed: 3 })).toEqual({
+      ...expected,
+      generationConfig: { ...generationConfig, seed: 3 },
     });
   });
 

@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { assertVoiceConfigured, loadVoice, styleHash } from './voice';
 
 // Kontrak tambahan yang ditetapkan tes ini:
-// - voice.json = { version: 1, voice: string, promptMode: 'transcript' | 'system', style: { id: string, en: string } };
+// - voice.json = { version: 1, voice: string, promptMode: 'transcript' | 'system' | 'plain', style: { id: string, en: string } };
 //   sampai pemilik memilih suara, `voice` bernilai "ISI-SETELAH-SAMPEL". promptMode wajib (nilai repo 'transcript').
 // - loadVoice(path) membaca dan memvalidasi dengan Zod (versi harus 1, semua string tidak kosong);
 //   berkas rusak atau tidak sesuai skema melempar.
@@ -24,6 +24,10 @@ afterEach(() => rmSync(dir, { recursive: true, force: true }));
 const STYLE = {
   id: 'Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler.',
   en: 'Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler.',
+};
+const REPO_STYLE = {
+  id: 'Speak Indonesian slowly, cheerfully, and clearly, like reading a picture book to a toddler. Read the transcript exactly as written, word for word. Do not add, remove, or translate any words. Pronounce every word, including interjections, in Indonesian.',
+  en: 'Speak English slowly, cheerfully, and clearly, like reading a picture book to a toddler. Read the transcript exactly as written, word for word. Do not add, remove, or change any words.',
 };
 const PM = 'transcript';
 const write = (name: string, value: unknown): string => {
@@ -86,10 +90,27 @@ describe('loadVoice dan assertVoiceConfigured', () => {
     expect(() => loadVoice(write('null.json', { ...ok, promptMode: null }))).toThrow();
   });
 
-  it('TC-AUD49-VOICE-3: voice.json di repo memakai promptMode transcript dan gaya Inggris yang ditetapkan', () => {
+  // REMAP TC-AUD49-VOICE-3: gaya repo lama (satu kalimat) diganti gaya ketat "baca persis tanpa menambah kata"
+  // karena model TTS menambah kata dan membaca "Hore!" sebagai "Hooray!"; nilai lama tidak lagi dikunci.
+  it('TC-AUD49-VOICE-3: voice.json di repo memakai promptMode transcript dan gaya yang ditetapkan', () => {
     const v = loadVoice(fileURLToPath(new URL('./voice.json', import.meta.url)));
     expect(v.promptMode).toBe('transcript');
-    expect(v.style).toEqual(STYLE);
+    expect(v.style).toEqual(REPO_STYLE);
+  });
+
+  it('TC-AUD49-VOICE-4: skema menerima promptMode plain', () => {
+    const v = loadVoice(
+      write('p.json', { version: 1, voice: 'Leda', promptMode: 'plain', style: STYLE }),
+    );
+    expect(v.promptMode).toBe('plain');
+  });
+
+  it('TC-AUD49-VOICE-4: voice.json di repo: suara Leda, transcript, gaya id dan en ketat persis', () => {
+    const v = loadVoice(fileURLToPath(new URL('./voice.json', import.meta.url)));
+    expect(v.voice).toBe('Leda');
+    expect(v.promptMode).toBe('transcript');
+    expect(v.style.id).toBe(REPO_STYLE.id);
+    expect(v.style.en).toBe(REPO_STYLE.en);
   });
 });
 
@@ -120,6 +141,17 @@ describe('styleHash', () => {
         styleHash({ ...base, promptMode: 'transcript' }, locale),
       );
     }
+  });
+
+  it('TC-AUD49-VOICE-4: styleHash plain berbeda dari transcript dan system, dan sesuai rumus', () => {
+    for (const locale of ['id', 'en'] as const) {
+      const plain = styleHash({ ...base, promptMode: 'plain' }, locale);
+      expect(plain).not.toBe(styleHash({ ...base, promptMode: 'transcript' }, locale));
+      expect(plain).not.toBe(styleHash({ ...base, promptMode: 'system' }, locale));
+    }
+    expect(styleHash({ ...base, promptMode: 'plain' }, 'id')).toBe(
+      sha(`Aoede\nplain\n${STYLE.id}`),
+    );
   });
 
   it('TC-AUD49-VOICE-2: gaya locale lain tidak memengaruhi hash locale ini', () => {

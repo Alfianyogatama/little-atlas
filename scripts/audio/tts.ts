@@ -16,7 +16,8 @@ export interface TtsPayloadInput {
 /**
  * Body generateContent Gemini untuk TTS. `locale` hanya memilih style di pemanggil, tidak masuk body.
  * Gaya tidak boleh digabung "gaya: teks" karena ikut dibacakan. Mode `transcript` memisahkannya lewat
- * catatan sutradara di prompt; mode `system` lewat systemInstruction.
+ * catatan sutradara di prompt; mode `system` lewat systemInstruction (ditolak model
+ * gemini-3.8-flash-lite-tts, lihat ADR-010); mode `plain` hanya mengirim teks tanpa gaya.
  */
 export function buildTtsPayload({
   text,
@@ -25,19 +26,31 @@ export function buildTtsPayload({
   promptMode,
   seed,
 }: TtsPayloadInput): Record<string, unknown> {
-  const prompt =
-    promptMode === 'transcript'
-      ? `### DIRECTOR'S NOTES\n${style}\n\n### TRANSCRIPT\n${text}`
-      : text;
-  return {
-    ...(promptMode === 'system' ? { systemInstruction: { parts: [{ text: style }] } } : {}),
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: {
-      responseModalities: ['AUDIO'],
-      speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } },
-      ...(seed === undefined ? {} : { seed }),
-    },
+  const generationConfig = {
+    responseModalities: ['AUDIO'],
+    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } },
+    ...(seed === undefined ? {} : { seed }),
   };
+  const contents = (prompt: string): unknown[] => [{ role: 'user', parts: [{ text: prompt }] }];
+  switch (promptMode) {
+    case 'transcript':
+      return {
+        contents: contents(`### DIRECTOR'S NOTES\n${style}\n\n### TRANSCRIPT\n${text}`),
+        generationConfig,
+      };
+    case 'system':
+      return {
+        systemInstruction: { parts: [{ text: style }] },
+        contents: contents(text),
+        generationConfig,
+      };
+    case 'plain':
+      return { contents: contents(text), generationConfig };
+    default: {
+      const unreachable: never = promptMode;
+      throw new Error(`promptMode tidak dikenal: ${String(unreachable)}`);
+    }
+  }
 }
 
 const TtsResponseSchema = z.object({

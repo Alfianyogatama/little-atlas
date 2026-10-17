@@ -215,3 +215,25 @@ describe('runSamples: voices, limit, promptMode', () => {
     ]);
   });
 });
+
+describe('runSamples: mode plain', () => {
+  it('TC-AUD49-SMP-3: promptMode plain menamai berkas Leda-plain-id-1.wav dan payload tanpa gaya', async () => {
+    const t = setup(undefined, { voices: ['Leda'], limit: 1, promptMode: 'plain' });
+    await t.run();
+    expect(readdirSync(samplesDir)).toEqual(['Leda-plain-id-1.wav']);
+    expect(t.request).toHaveBeenCalledTimes(1);
+    const payload = t.request.mock.calls[0]?.[1];
+    expect(payload).toEqual(
+      buildTtsPayload({
+        text: 'Ini Indonesia, rumah kita!',
+        locale: 'id',
+        voice: 'Leda',
+        style: STYLE.id,
+        promptMode: 'plain',
+      }),
+    );
+    expect(JSON.stringify(payload)).not.toContain(STYLE.id);
+    expect(JSON.stringify(payload)).not.toContain('systemInstruction');
+    expect(JSON.stringify(payload)).toContain('Ini Indonesia, rumah kita!');
+  });
+});

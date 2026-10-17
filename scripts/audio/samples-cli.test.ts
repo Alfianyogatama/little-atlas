@@ -4,7 +4,7 @@ import { parseArgs } from './samples-cli';
 // Kontrak tambahan yang ditetapkan tes ini:
 // - parseArgs(argv) -> { voices?, limit?, mode? }; kunci yang tidak diberikan tidak ada di hasil.
 //   --voices Aoede,Leda (daftar dipisah koma, hanya Aoede/Leda/Kore), --limit N (bilangan bulat >= 1),
-//   --mode transcript|system (menimpa promptMode di voice.json). Argumen salah melempar Error.
+//   --mode transcript|system|plain (menimpa promptMode di voice.json). Argumen salah melempar Error.
 // - Mengimpor samples-cli tidak boleh menjalankan main() (guard process.argv[1]).
 
 describe('samples-cli parseArgs', () => {
@@ -44,5 +44,17 @@ describe('samples-cli parseArgs', () => {
       ['Aoede'],
     ];
     for (const argv of bad) expect(() => parseArgs(argv), argv.join(' ')).toThrow();
+  });
+});
+
+describe('samples-cli parseArgs: mode plain', () => {
+  it('TC-AUD49-CLI-3: --mode plain valid, --mode foo tetap melempar', () => {
+    expect(parseArgs(['--mode', 'plain'])).toEqual({ mode: 'plain' });
+    expect(parseArgs(['--mode', 'plain', '--voices', 'Leda'])).toEqual({
+      mode: 'plain',
+      voices: ['Leda'],
+    });
+    expect(() => parseArgs(['--mode', 'foo'])).toThrow();
+    expect(() => parseArgs(['--mode', 'Plain'])).toThrow();
   });
 });

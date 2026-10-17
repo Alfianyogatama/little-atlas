@@ -6,7 +6,7 @@ import type { AppLocale } from '../../src/domain/locale';
 
 const PLACEHOLDER_PREFIX = 'ISI-SETELAH-';
 
-export const PromptModeSchema = z.enum(['transcript', 'system']);
+export const PromptModeSchema = z.enum(['transcript', 'system', 'plain']);
 export type PromptMode = z.infer<typeof PromptModeSchema>;
 
 export const VOICE_PATH = fileURLToPath(new URL('./voice.json', import.meta.url));
