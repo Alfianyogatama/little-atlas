@@ -78,6 +78,23 @@ export function exitCodeFor(result: GenerateResult): number {
   return result.stopped === null ? 0 : 2;
 }
 
+const STOP_HINT = {
+  rpd: 'Batas harian model untuk tingkatan akun ini tercapai; lihat Rate limits di AI Studio. Saldo tidak menaikkan batas harian.',
+  free_tier:
+    'Proyek API key masih tingkatan gratis: aktifkan penagihan di proyek Google Cloud milik API key ini.',
+} as const;
+
+/** Baris pesan saat run berhenti karena kuota: jenis, progres, detail error, dan petunjuk. */
+export function stopMessage(result: GenerateResult): string[] {
+  if (result.stopped === null) return [];
+  const finished = result.done + result.skipped;
+  return [
+    `kuota habis (${result.stopped}), ${finished}/${result.total} selesai, lanjutkan besok`,
+    ...(result.stopDetail === null ? [] : [`detail: ${result.stopDetail}`]),
+    STOP_HINT[result.stopped],
+  ];
+}
+
 function approvedFrom(path: string, locale: AppLocale): (id: string, hash: string) => boolean {
   if (!existsSync(path)) return () => false;
   const manifest = AudioManifestSchema.parse(JSON.parse(readFileSync(path, 'utf8')));
@@ -133,10 +150,7 @@ async function main(): Promise<void> {
     console.log(`${finished}/${result.total} selesai. Laporan: ${reportPath}`);
     console.log(formatUsageSummary(client.log));
   }
-  if (result.stopped !== null) {
-    const finished = result.done + result.skipped;
-    console.log(`kuota habis, ${finished}/${result.total} selesai, lanjutkan besok`);
-  }
+  for (const line of stopMessage(result)) console.log(line);
   process.exit(exitCodeFor(result));
 }
 

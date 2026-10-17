@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { classifyQuota } from './quota';
+import { classifyQuota, quotaDetail } from './quota';
 
 // Kontrak tambahan yang ditetapkan tes ini:
 // - classifyQuota(status, body) -> 'rpd' | 'rpm' | 'free_tier' | 'other' | null. Murni, body = teks mentah respons error.
@@ -86,5 +86,85 @@ describe('classifyQuota', () => {
     expect(classifyQuota(400, '{"error":{"code":400,"status":"INVALID_ARGUMENT"}}')).toBeNull();
     expect(classifyQuota(500, PER_DAY)).toBeNull();
     expect(classifyQuota(200, '')).toBeNull();
+  });
+});
+
+// Kontrak quotaDetail(body): string, satu baris. Memuat semua quotaId (dipisah koma), quotaValue bila ada,
+// dan error.message dipangkas <= 200 karakter. Body bukan JSON -> 200 karakter pertama body.
+describe('quotaDetail', () => {
+  const REALISTIC = JSON.stringify(
+    {
+      error: {
+        code: 429,
+        message:
+          'You exceeded your current quota, please check your plan and billing details. ' +
+          'For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.',
+        status: 'RESOURCE_EXHAUSTED',
+        details: [
+          {
+            '@type': 'type.googleapis.com/google.rpc.QuotaFailure',
+            violations: [
+              {
+                quotaMetric: 'generativelanguage.googleapis.com/generate_content_requests',
+                quotaId: 'GenerateRequestsPerDayPerProjectPerModel',
+                quotaDimensions: { location: 'global', model: 'gemini-tts-test' },
+                quotaValue: '100',
+              },
+            ],
+          },
+          { '@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: '21s' },
+        ],
+      },
+    },
+    null,
+    2,
+  );
+
+  it('TC-AUD49-QUO-7: body Gemini realistis -> quotaId, quotaValue, dan potongan message, satu baris', () => {
+    const detail = quotaDetail(REALISTIC);
+    expect(detail).toContain('GenerateRequestsPerDayPerProjectPerModel');
+    expect(detail).toContain('100');
+    expect(detail).toContain('You exceeded your current quota');
+    expect(detail).not.toContain('\n');
+  });
+
+  it('TC-AUD49-QUO-7: beberapa violation -> semua quotaId dipisah koma', () => {
+    const two = JSON.stringify({
+      error: {
+        message: 'm',
+        details: [
+          {
+            '@type': 'type.googleapis.com/google.rpc.QuotaFailure',
+            violations: [{ quotaId: 'QuotaA' }, { quotaId: 'QuotaB-FreeTier' }],
+          },
+        ],
+      },
+    });
+    expect(quotaDetail(two)).toMatch(/QuotaA,\s?QuotaB-FreeTier/);
+  });
+
+  it('TC-AUD49-QUO-7: message panjang dipangkas, hasil tetap pendek', () => {
+    const long = 'Z'.repeat(600);
+    const detail = quotaDetail(JSON.stringify({ error: { message: long } }));
+    expect(detail).toContain('Z'.repeat(200));
+    expect(detail).not.toContain('Z'.repeat(201));
+  });
+
+  it('TC-AUD49-QUO-7: body bukan JSON -> 200 karakter pertama body', () => {
+    const body = 'upstream sedang sibuk '.repeat(30);
+    expect(quotaDetail(body)).toBe(body.slice(0, 200));
+    expect(quotaDetail('gateway timeout')).toBe('gateway timeout');
+  });
+
+  it('TC-AUD49-QUO-7: JSON tanpa details -> memuat message saja, tanpa melempar', () => {
+    const detail = quotaDetail(
+      JSON.stringify({
+        error: { code: 429, message: 'Too many requests', status: 'RESOURCE_EXHAUSTED' },
+      }),
+    );
+    expect(detail).toContain('Too many requests');
+    expect(detail).not.toContain('quotaId');
+    expect(() => quotaDetail('')).not.toThrow();
+    expect(() => quotaDetail('{}')).not.toThrow();
   });
 });

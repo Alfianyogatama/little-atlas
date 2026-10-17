@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError, createClient } from '../ai/client';
 import { runGenerate } from './generate';
-import { exitCodeFor, parseArgs } from './generate-cli';
+import { exitCodeFor, parseArgs, stopMessage } from './generate-cli';
 import { textHash, type InventoryCategory, type InventoryEntry } from './inventory';
 import { loadReport, rawFileName, type PendingItem } from './report';
 import { buildTtsPayload, pcmToWav, readWav } from './tts';
@@ -213,7 +213,7 @@ describe('runGenerate: entri baru', () => {
     const t = setup({ entries: [FACT] });
     const result = await t.run();
 
-    expect(result).toEqual({ done: 1, skipped: 0, total: 1, stopped: null });
+    expect(result).toEqual({ done: 1, skipped: 0, total: 1, stopped: null, stopDetail: null });
     expect(t.request).toHaveBeenCalledTimes(1);
     expect(t.calls[0]?.role).toBe('tts');
     expect(t.calls[0]?.cacheTag).toBe('take-1');
@@ -331,7 +331,7 @@ describe('runGenerate: respons audio/wav', () => {
     };
     const t = setup({ entries: [FACT], respond: () => wavResponse });
     const result = await t.run();
-    expect(result).toEqual({ done: 1, skipped: 0, total: 1, stopped: null });
+    expect(result).toEqual({ done: 1, skipped: 0, total: 1, stopped: null, stopDetail: null });
 
     const bytes = readFileSync(join(rawDir, 'id', rawFileName(FACT.id, FACT.textHash, 1)));
     expect(bytes.length).toBe(44 + PCM_BYTES);
@@ -353,7 +353,7 @@ describe('runGenerate: resume dan persetujuan', () => {
 
     const second = await t.run();
     expect(t.request).toHaveBeenCalledTimes(2);
-    expect(second).toEqual({ done: 0, skipped: 2, total: 2, stopped: null });
+    expect(second).toEqual({ done: 0, skipped: 2, total: 2, stopped: null, stopDetail: null });
     expect(report().items).toHaveLength(2);
     expect(rawFiles()).toHaveLength(2);
   });
@@ -377,7 +377,7 @@ describe('runGenerate: resume dan persetujuan', () => {
       approved: (id, hash) => id === 'intro:FR' && hash === INTRO.textHash,
     });
     const result = await t.run();
-    expect(result).toEqual({ done: 2, skipped: 1, total: 3, stopped: null });
+    expect(result).toEqual({ done: 2, skipped: 1, total: 3, stopped: null, stopDetail: null });
     expect(t.approved).toHaveBeenCalledWith('intro:FR', INTRO.textHash);
     expect(t.calls.map((c) => JSON.stringify(c.payload).includes('Prancis'))).toEqual([
       false,
@@ -490,7 +490,13 @@ describe('runGenerate: kuota dan error', () => {
       },
     });
     const result = await t.run();
-    expect(result).toEqual({ done: 1, skipped: 0, total: 4, stopped: 'rpd' });
+    expect(result).toEqual({
+      done: 1,
+      skipped: 0,
+      total: 4,
+      stopped: 'rpd',
+      stopDetail: expect.stringContaining('GenerateRequestsPerDayPerProjectPerModel'),
+    });
     expect(t.request).toHaveBeenCalledTimes(2);
     expect(report().items.map((i) => i.id)).toEqual(['fact:JP']);
     expect(rawFiles()).toEqual([rawFileName(FACT.id, FACT.textHash, 1)]);
@@ -546,7 +552,13 @@ describe('runGenerate: kuota dan error', () => {
       const t = setup({ entries: [FACT, INTRO, QUIZ] });
       const result = await t.run({ client: real });
       expect(fetches).toBeGreaterThan(0);
-      expect(result).toEqual({ done: 0, skipped: 0, total: 3, stopped: 'rpd' });
+      expect(result).toEqual({
+        done: 0,
+        skipped: 0,
+        total: 3,
+        stopped: 'rpd',
+        stopDetail: expect.stringContaining('GenerateRequestsPerDayPerProjectPerModel'),
+      });
       expect(report().items).toEqual([]);
     } finally {
       if (savedKey === undefined) Reflect.deleteProperty(process.env, 'GEMINI_API_KEY');
@@ -580,8 +592,48 @@ describe('runGenerate: kuota dan error', () => {
     expect((await t.run()).stopped).toBe('rpd');
     exhausted = false;
     const second = await t.run();
-    expect(second).toEqual({ done: 1, skipped: 1, total: 2, stopped: null });
+    expect(second).toEqual({ done: 1, skipped: 1, total: 2, stopped: null, stopDetail: null });
     expect(report().items.map((i) => i.id)).toEqual(['fact:JP', 'intro:FR']);
+  });
+
+  it('TC-AUD49-GEN-12: berhenti karena rpd -> stopDetail memuat quotaId; tanpa berhenti -> null', async () => {
+    const stopping = setup({
+      entries: [FACT, INTRO],
+      respond: (n) => {
+        if (n === 2) throw new ApiError('gagal', 429, PER_DAY);
+        return audioResponse(n);
+      },
+    });
+    const stopped = await stopping.run();
+    expect(stopped.stopped).toBe('rpd');
+    expect(stopped.stopDetail).toContain('GenerateRequestsPerDayPerProjectPerModel');
+  });
+
+  it('TC-AUD49-GEN-12: berhenti karena free_tier -> stopDetail memuat quotaId free tier', async () => {
+    const t = setup({
+      entries: [FACT],
+      respond: () => {
+        throw new ApiError('gagal', 429, FREE_TIER);
+      },
+    });
+    const result = await t.run();
+    expect(result.stopped).toBe('free_tier');
+    expect(result.stopDetail).toContain('GenerateRequestsPerDayPerProjectPerModel-FreeTier');
+  });
+
+  it('TC-AUD49-GEN-12: run tanpa berhenti (juga error rpm) -> stopDetail null', async () => {
+    const ok = setup({ entries: [FACT, INTRO] });
+    expect((await ok.run()).stopDetail).toBeNull();
+    const rpm = setup({
+      entries: [FACT, INTRO],
+      respond: (n) => {
+        if (n === 1) throw new ApiError('gagal', 429, PER_MINUTE);
+        return audioResponse(n);
+      },
+    });
+    const result = await rpm.run();
+    expect(result.stopped).toBeNull();
+    expect(result.stopDetail).toBeNull();
   });
 
   it('TC-AUD49-GEN-6: kuota per menit (rpm) dicatat lalu lanjut ke entri berikutnya', async () => {
@@ -593,7 +645,7 @@ describe('runGenerate: kuota dan error', () => {
       },
     });
     const result = await t.run();
-    expect(result).toEqual({ done: 2, skipped: 0, total: 3, stopped: null });
+    expect(result).toEqual({ done: 2, skipped: 0, total: 3, stopped: null, stopDetail: null });
     expect(t.request).toHaveBeenCalledTimes(3);
     expect(report().items.map((i) => i.id)).toEqual(['fact:JP', 'praiseFlag:BR']);
     expect(logged(t.log).some((l) => l.includes('intro:FR'))).toBe(true);
@@ -609,7 +661,7 @@ describe('runGenerate: kuota dan error', () => {
       },
     });
     const result = await t.run();
-    expect(result).toEqual({ done: 1, skipped: 0, total: 3, stopped: null });
+    expect(result).toEqual({ done: 1, skipped: 0, total: 3, stopped: null, stopDetail: null });
     expect(report().items.map((i) => i.id)).toEqual(['praiseFlag:BR']);
     const lines = logged(t.log);
     expect(lines.some((l) => l.includes('fact:JP'))).toBe(true);
@@ -793,8 +845,50 @@ describe('generate-cli: parseArgs dan exitCodeFor', () => {
   });
 
   it('TC-AUD49-CLI-1: exitCodeFor = 2 bila run berhenti karena kuota, selain itu 0', () => {
-    expect(exitCodeFor({ done: 3, skipped: 0, total: 10, stopped: 'rpd' })).toBe(2);
-    expect(exitCodeFor({ done: 0, skipped: 0, total: 10, stopped: 'free_tier' })).toBe(2);
-    expect(exitCodeFor({ done: 10, skipped: 0, total: 10, stopped: null })).toBe(0);
+    expect(exitCodeFor({ done: 3, skipped: 0, total: 10, stopped: 'rpd', stopDetail: 'd' })).toBe(
+      2,
+    );
+    expect(
+      exitCodeFor({ done: 0, skipped: 0, total: 10, stopped: 'free_tier', stopDetail: 'd' }),
+    ).toBe(2);
+    expect(exitCodeFor({ done: 10, skipped: 0, total: 10, stopped: null, stopDetail: null })).toBe(
+      0,
+    );
+  });
+});
+
+describe('generate-cli: stopMessage', () => {
+  it('TC-AUD49-CLI-4: rpd memuat jenis, N/M, detail, dan petunjuk batas harian', () => {
+    const lines = stopMessage({
+      done: 80,
+      skipped: 9,
+      total: 149,
+      stopped: 'rpd',
+      stopDetail: 'quotaId=GenerateRequestsPerDayPerProjectPerModel; quotaValue=100',
+    });
+    expect(lines[0]).toBe('kuota habis (rpd), 89/149 selesai, lanjutkan besok');
+    expect(lines[1]).toBe(
+      'detail: quotaId=GenerateRequestsPerDayPerProjectPerModel; quotaValue=100',
+    );
+    expect(lines).toHaveLength(3);
+    expect(lines[2]).toBe(
+      'Batas harian model untuk tingkatan akun ini tercapai; lihat Rate limits di AI Studio. Saldo tidak menaikkan batas harian.',
+    );
+  });
+
+  it('TC-AUD49-CLI-4: free_tier memuat jenis, N/M, detail, dan petunjuk penagihan', () => {
+    const lines = stopMessage({
+      done: 0,
+      skipped: 5,
+      total: 20,
+      stopped: 'free_tier',
+      stopDetail: 'quotaId=GenerateRequestsPerDayPerProjectPerModel-FreeTier',
+    });
+    expect(lines[0]).toBe('kuota habis (free_tier), 5/20 selesai, lanjutkan besok');
+    expect(lines[1]).toBe('detail: quotaId=GenerateRequestsPerDayPerProjectPerModel-FreeTier');
+    expect(lines).toHaveLength(3);
+    expect(lines[2]).toBe(
+      'Proyek API key masih tingkatan gratis: aktifkan penagihan di proyek Google Cloud milik API key ini.',
+    );
   });
 });

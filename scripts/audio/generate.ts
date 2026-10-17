@@ -4,7 +4,7 @@ import type { ModelRole } from '../ai/models';
 import type { AppLocale } from '../../src/domain/locale';
 import { writeFileAtomic } from './atomic';
 import type { InventoryEntry } from './inventory';
-import { classifyQuota } from './quota';
+import { classifyQuota, quotaDetail } from './quota';
 import { loadReport, rawFileName, upsertItem, type PendingItem } from './report';
 import { buildTtsPayload, extractPcm, pcmToWav } from './tts';
 import { assertVoiceConfigured, styleHash, type Voice } from './voice';
@@ -42,6 +42,8 @@ export interface GenerateResult {
   skipped: number;
   total: number;
   stopped: null | 'rpd' | 'free_tier';
+  /** Ringkasan satu baris error kuota saat berhenti; null bila tidak berhenti. */
+  stopDetail: string | null;
 }
 
 const MULTI_TAKE = new Set<InventoryEntry['category']>(['core', 'celebrate']);
@@ -109,7 +111,7 @@ export async function runGenerate(opts: GenerateOptions): Promise<GenerateResult
         if (err instanceof ApiError) {
           const kind = classifyQuota(err.status, err.body);
           if (kind === 'rpd' || kind === 'free_tier') {
-            return { done, skipped, total, stopped: kind };
+            return { done, skipped, total, stopped: kind, stopDetail: quotaDetail(err.body) };
           }
         }
         opts.log(`Gagal ${entry.id}: ${err instanceof Error ? err.message : String(err)}`);
@@ -138,5 +140,5 @@ export async function runGenerate(opts: GenerateOptions): Promise<GenerateResult
   }
 
   if (dryRun) opts.log(`Dry-run: ${planned} klip akan dibuat, ${skipped} entri dilewati.`);
-  return { done, skipped, total, stopped: null };
+  return { done, skipped, total, stopped: null, stopDetail: null };
 }
