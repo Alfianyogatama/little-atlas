@@ -263,7 +263,15 @@ test('TC-E2E-AUD-2 Kuis: pujian dari file, segmen di luar fixture lewat Web Spee
 test('TC-E2E-AUD-3 tanpa peta sprite dan tanpa suara: kartu tetap jalan, tanpa error, peta di-fetch paling banyak sekali', async ({
   page,
 }) => {
-  // Tanpa page.route: preview mengembalikan fallback SPA (200 text/html) untuk /audio/id/sprites.json.
+  // Remap #49: peta asli kini ter-commit di public/audio, jadi "tanpa peta" dibuat eksplisit dengan meniru
+  // fallback SPA yang dulu disajikan preview (200 text/html) untuk /audio/id/sprites.json.
+  await page.route('**/audio/id/sprites.json', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'text/html',
+      body: '<!doctype html><title>app</title>',
+    }),
+  );
   await page.addInitScript(speechStub(false));
   await page.addInitScript(startRecorder);
   const errors: string[] = [];

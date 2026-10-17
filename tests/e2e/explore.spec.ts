@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import enMessages from '../../messages/en.json' with { type: 'json' };
 import idMessages from '../../messages/id.json' with { type: 'json' };
+import { routeNoAudioMap } from './helpers/no-audio-map';
 
 interface CatalogEntry {
   alpha2: string;
@@ -84,7 +85,11 @@ const speechStub = `
   Object.defineProperty(window, 'speechSynthesis', { value: stub, configurable: true });
 `;
 
+// REMAP #49: tes di berkas ini menguji teks dan urutan ucapan lewat jalur Web Speech (stub). Sejak klip
+// audio asli ter-commit, segmen yang punya klip diputar dari file dan tidak sampai ke stub, jadi peta
+// sprite dinonaktifkan di sini. Pemutaran file diuji audio.spec.ts dan audio-real.spec.ts.
 test.beforeEach(async ({ page }) => {
+  await routeNoAudioMap(page);
   await page.addInitScript(speechStub);
 });
 
