@@ -180,7 +180,7 @@ const AudioLocale = z.enum(['id', 'en']);
 /** Kunci grup sprite: huruf kecil, angka, tanda hubung (mis. `core`, `intro-asia-1`). */
 const GroupKey = z.string().regex(/^[a-z0-9-]+$/, 'kunci grup harus huruf kecil, angka, atau -');
 /** ID klip sesuai segmen di useExplore.ts/useFlagQuiz.ts (ADR-008). */
-const ClipId = z
+export const ClipId = z
   .string()
   .regex(
     /^(?:introHome|ocean|tryAgain|celebrateMany|(?:intro|fact|ask|praiseFlag):[A-Z]{2}|(?:praise|celebrate):\d+)$/,
@@ -256,25 +256,53 @@ export const AudioSpriteMapSchema = z
 export type AudioSpriteMap = z.infer<typeof AudioSpriteMapSchema>;
 
 /** Manifest klip audio kurasi (issue #49): satu entri per klip yang sudah ditinjau. */
-export const AudioManifestSchema = z.object({
-  version: z.literal(1),
-  clips: z.array(
-    z.object({
-      id: ClipId,
-      locale: AudioLocale,
-      text: z.string().min(1),
-      textHash: Hex64,
-      attempt: z.number().int().min(1),
-      /** Berkas mentah di .tmp/audio/raw yang menghasilkan klip ini. */
-      raw: z.string().min(1),
-      whisper: z.object({
-        transcript: z.string(),
-        score: z.number().min(0).max(1),
-        flag: z.string().min(1),
+export const AudioManifestSchema = z
+  .object({
+    version: z.literal(1),
+    clips: z.array(
+      z.object({
+        id: ClipId,
+        locale: AudioLocale,
+        text: z.string().min(1),
+        textHash: Hex64,
+        attempt: z.number().int().min(1),
+        /** Berkas mentah di .tmp/audio/raw: `<locale>/<nama>.wav`. */
+        raw: z.string().regex(/^(?:id|en)\/[A-Za-z0-9_-]+\.wav$/, 'raw harus <locale>/<nama>.wav'),
+        model: z.string().min(1),
+        voice: z.string().min(1),
+        styleHash: Hex64,
+        take: z.number().int().min(1),
+        generatedAt: z.iso.datetime(),
+        whisper: z.object({
+          model: z.string().min(1),
+          transcript: z.string(),
+          score: z.number().min(0).max(1),
+          flag: z.enum(['kosong', 'bahasa', 'beda', 'periksa', 'ok']),
+        }),
+        durationMs: PositiveInt,
+        reviewedAt: z.iso.datetime(),
       }),
-      durationMs: PositiveInt,
-      reviewedAt: z.iso.datetime(),
-    }),
-  ),
-});
+    ),
+  })
+  .superRefine((manifest, ctx) => {
+    const seen = new Set<string>();
+    manifest.clips.forEach((clip, i) => {
+      const key = `${clip.locale}\n${clip.id}`;
+      if (seen.has(key)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['clips', i],
+          message: `klip '${clip.id}' ganda untuk locale '${clip.locale}'`,
+        });
+      }
+      seen.add(key);
+      if (!clip.raw.startsWith(`${clip.locale}/`)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['clips', i, 'raw'],
+          message: `raw harus berawalan '${clip.locale}/'`,
+        });
+      }
+    });
+  });
 export type AudioManifest = z.infer<typeof AudioManifestSchema>;

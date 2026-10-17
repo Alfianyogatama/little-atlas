@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import {
   exploreStep,
+  HOME_CODE,
   INITIAL_EXPLORE_STATE,
   shouldAutoRotate,
   type ExploreContext,
@@ -13,13 +14,13 @@ import type { HitResult } from '@/domain/geo';
 import type { AppLocale } from '@/domain/locale';
 import { useLocale } from '@/app/i18n/useLocale';
 import type { GlobeHandle } from '@/globe/Globe';
-import { m } from '@/paraglide/messages.js';
 import type { AudioService, SpeechSegment } from '@/services/audio';
 import { createBrowserAudio } from '@/services/audio/browser';
+import { exploreClip } from '@/services/audio/segments';
 import type { ExploreContent } from '@/services/content/explore';
 import type { CountryCatalog } from '@/content/schema';
 
-export const HOME_CODE = 'ID';
+export { HOME_CODE };
 const AUTO_ROTATE_CHECK_MS = 500;
 
 export interface ExploreOptions {
@@ -92,24 +93,16 @@ export function useExplore({ content, catalog, globeRef, audio }: ExploreOptions
   const toSegments = useCallback(
     (plan: readonly PlanSegment[]): SpeechSegment[] => {
       const loc = localeRef.current;
-      const nameFor = (code: string) =>
-        catalogRef.current?.find((c) => c.alpha2 === code)?.name[loc] ?? code;
+      const deps = {
+        locale: loc,
+        nameOf: (code: string) =>
+          catalogRef.current?.find((c) => c.alpha2 === code)?.name[loc] ?? code,
+        factText: (code: string, l: AppLocale) => content.factText(code, l),
+      };
       const out: SpeechSegment[] = [];
       for (const seg of plan) {
-        if (seg.kind === 'intro') {
-          out.push({
-            id: `intro:${seg.code}`,
-            text: m.explore_intro({ name: nameFor(seg.code) }),
-            locale: loc,
-          });
-        } else if (seg.kind === 'introHome') {
-          out.push({ id: 'introHome', text: m.explore_intro_home(), locale: loc });
-        } else if (seg.kind === 'ocean') {
-          out.push({ id: 'ocean', text: m.explore_ocean(), locale: loc });
-        } else {
-          const text = content.factText(seg.code, loc);
-          if (text) out.push({ id: `fact:${seg.code}`, text, locale: loc });
-        }
+        const clip = exploreClip(seg, deps);
+        if (clip) out.push(clip);
       }
       return out;
     },

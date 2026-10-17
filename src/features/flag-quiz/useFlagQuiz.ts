@@ -15,14 +15,9 @@ import type { AppLocale } from '@/domain/locale';
 import { useLocale } from '@/app/i18n/useLocale';
 import type { CountryCatalog } from '@/content/schema';
 import type { GlobeHandle } from '@/globe/Globe';
-import { m } from '@/paraglide/messages.js';
 import type { AudioService, SpeechSegment } from '@/services/audio';
 import { createBrowserAudio } from '@/services/audio/browser';
-
-/** Perayaan `celebrate:N` punya klip sampai N ini (kelipatan 5); di atasnya `celebrateMany`. */
-const MAX_CELEBRATE_CLIP = 100;
-
-const PRAISES = [m.quiz_praise_1, m.quiz_praise_2, m.quiz_praise_3, m.quiz_praise_4] as const;
+import { quizClips } from '@/services/audio/segments';
 
 export interface FlagQuizOptions {
   pool: readonly string[];
@@ -95,40 +90,13 @@ export function useFlagQuiz(options: FlagQuizOptions): FlagQuizApi {
 
   const toSegments = useCallback((plan: readonly QuizSpeech[]): SpeechSegment[] => {
     const loc = localeRef.current;
-    const nameFor = (code: string) =>
-      catalogRef.current?.find((c) => c.alpha2 === code)?.name[loc] ?? code;
-    const out: SpeechSegment[] = [];
-    for (const item of plan) {
-      if (item.kind === 'ask') {
-        out.push({
-          id: `ask:${item.code}`,
-          text: m.quiz_ask_speech({ name: nameFor(item.code) }),
-          locale: loc,
-        });
-      } else if (item.kind === 'praise') {
-        const word = PRAISES[item.variant];
-        if (word) out.push({ id: `praise:${item.variant + 1}`, text: word(), locale: loc });
-        out.push({
-          id: `praiseFlag:${item.code}`,
-          text: m.quiz_praise_flag({ name: nameFor(item.code) }),
-          locale: loc,
-        });
-      } else if (item.kind === 'celebrate') {
-        // Klip utuh hanya sampai batas; di atasnya satu klip tanpa angka (ADR-008, R5).
-        if (item.stars > MAX_CELEBRATE_CLIP) {
-          out.push({ id: 'celebrateMany', text: m.quiz_celebrate_many_speech(), locale: loc });
-        } else {
-          out.push({
-            id: `celebrate:${item.stars}`,
-            text: m.quiz_celebrate_speech({ count: item.stars }),
-            locale: loc,
-          });
-        }
-      } else {
-        out.push({ id: 'tryAgain', text: m.quiz_try_again(), locale: loc });
-      }
-    }
-    return out;
+    const deps = {
+      locale: loc,
+      nameOf: (code: string) =>
+        catalogRef.current?.find((c) => c.alpha2 === code)?.name[loc] ?? code,
+      factText: () => null,
+    };
+    return plan.flatMap((item) => quizClips(item, deps));
   }, []);
 
   const dispatchRef = useRef<((event: QuizEvent) => void) | null>(null);

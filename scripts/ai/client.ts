@@ -39,6 +39,18 @@ export function parseVerdict(text: string): VisionVerdict {
   return VisionVerdictSchema.parse(json);
 }
 
+/** Non-OK final dari penyedia; body utuh sudah disamarkan dari kunci API, hanya message yang dipotong. */
+export class ApiError extends Error {
+  readonly status: number;
+  readonly body: string;
+  constructor(message: string, status: number, body: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
 export interface LogEntry {
   at: string;
   role: ModelRole;
@@ -109,11 +121,9 @@ export function createClient(deps: ClientDeps) {
   }
 
   function estimateCost(role: ModelRole, tokensIn: number, tokensOut: number): number {
-    if (role === 'vision') {
-      const { perInputToken, perOutputToken } = MODELS.vision.priceUsd;
-      return tokensIn * perInputToken + tokensOut * perOutputToken;
-    }
-    return MODELS.image.priceUsd.perImage;
+    if (role === 'image') return MODELS.image.priceUsd.perImage;
+    const { perInputToken, perOutputToken } = MODELS[role].priceUsd;
+    return tokensIn * perInputToken + tokensOut * perOutputToken;
   }
 
   function record(role: ModelRole, body: unknown, cached: boolean): void {
@@ -121,11 +131,11 @@ export function createClient(deps: ClientDeps) {
     const u = parsed.success ? parsed.data.usageMetadata : undefined;
     const tokensIn = u?.promptTokenCount ?? 0;
     const tokensOut = u?.candidatesTokenCount ?? 0;
-    const images = parsed.success ? countImages(parsed.data) : 0;
+    const images = role === 'image' && parsed.success ? countImages(parsed.data) : 0;
     log.push({
       at: deps.now().toISOString(),
       role,
-      model: (role === 'vision' ? MODELS.vision : MODELS.image).model,
+      model: MODELS[role].model,
       cached,
       tokensIn,
       tokensOut,
@@ -134,10 +144,16 @@ export function createClient(deps: ClientDeps) {
     });
   }
 
-  async function request(role: ModelRole, payload: Record<string, unknown>): Promise<unknown> {
-    const cfg = role === 'vision' ? MODELS.vision : MODELS.image;
+  // cacheTag hanya masuk hash cache (untuk ambil ulang), tidak pernah ikut terkirim.
+  async function request(
+    role: ModelRole,
+    payload: Record<string, unknown>,
+    opts?: { cacheTag?: string },
+  ): Promise<unknown> {
+    const cfg = MODELS[role];
+    const tag = opts?.cacheTag === undefined ? '' : `\n${opts.cacheTag}`;
     const hash = createHash('sha256')
-      .update(role + '\n' + cfg.model + '\n' + canonical(payload))
+      .update(role + '\n' + cfg.model + '\n' + canonical(payload) + tag)
       .digest('hex');
     const cacheFile = join(deps.cacheDir, `${hash}.json`);
     if (existsSync(cacheFile)) {
@@ -169,8 +185,12 @@ export function createClient(deps: ClientDeps) {
       }
       const retryable = res.status === 429 || res.status >= 500;
       if (!retryable || attempt >= MAX_RETRIES) {
-        const text = redact(await res.text().catch(() => ''), key).slice(0, 300);
-        throw new Error(`Panggilan ke ${role} gagal dengan status ${res.status}: ${text}`);
+        const body = redact(await res.text().catch(() => ''), key);
+        throw new ApiError(
+          `Panggilan ke ${role} gagal dengan status ${res.status}: ${body.slice(0, 300)}`,
+          res.status,
+          body,
+        );
       }
       const retryAfter = Number(res.headers.get('retry-after'));
       const waitMs =

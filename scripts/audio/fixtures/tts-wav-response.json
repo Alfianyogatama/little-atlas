@@ -1,0 +1,39 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "audio/wav",
+              "data": "UklGRgQCAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YeABAAAAAC8FOgr7DlMTIRdMGrwcYB4sHxsfLh5qHN0ZmRa0EkoOewlpBDf/C/oK9VbwEexa6Erl+OJ04cjg+uAJ4uvjleb06e7tafJF9178kQG5BrELVxCIFCgYHBtQHbQePh/rHrwduhv0GHwVbBHhDPoH2wKn/YT4lvMA7+PqW+eC5G3iKeHA4DXhhOKk5IfnF+s779fzyfjt/SEDPgghDacRsBUeGdsb0h31Hj0fpx43Hfga+hdSFBoQbwt0BkoBGPwB9yryte3C6WzmzeP14fLgzOCD4RLjb+WI6Ejsk/BM9VH6fv+vBL8JiQ7sEskWBRqIHEAeIh8nH08enxwlGvIWGxO9DvcJ6QS5/4v6hPXH8Hbsr+iO5SnjkOHP4Ozg5eGz40vmmOmF7fXxyPbd+w8BOgY4C+cPJRTUF9saIh2bHjsf/R7jHfUbQRnaFdgRVw13CFwDKP4C+Q30be9D66znweSY4j/hweAg4VriZ+Q357fqzu5g80v4bP2gAsEHqww7EVEV0BifG6od4h4/H78eZB05G00YtBSJEOgL8wbMAZn8ffef8h/uHuq45gXkGuIC4cbgaOHi4izlM+jk6yPw0/TS+fz+LwRDCRYOhBJwFrwZUhweHhUfMB9tHtMcaxo="
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 24,
+    "candidatesTokenCount": 241,
+    "totalTokenCount": 265,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 24
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "AUDIO",
+        "tokenCount": 241
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.8-flash-lite-tts",
+  "responseId": "fixture-sintetis"
+}

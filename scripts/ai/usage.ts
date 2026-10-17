@@ -1,6 +1,6 @@
 import type { LogEntry } from './client';
 
-const ROLES = ['image', 'vision'] as const;
+const ROLES = ['image', 'vision', 'tts'] as const;
 
 function sum(entries: LogEntry[], pick: (e: LogEntry) => number): number {
   return entries.reduce((n, e) => n + pick(e), 0);

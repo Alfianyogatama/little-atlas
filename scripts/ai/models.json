@@ -6,7 +6,9 @@
     "apiKeyEnv": "GEMINI_API_KEY",
     "transport": "gemini-native",
     "delayMs": 4000,
-    "priceUsd": { "perImage": 0 }
+    "priceUsd": {
+      "perImage": 0
+    }
   },
   "vision": {
     "enabled": true,
@@ -16,6 +18,21 @@
     "apiKeyEnv": "GEMINI_API_KEY",
     "transport": "gemini-native",
     "delayMs": 1000,
-    "priceUsd": { "perInputToken": 0, "perOutputToken": 0 }
+    "priceUsd": {
+      "perInputToken": 0,
+      "perOutputToken": 0
+    }
+  },
+  "tts": {
+    "provider": "gemini",
+    "model": "gemini-3.8-flash-lite-tts",
+    "baseUrl": "https://generativelanguage.googleapis.com/v1beta/",
+    "apiKeyEnv": "GEMINI_API_KEY",
+    "transport": "gemini-native",
+    "delayMs": 4500,
+    "priceUsd": {
+      "perInputToken": 0,
+      "perOutputToken": 0
+    }
   }
 }
