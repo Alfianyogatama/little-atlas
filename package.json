@@ -44,6 +44,7 @@
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",
     "@react-three/fiber": "9.8.1",
+    "dexie": "4.4.6",
     "howler": "2.2.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -77,6 +78,7 @@
     "eslint": "10.11.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react-hooks": "7.1.1",
+    "fake-indexeddb": "6.2.5",
     "flag-icons": "7.5.0",
     "globals": "17.12.0",
     "jsdom": "30.1.1",
