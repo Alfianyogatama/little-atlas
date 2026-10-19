@@ -4,6 +4,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import enMessages from '../../messages/en.json' with { type: 'json' };
 import idMessages from '../../messages/id.json' with { type: 'json' };
 import { routeNoAudioMap } from './helpers/no-audio-map';
+import { waitForSavedStars } from './helpers/storage';
 
 interface CatalogEntry {
   alpha2: string;
@@ -614,7 +615,9 @@ test.describe('bahasa Inggris', () => {
   });
 });
 
-test('TC-F04-09 setelah 1 bintang, memuat ulang memicu dialog peringatan bawaan browser', async ({
+// REMAP #10 (ADR-002 revisi 16 Okt, F-11.1): bintang kini disimpan lokal, jadi memuat ulang tidak lagi
+// memicu dialog beforeunload dan bintang bertahan. Dulu tes ini menegaskan dialog dan bintang kembali 0.
+test('TC-F04-09 setelah 1 bintang, memuat ulang tanpa dialog peringatan dan bintang bertahan', async ({
   page,
 }) => {
   const dialogs: string[] = [];
@@ -627,15 +630,21 @@ test('TC-F04-09 setelah 1 bintang, memuat ulang memicu dialog peringatan bawaan 
   await expect(starsOf(page, 'id', 1)).toBeVisible();
   expect(dialogs).toEqual([]);
 
+  // Reload menunggu commit: tulis IndexedDB asinkron, bintang yang didapat sesaat sebelum tab
+  // ditutup bisa hilang (ADR-002 revisi 19 Okt). Remap, bukan pelemahan.
+  await waitForSavedStars(page, 1);
   await page.reload();
   await expect(page.locator('main[data-state=ready]')).toBeAttached();
+  await frames(page);
 
-  expect(dialogs).toEqual(['beforeunload']);
-  // Progres sesi memang hilang saat dimuat ulang (disimpan permanen di #10).
-  await expect(starsOf(page, 'id', 0)).toBeVisible();
+  expect(dialogs).toEqual([]);
+  // Bintang dimuat dari penyimpanan lokal; layar awal setelah reload adalah Jelajah.
+  await expect(starsOf(page, 'id', 1)).toBeVisible();
 });
 
-test('TC-F04-09b dengan 0 bintang, memuat ulang tidak memicu dialog', async ({ page }) => {
+test('TC-F04-09b dengan 0 bintang, memuat ulang tidak memicu dialog dan bintang tetap 0', async ({
+  page,
+}) => {
   const dialogs: string[] = [];
   page.on('dialog', (dialog) => {
     dialogs.push(dialog.type());
@@ -653,6 +662,7 @@ test('TC-F04-09b dengan 0 bintang, memuat ulang tidak memicu dialog', async ({ p
   await frames(page);
 
   expect(dialogs).toEqual([]);
+  await expect(starsOf(page, 'id', 0)).toBeVisible();
 });
 
 test('TC-F04-10 bintang bertahan saat ganti mode, tampil di Jelajah, dan soal baru berbeda', async ({
