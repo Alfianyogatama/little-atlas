@@ -15,8 +15,18 @@
  *   has -> false -> suara lokal; suara lokal tidak bisa (canSay salah) -> lewati; antrean lanjut.
  * - speak() menaikkan generasi lalu cancel() KEDUA sumber; stop() sama; hasil basi (has/done dari
  *   generasi lama) diabaikan; setiap segmen maju sekali walau done dipanggil berulang.
+ *
+ * Jeda antarsegmen (TC-AUD-GAP, masukan uji MatePad 17 Okt 2026):
+ * - createLayeredAudio({ clips, voice, gapMs = 400, setTimer?, clearTimer? }); timer disuntik
+ *   (default setTimeout/clearTimeout).
+ * - Setelah segmen i selesai (ended klip ATAU suara lokal selesai), tunggu gapMs lalu mulai i+1.
+ *   Tidak ada jeda sebelum segmen pertama dan sesudah segmen terakhir.
+ * - Segmen yang dilewati (tanpa klip dan tanpa suara lokal, atau gagal total) tidak menambah jeda.
+ * - speak() baru atau stop() selama jeda membatalkan timer.
+ * - Remap: tes TC-AUD-SRC/Q lama mengunci "segmen berikut langsung dimulai setelah done"; sekarang
+ *   memakai setup() dengan gapMs: 0 supaya yang diuji tetap urutan/sumber, bukan jeda. Asersinya tidak diubah.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createLayeredAudio, type ClipSource } from './layered';
 import type { LocalVoice } from './webSpeech';
 import type { SpeechSegment } from './index';
@@ -25,7 +35,49 @@ type Done = (r: 'ended' | 'failed') => void;
 
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
-function setup(opts: { clips: string[]; voices?: string[] }) {
+type SetTimer = (fn: () => void, ms: number) => unknown;
+type ClearTimer = (handle: unknown) => void;
+
+/** Timer palsu: waktu maju hanya lewat advance(); mencatat jeda yang diminta dan handle yang dibatalkan. */
+function fakeTimers() {
+  let now = 0;
+  let nextId = 1;
+  const items = new Map<number, { at: number; fn: () => void }>();
+  const delays: number[] = [];
+  const cleared: number[] = [];
+  const setTimer: SetTimer = (fn, ms) => {
+    const id = nextId++;
+    delays.push(ms);
+    items.set(id, { at: now + ms, fn });
+    return id;
+  };
+  const clearTimer: ClearTimer = (handle) => {
+    cleared.push(handle as number);
+    items.delete(handle as number);
+  };
+  const advance = (ms: number) => {
+    const target = now + ms;
+    for (;;) {
+      const due = [...items.entries()]
+        .filter(([, t]) => t.at <= target)
+        .sort((x, y) => x[1].at - y[1].at)[0];
+      if (!due) break;
+      items.delete(due[0]);
+      now = due[1].at;
+      due[1].fn();
+    }
+    now = target;
+  };
+  return { setTimer, clearTimer, advance, delays, cleared, active: () => items.size };
+}
+
+/** Tes antrean/sumber lama memakai gapMs: 0; tes jeda memakai timer palsu dan gapMs bawaan. */
+function setup(opts: {
+  clips: string[];
+  voices?: string[];
+  gapMs?: number;
+  timers?: ReturnType<typeof fakeTimers>;
+}) {
   const log: string[] = [];
   const have = new Set(opts.clips);
   const voiceLocales = new Set(opts.voices ?? []);
@@ -59,7 +111,15 @@ function setup(opts: { clips: string[]; voices?: string[] }) {
       log.push('voice.cancel');
     },
   };
-  const audio = createLayeredAudio({ clips, voice });
+  const audio = opts.timers
+    ? createLayeredAudio({
+        clips,
+        voice,
+        ...(opts.gapMs === undefined ? {} : { gapMs: opts.gapMs }),
+        setTimer: opts.timers.setTimer,
+        clearTimer: opts.timers.clearTimer,
+      })
+    : createLayeredAudio({ clips, voice, gapMs: opts.gapMs ?? 0 });
   return { audio, log, clipPlays, voiceSays };
 }
 
@@ -98,7 +158,7 @@ function setupGated(opts: { voices?: string[] }) {
       log.push('voice.cancel');
     },
   };
-  const audio = createLayeredAudio({ clips, voice });
+  const audio = createLayeredAudio({ clips, voice, gapMs: 0 });
   return { audio, log, pending, clipPlays, voiceSays };
 }
 
@@ -135,7 +195,7 @@ describe('createLayeredAudio sumber (TC-AUD-SRC)', () => {
       cancel: () => undefined,
     };
     const voice: LocalVoice = { canSay: () => true, say: () => undefined, cancel: () => undefined };
-    createLayeredAudio({ clips, voice }).speak([seg('intro:JP', 'Ini Jepang!', 'en')]);
+    createLayeredAudio({ clips, voice, gapMs: 0 }).speak([seg('intro:JP', 'Ini Jepang!', 'en')]);
     await flush();
     expect(asked).toEqual([{ id: 'intro:JP', text: 'Ini Jepang!', locale: 'en' }]);
   });
@@ -449,5 +509,257 @@ describe('createLayeredAudio antrean (TC-AUD-Q)', () => {
     expect(() => audio.stop()).not.toThrow();
     expect(log).toContain('clips.cancel');
     expect(log).toContain('voice.cancel');
+  });
+});
+
+describe('createLayeredAudio jeda antarsegmen (TC-AUD-GAP)', () => {
+  it('TC-AUD-GAP-1 dua klip berturut: segmen 2 belum mulai pada 399 ms setelah ended, mulai pada 400 ms', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], voices: ['id'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    clipPlays[0]?.done('ended');
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b']);
+  });
+
+  it('TC-AUD-GAP-1 tidak ada jeda sebelum segmen pertama dan sesudah segmen terakhir', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    expect(timers.delays).toEqual([]);
+    clipPlays[0]?.done('ended');
+    timers.advance(400);
+    await flush();
+    clipPlays[1]?.done('ended');
+    await flush();
+    expect(timers.delays).toEqual([400]);
+    expect(timers.active()).toBe(0);
+  });
+
+  it('TC-AUD-GAP-1 tiga klip: setiap pasangan berurutan dipisah satu jeda', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b', 'c'], timers });
+    audio.speak([seg('a'), seg('b'), seg('c')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    timers.advance(400);
+    await flush();
+    clipPlays[1]?.done('ended');
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b']);
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b', 'clip:c']);
+  });
+
+  it('TC-AUD-GAP-2 klip lalu suara lokal: berjeda 400 ms', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a'], voices: ['id'], timers });
+    audio.speak([seg('a'), seg('b', 'Dua')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'voice:Dua']);
+  });
+
+  it('TC-AUD-GAP-2 suara lokal lalu klip: berjeda 400 ms', async () => {
+    const timers = fakeTimers();
+    const { audio, log, voiceSays } = setup({ clips: ['b'], voices: ['id'], timers });
+    audio.speak([seg('a', 'Satu'), seg('b')]);
+    await flush();
+    voiceSays[0]?.done('ended');
+    await flush();
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['voice:Satu']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['voice:Satu', 'clip:b']);
+  });
+
+  it('TC-AUD-GAP-2 dua suara lokal berturut: berjeda 400 ms', async () => {
+    const timers = fakeTimers();
+    const { audio, log, voiceSays } = setup({ clips: [], voices: ['id'], timers });
+    audio.speak([seg('a', 'Satu'), seg('b', 'Dua')]);
+    await flush();
+    voiceSays[0]?.done('ended');
+    await flush();
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['voice:Satu']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['voice:Satu', 'voice:Dua']);
+  });
+
+  it('TC-AUD-GAP-2 klip gagal lalu suara lokal untuk segmen yang sama: langsung, tanpa jeda', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a'], voices: ['id'], timers });
+    audio.speak([seg('a', 'Satu')]);
+    await flush();
+    clipPlays[0]?.done('failed');
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'voice:Satu']);
+    expect(timers.delays).toEqual([]);
+  });
+
+  it('TC-AUD-GAP-3 segmen pertama dilewati: segmen 2 langsung, tanpa jeda', async () => {
+    const timers = fakeTimers();
+    const { audio, log } = setup({ clips: ['b'], voices: [], timers });
+    audio.speak([seg('a', 'Satu'), seg('b')]);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:b']);
+    expect(timers.delays).toEqual([]);
+  });
+
+  it('TC-AUD-GAP-3 segmen 2 dilewati di tengah: segmen 3 tepat 400 ms setelah segmen 1 selesai, bukan 800', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'c'], voices: [], timers });
+    audio.speak([seg('a'), seg('b', 'Dua'), seg('c')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    timers.advance(399);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:c']);
+    expect(timers.delays).toEqual([400]);
+  });
+
+  it('TC-AUD-GAP-3 klip gagal total (tanpa suara lokal) dianggap dilewati: segmen berikut langsung', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], voices: [], timers });
+    audio.speak([seg('a', 'Satu'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('failed');
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b']);
+    expect(timers.delays).toEqual([]);
+  });
+
+  it('TC-AUD-GAP-4 speak baru di tengah jeda: segmen lama tidak pernah diputar dan timer dibersihkan', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b', 'c'], voices: ['id'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    timers.advance(200);
+    expect(timers.active()).toBe(1);
+    audio.speak([seg('c')]);
+    expect(timers.active()).toBe(0);
+    expect(timers.cleared).toHaveLength(1);
+    await flush();
+    timers.advance(1000);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:c']);
+  });
+
+  it('TC-AUD-GAP-4 stop di tengah jeda: segmen lama tidak pernah diputar dan timer dibersihkan', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], voices: ['id'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    timers.advance(200);
+    expect(timers.active()).toBe(1);
+    audio.stop();
+    expect(timers.active()).toBe(0);
+    expect(timers.cleared).toHaveLength(1);
+    timers.advance(1000);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+  });
+
+  it('TC-AUD-GAP-4 speak([]) di tengah jeda juga membatalkan timer', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    audio.speak([]);
+    expect(timers.active()).toBe(0);
+    timers.advance(1000);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+  });
+
+  it('TC-AUD-GAP-5 gapMs bawaan 400 diteruskan ke timer', async () => {
+    const timers = fakeTimers();
+    const { audio, clipPlays } = setup({ clips: ['a', 'b'], timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    expect(timers.delays).toEqual([400]);
+  });
+
+  it('TC-AUD-GAP-5 gapMs bisa diatur', async () => {
+    const timers = fakeTimers();
+    const { audio, log, clipPlays } = setup({ clips: ['a', 'b'], gapMs: 150, timers });
+    audio.speak([seg('a'), seg('b')]);
+    await flush();
+    clipPlays[0]?.done('ended');
+    await flush();
+    expect(timers.delays).toEqual([150]);
+    timers.advance(149);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a']);
+    timers.advance(1);
+    await flush();
+    expect(sounds(log)).toEqual(['clip:a', 'clip:b']);
+  });
+
+  it('TC-AUD-GAP-5 tanpa timer suntikan: memakai setTimeout bawaan dengan jeda 400 ms', async () => {
+    vi.useFakeTimers();
+    try {
+      const log: string[] = [];
+      const plays: Done[] = [];
+      const clips: ClipSource = {
+        has: () => Promise.resolve(true),
+        play: (s, done) => {
+          log.push(s.id);
+          plays.push(done);
+        },
+        cancel: () => undefined,
+      };
+      const voice: LocalVoice = {
+        canSay: () => false,
+        say: () => undefined,
+        cancel: () => undefined,
+      };
+      createLayeredAudio({ clips, voice }).speak([seg('a'), seg('b')]);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(log).toEqual(['a']);
+      plays[0]?.('ended');
+      await vi.advanceTimersByTimeAsync(399);
+      expect(log).toEqual(['a']);
+      await vi.advanceTimersByTimeAsync(1);
+      expect(log).toEqual(['a', 'b']);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

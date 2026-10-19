@@ -2,6 +2,9 @@ import type { HitResult } from '../geo/types';
 
 export const AUTO_ROTATE_IDLE_MS = 6000;
 
+/** Kode negara rumah: kartunya memakai intro khusus dan tombol Beranda. */
+export const HOME_CODE = 'ID';
+
 export interface CardTarget {
   kind: 'country' | 'continent';
   code: string;

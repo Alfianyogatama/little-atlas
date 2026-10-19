@@ -2,6 +2,9 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { ContinentFactsSchema, FavoritesSchema, IconManifestSchema } from '../src/content/schema';
+import { MANIFEST_PATH } from './audio/config';
+import { buildInventory, loadInventorySource } from './audio/inventory';
+import { verifyAudio } from './audio/verify';
 import { buildContent } from './build-content';
 import { styleHash, type StyleSpec } from './icons/prompt';
 import { verifyIcons } from './icons/verify';
@@ -70,6 +73,22 @@ export function checkIcons(root: string): string[] {
   }
 }
 
+/** Memeriksa audio produksi terhadap manifest dan inventaris id+en; error tak terduga menjadi satu masalah. */
+export function checkAudio(root: string): string[] {
+  try {
+    const path = join(root, MANIFEST_PATH);
+    const manifest: unknown = existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : null;
+    const source = loadInventorySource(root);
+    return verifyAudio({
+      root,
+      manifest,
+      inventories: { id: buildInventory(source, 'id'), en: buildInventory(source, 'en') },
+    });
+  } catch (err) {
+    return [`pemeriksaan audio gagal: ${err instanceof Error ? err.message : String(err)}`];
+  }
+}
+
 const entry = process.argv[1];
 if (entry !== undefined && import.meta.url === pathToFileURL(entry).href) {
   const tmp = join(ROOT, '.tmp', 'content-check');
@@ -82,6 +101,12 @@ if (entry !== undefined && import.meta.url === pathToFileURL(entry).href) {
     if (iconIssues.length > 0) {
       console.error('Pemeriksaan ikon menemukan masalah:');
       for (const i of iconIssues) console.error(`  ${i}`);
+      code = 1;
+    }
+    const audioIssues = checkAudio(ROOT);
+    if (audioIssues.length > 0) {
+      console.error('Pemeriksaan audio menemukan masalah:');
+      for (const i of audioIssues) console.error(`  ${i}`);
       code = 1;
     }
     if (different.length > 0) {

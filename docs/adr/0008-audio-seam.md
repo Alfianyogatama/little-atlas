@@ -8,6 +8,8 @@ Diperbarui pada 16 Oktober 2026: ID segmen suara Tebak Bendera dari issue #6 dic
 
 Diperbarui pada 17 Oktober 2026: implementasi Howler dan urutan sumber per segmen dari issue #8 (lihat bagian "Revisi 17 Oktober 2026 (issue #8)"). Kalimat di bawah yang menulis Howler sebagai rencana, dan butir tentang #8 di "Konsekuensi", digantikan oleh revisi itu.
 
+Diperbarui pada 17 Oktober 2026: pengelompokan klip dan sumber teks bersama dari issue #49, serta tabel ID Jelajah (lihat "Revisi 17 Oktober 2026 (issue #49)"). Keputusan seam tidak berubah.
+
 Keputusannya: fitur berbicara lewat antarmuka `AudioService` (`speak` dan `stop`). Implementasi pertamanya Web Speech yang hanya memakai suara lokal perangkat; Howler dari #8 kemudian dipasang di balik antarmuka yang sama (digantikan oleh revisi 17 Oktober 2026: Web Speech kini menjadi cadangan).
 
 ## Konteks
@@ -69,6 +71,23 @@ Bagian ini mencatat implementasi Howler yang sudah jalan di `src/services/audio/
 - Peta `/audio/<loc>/sprites.json` divalidasi Zod (`AudioSpriteMapSchema`, dan `locale` harus cocok). 404, respons 200 non-JSON (rewrite SPA Vercel ke `index.html`), dan JSON rusak berarti tanpa peta, dan hasil itu di-cache. Galat jaringan atau status tidak ok lain tidak di-cache, sehingga `has` berikutnya mencoba lagi.
 - Batas muat 2000 ms dihitung sejak `play`, termasuk menunggu factory Howl. Lewat batas, segmen beralih ke suara lokal. Cache grup sprite berupa LRU 6 grup; grup yang dikeluarkan di-`unload()`. Howl yang gagal dimuat di-evict lewat listener `loaderror` permanen, dengan cek identitas entri supaya event basi tidak menghapus entri baru berkunci sama.
 - `navigator.audioSession.type = 'playback'` diset bila API-nya ada, supaya suara tetap keluar saat sakelar senyap iOS aktif. Unlock audio memakai `Howler.autoUnlock` bawaan, tanpa kode tambahan.
+
+### Revisi 17 Oktober 2026 (issue #49)
+
+- Klip sprite dikelompokkan per grup: `core-n`, `celebrate-n`, `fact-n`, `intro-<benua>-n`, `quiz-<level>-n`. Rinciannya di [ADR-010](0010-produksi-audio.md). Format ID segmen tidak berubah.
+- Teks segmen berasal dari satu sumber bersama, `src/services/audio/segments.ts`, yang dipakai hook Jelajah, hook Tebak Bendera, dan skrip produksi audio, dengan locale eksplisit. Teks klip sama dengan teks Web Speech.
+- Tabel ID di bawah dilengkapi ID Jelajah. `XX` adalah kode negara alpha-2 huruf besar:
+
+| ID | Kapan | Isi |
+| --- | --- | --- |
+| `intro:XX` | Negara diketuk (kecuali ID) | "Ini {negara}!" |
+| `introHome` | Indonesia diketuk | "Ini Indonesia, rumah kita!" |
+| `ocean` | Lautan diketuk | "Ini laut. Airnya biru!" |
+| `fact:XX` | Fakta negara dibacakan | Teks fakta negara |
+
+`intro:ID` tidak pernah diputar karena ketukan ID memberi `introHome`, jadi tidak ada klipnya.
+
+Antrean memberi jeda 400 ms (`SEGMENT_GAP_MS`) antarsegmen yang terdengar, atas masukan uji MatePad 17 Oktober 2026 ("Betul!" lalu "Itu bendera ..." terasa bertabrakan); F-07.4 tetap: segmen tidak menumpuk, dan `speak`/`stop` membatalkan jeda yang sedang berjalan.
 
 Risiko terbuka dicatat di issue #50: unlock di Safari iPad, `has()` tanpa timeout (menunggu fetch peta), cadangan HTML5 Audio, dan pemakaian memori.
 

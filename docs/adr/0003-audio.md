@@ -4,6 +4,8 @@ Status: diterima pada 14 Oktober 2026.
 
 Diperbarui pada 15 Oktober 2026: cadangan Web Speech dibatasi ke suara lokal perangkat, supaya tidak ada teks yang diproses di server penyedia (F-11.2).
 
+Diperbarui pada 17 Oktober 2026: sprite per grup, Whisper `medium`, dan karaoke belum dipakai (lihat "Revisi 17 Oktober 2026 (issue #49)" dan ADR-010).
+
 Keputusannya: semua audio dibuat saat build dengan Gemini TTS, diperiksa otomatis oleh Whisper, lalu ditinjau manusia sebelum masuk game.
 
 ## Konteks
@@ -39,3 +41,12 @@ Goal 1 butuh bunyi huruf dan suku kata yang benar, dan Goal 2 butuh audio bahasa
 - Lisensi MMS-TTS non-komersial. Kalau proyek dikomersialkan, cadangan ini harus diganti.
 
 Yang perlu dicek sebelum implementasi: model TTS Gemini yang tersedia dan batas tier gratisnya saat ini, serta spike kecil berisi 20 suku kata sampel untuk menilai kualitas.
+
+## Revisi 17 Oktober 2026 (issue #49)
+
+Pelaksanaan pipeline dicatat di [ADR-010](0010-produksi-audio.md). Perubahan atas keputusan di atas:
+
+- Sprite dibuat per grup (`core-n`, `celebrate`, `fact`, `intro-<benua>`, `quiz-<level>`, maksimal 45 detik), bukan satu sprite per level.
+- Whisper memakai model `medium`, berjalan lokal.
+- Waktu per kata untuk sorotan karaoke belum dipakai. Whisper hanya menghasilkan transkrip dan skor.
+- Keputusan lain di ADR ini tidak berubah.
