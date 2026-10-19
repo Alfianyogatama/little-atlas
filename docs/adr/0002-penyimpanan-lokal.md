@@ -6,6 +6,8 @@ Diperbarui pada 15 Oktober 2026: memperjelas isi jendela jawaban di tabel `progr
 
 Diperbarui pada 16 Oktober 2026: bintang Tebak Bendera di issue #6 sementara hanya di memori sesi, dan satu pertanyaan terbuka untuk #14 (lihat bagian "Revisi 16 Oktober 2026 (issue #6)").
 
+Diperbarui pada 19 Oktober 2026: keputusan implementasi penyimpanan di issue #10 (lihat bagian "Revisi 19 Oktober 2026 (issue #10)").
+
 Keputusannya: semua progres dan pengaturan disimpan di IndexedDB lewat Dexie, dibungkus antarmuka repository, divalidasi Zod saat dibaca, dan tidak pernah dikirim ke server.
 
 ## Konteks
@@ -70,6 +72,21 @@ Skema dan keputusan penyimpanan di atas tidak berubah. Issue #6 (Tebak Bendera) 
 - Keduanya diganti di #10: bintang masuk `progress` lewat repository, migrasi `halo-dunia-stars` mengikuti bagian "Migrasi", dan peringatan `beforeunload` dihapus karena progres sudah tersimpan.
 
 Pertanyaan terbuka untuk #14: kalau anak menjawab keliru dulu lalu benar di soal yang sama, apa yang dicatat sebagai satu entri di jendela 10 jawaban (benar atau salah)? Skema `progress` saat ini hanya mengenal satu entri benar atau salah per jawaban, dan di #6 percobaan keliru tidak dicatat sama sekali. Putusan ini menentukan hasil aturan naik dan turun level (F-04.7), jadi perlu keputusan pemilik sebelum #14.
+
+## Revisi 19 Oktober 2026 (issue #10)
+
+Keputusan penyimpanan di atas tidak berubah. Rincian implementasi di #10:
+
+- `profileId` tetap `'default'` tanpa baris `profiles` sampai #11 (keputusan pemilik). #11 memindahkan progress `'default'` ke profil pertama.
+- Skema Dexie versi 1 mendeklarasikan keenam tabel; #10 hanya memakai `progress`.
+- Dexie dimuat dinamis, jadi tidak ada di JS muatan pertama.
+- Boot menunggu storage sebelum render. Membuka IndexedDB dan migrasi v0 dibatasi 2 detik, dihitung sejak modul penyimpanan (chunk Dexie) termuat, lalu memakai repository di memori. Unduhan modul tidak dibatasi, sehingga jaringan lambat tidak membuat sesi jatuh ke memori. Modul yang gagal dimuat juga jatuh ke memori.
+- Bintang ditulis per perubahan tanpa ditunggu. Kegagalan hanya dicatat ke console. Akibatnya bintang yang didapat sesaat sebelum tab dimuat ulang atau ditutup bisa hilang; di tes e2e jeda sampai tulisan tersimpan sekitar 40 ms. Tes e2e yang memuat ulang menunggu tulisan tersimpan lebih dulu.
+- Migrasi v0: key dihapus setelah tulis berhasil. Baris yang sudah ada (termasuk yang rusak) tidak ditimpa. Gagal menghapus key hanya dicatat.
+- Parameter debug `quizStars` menimpa nilai awal dan tidak ikut tersimpan sampai bintang berubah.
+- `beforeunload` dihapus (`useWarnOnUnload` tidak ada lagi), menggantikan penyimpanan sementara di revisi 16 Oktober.
+- `navigator.storage.persist()` dan pemberitahuan dasbor "progres tidak tersimpan" dipindah ke #9. `openStorage` sudah mengembalikan `persistent`.
+- Uji di Huawei Browser tetap kewajiban pemilik.
 
 ## Alternatif yang ditolak
 
