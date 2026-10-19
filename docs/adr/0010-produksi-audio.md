@@ -73,6 +73,7 @@ Hanya teks konten publik (nama negara, fakta, kalimat kuis) yang dikirim ke Gemi
 - Ubah satu kata di copy berarti klipnya basi: `content:check` gagal sampai klip dibuat ulang atau `audio:prune` dijalankan.
 - Raw WAV tidak di-commit, jadi `audio:sprite` hanya bisa dijalankan di mesin pemilik.
 - Dependensi Python (faster-whisper dan turunannya) hanya untuk mesin pemilik, tidak masuk bundle.
+- Jeda kuis dinaikkan berdasarkan durasi klip asli: 3600 ms antarsoal dan 5500 ms untuk perayaan (sebelumnya 3000 dan 4200), supaya ujung ucapan tidak terpotong.
 
 ## Risiko
 

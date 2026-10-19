@@ -256,7 +256,7 @@ async function pointerUps(page: Page): Promise<number[]> {
 async function delayBeforeRound(page: Page, round: string): Promise<number> {
   await expect
     .poll(async () => (await rounds(page)).some((r) => r.round === round), {
-      // Alasan timeout 8000: F-04.9 menjadwalkan soal berikut 3-4,2 detik setelah jawaban benar,
+      // Alasan timeout 8000: F-04.9 menjadwalkan soal berikut 3,6-5,5 detik setelah jawaban benar,
       // lebih lama dari timeout expect bawaan.
       timeout: 8000,
     })
@@ -663,7 +663,7 @@ test('TC-F04-10 bintang bertahan saat ganti mode, tampil di Jelajah, dan soal ba
   await expect(starsOf(page, 'id', 1)).toBeVisible();
   // Tunggu soal kedua; targetnya jadi "soal sebelumnya" saat kuis dibuka lagi.
   await expect
-    .poll(() => quizAttr(page, 'round'), { timeout: 8000 }) // soal berikut datang 3 detik setelah jawaban benar
+    .poll(() => quizAttr(page, 'round'), { timeout: 8000 }) // soal berikut datang 3,6 detik setelah jawaban benar
     .toBe('2');
   const second = await quizAttr(page, 'target');
   expect(second).not.toBe(target);
@@ -806,7 +806,7 @@ test('TC-F04-12 ganti mode saat perayaan: soal basi tidak muncul atau terucap di
   const heardBefore = (await spoken(page)).length;
   const cancelsBefore = await cancels(page);
 
-  // Langsung ganti mode, jauh sebelum jadwal soal berikut (3000 ms).
+  // Langsung ganti mode, jauh sebelum jadwal soal berikut (3600 ms; REMAP 19 Okt 2026).
   await modeButton(page, 'id', 'explore').click();
   await expect(modeButton(page, 'id', 'explore')).toHaveAttribute('aria-pressed', 'true');
   await expect(regionOf(page, 'id')).toHaveCount(0);
@@ -842,7 +842,7 @@ test('TC-NFR-privasi-kuis tidak ada permintaan ke origin lain saat bermain kuis'
   await choiceFor(region, 'id', target).click();
   await expect(starsOf(page, 'id', 1)).toBeVisible();
   await expect
-    .poll(() => quizAttr(page, 'round'), { timeout: 8000 }) // soal berikut datang 3 detik setelah jawaban benar
+    .poll(() => quizAttr(page, 'round'), { timeout: 8000 }) // soal berikut datang 3,6 detik setelah jawaban benar
     .toBe('2');
   await page.waitForLoadState('networkidle');
 

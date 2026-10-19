@@ -376,9 +376,16 @@ describe('quiz: initialQuizState', () => {
 });
 
 describe('quiz: konstanta sesi', () => {
-  it('U12: jeda soal berikut 3000 ms, perayaan 4200 ms, tiap 5 bintang, 4 varian pujian', () => {
-    expect(NEXT_QUESTION_DELAY_MS).toBe(3000);
-    expect(CELEBRATION_DELAY_MS).toBe(4200);
+  // REMAP (keputusan pemilik 19 Okt 2026): 3000 -> 3600 dan 4200 -> 5500 agar ujung ucapan tidak terpotong.
+  it('TC-F04-DELAY-1: jeda soal berikut 3600 ms (efek schedule jawaban benar: lihat U12 dan U13)', () => {
+    expect(NEXT_QUESTION_DELAY_MS).toBe(3600);
+  });
+
+  it('TC-F04-DELAY-2: jeda perayaan 5500 ms', () => {
+    expect(CELEBRATION_DELAY_MS).toBe(5500);
+  });
+
+  it('U12: tiap 5 bintang, 4 varian pujian', () => {
     expect(CELEBRATE_EVERY).toBe(5);
     expect(PRAISE_VARIANTS).toBe(4);
   });
@@ -542,7 +549,7 @@ describe('quiz: quizStep saat flying (soal belum dibacakan)', () => {
 });
 
 describe('quiz: quizStep answer benar', () => {
-  it('U12: benar menambah satu bintang, celebrating, efek berurutan praise, confetti kecil, stars, schedule 3000', () => {
+  it('U12: benar menambah satu bintang, celebrating, efek berurutan praise, confetti kecil, stars, schedule 3600 (REMAP)', () => {
     const rngValue = { v: 0 };
     const ctx = ctxOf({ rng: () => rngValue.v });
     const s0 = asked(ctx);
@@ -557,7 +564,7 @@ describe('quiz: quizStep answer benar', () => {
       { type: 'speak', plan: [{ kind: 'praise', variant: 3, code: target }] },
       { type: 'confetti', size: 'small' },
       { type: 'stars', stars: 1, target },
-      { type: 'schedule', round: 1, delayMs: 3000 },
+      { type: 'schedule', round: 1, delayMs: 3600 },
     ]);
   });
 
@@ -687,7 +694,7 @@ describe('quiz: perayaan tiap 5 bintang', () => {
           { type: 'speak', plan: [{ kind: 'celebrate', stars: n }] },
           { type: 'confetti', size: 'big' },
           { type: 'stars', stars: n, target },
-          { type: 'schedule', round, delayMs: 4200 },
+          { type: 'schedule', round, delayMs: 5500 },
         ]);
       } else {
         expect(ans.state.cheer?.kind).toBe('praise');
@@ -697,7 +704,7 @@ describe('quiz: perayaan tiap 5 bintang', () => {
           plan: [{ kind: 'praise', code: target }],
         });
         expect(ans.effects[1]).toEqual({ type: 'confetti', size: 'small' });
-        expect(ans.effects[3]).toEqual({ type: 'schedule', round, delayMs: 3000 });
+        expect(ans.effects[3]).toEqual({ type: 'schedule', round, delayMs: 3600 });
       }
       s = next;
     }
@@ -710,7 +717,7 @@ describe('quiz: perayaan tiap 5 bintang', () => {
     expect(r4.state.stars).toBe(4);
     expect(r4.state.cheer?.kind).toBe('praise');
     expect(r4.effects).toContainEqual({ type: 'confetti', size: 'small' });
-    expect(r4.effects).toContainEqual({ type: 'schedule', round: at3.round, delayMs: 3000 });
+    expect(r4.effects).toContainEqual({ type: 'schedule', round: at3.round, delayMs: 3600 });
 
     const at5 = asked(ctx, { stars: 5, previousTarget: null });
     const r6 = quizStep(at5, { type: 'answer', code: questionOf(at5).target }, ctx);
@@ -730,7 +737,7 @@ describe('quiz: perayaan tiap 5 bintang', () => {
       const r = quizStep(s, { type: 'answer', code: questionOf(s).target }, ctx);
       expect(r.state.stars).toBe(to);
       expect(r.state.cheer).toEqual({ kind: 'celebrate', stars: to });
-      expect(r.effects).toContainEqual({ type: 'schedule', round: s.round, delayMs: 4200 });
+      expect(r.effects).toContainEqual({ type: 'schedule', round: s.round, delayMs: 5500 });
     }
   });
 
@@ -1059,7 +1066,7 @@ describe('quiz: mulai dari sesi yang dibawa dari luar', () => {
       { type: 'speak', plan: [{ kind: 'celebrate', stars: 5 }] },
       { type: 'confetti', size: 'big' },
       { type: 'stars', stars: 5, target },
-      { type: 'schedule', round: 1, delayMs: 4200 },
+      { type: 'schedule', round: 1, delayMs: 5500 },
     ]);
   });
 

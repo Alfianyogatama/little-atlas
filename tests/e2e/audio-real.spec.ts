@@ -5,15 +5,18 @@ import idMessages from '../../messages/id.json' with { type: 'json' };
 import { AudioSpriteMapSchema } from '../../src/content/schema';
 
 /**
- * Issue #49 (T14): e2e dengan peta audio ASLI yang ter-commit di public/audio/id (65 klip).
+ * Issue #49 (T14): e2e dengan peta audio ASLI yang ter-commit di public/audio/id.
+ *
+ * REMAP #49 aset 148 klip: peta kini memuat semua batch 1 id kecuali intro:LA (sengaja tanpa audio, #55).
+ * Tes lama (aset tahap 1, 65 klip, tanpa intro/ask/praiseFlag) diperbarui mengikuti spec; bukan pelemahan.
+ * Jumlah klip tidak ditulis literal: prasyarat membandingkan peta dengan src/content/data/audio-manifest.json.
  *
  * Kontrak tambahan:
  * - Tanpa page.route untuk audio: sprites.json dan MP3 disajikan build (dist-e2e) apa adanya.
  * - Peta dibaca dari berkas repo (public/audio/id/sprites.json) dan divalidasi AudioSpriteMapSchema;
  *   offset/durasi yang diharapkan = startMs/1000 dan durationMs/1000 dari peta itu.
  * - Pemutaran direkam lewat AudioBufferSourceNode.prototype.start(when, offset, duration), seperti audio.spec.ts.
- * - Klip yang tidak ada di peta asli (intro:*, ask:*, praiseFlag:*) harus lewat Web Speech tiruan.
- * - Fakta asli: fact:AU/MG/MY/TL belum ada; JP ada. Tes ini tidak bergantung pada yang belum ada.
+ * - Klip yang tidak ada di peta asli (kini hanya intro:LA) harus lewat Web Speech tiruan.
  */
 
 interface CatalogEntry {
@@ -22,6 +25,7 @@ interface CatalogEntry {
   anchor: [number, number];
 }
 interface Start {
+  at: number;
   when: number;
   offset: number | null;
   duration: number | null;
@@ -49,8 +53,10 @@ function fmt(template: string, vars: Record<string, string>): string {
 }
 
 const japan = entry('JP');
+const laos = entry('LA');
 const cardJp = fmt(idMessages.explore_card_label, { name: japan.name.id });
-const introJp = fmt(idMessages.explore_intro, { name: japan.name.id });
+const cardLa = fmt(idMessages.explore_card_label, { name: laos.name.id });
+const introLa = fmt(idMessages.explore_intro, { name: laos.name.id });
 
 const holder = '[data-camera-lonlat]';
 const quizRoot = '[data-quiz-round]';
@@ -93,6 +99,7 @@ const startRecorder = `
   const originalStart = AudioBufferSourceNode.prototype.start;
   AudioBufferSourceNode.prototype.start = function (when, offset, duration) {
     window.__starts.push({
+      at: performance.now(),
       when: when === undefined ? 0 : when,
       offset: offset === undefined ? null : offset,
       duration: duration === undefined ? null : duration,
@@ -160,23 +167,36 @@ async function tapGlobeCenter(page: Page): Promise<void> {
   await page.mouse.click(box.x + cx, box.y + cy);
 }
 
-async function openJapanCard(page: Page): Promise<void> {
-  await openAt(page, '&lookAt=JP');
-  await waitFlightDone(page, japan.anchor);
+async function openCountryCard(
+  page: Page,
+  country: CatalogEntry,
+  cardLabel: string,
+): Promise<void> {
+  await openAt(page, `&lookAt=${country.alpha2}`);
+  await waitFlightDone(page, country.anchor);
   await tapGlobeCenter(page);
-  await expect(page.getByRole('region', { name: cardJp })).toBeVisible();
+  await expect(page.getByRole('region', { name: cardLabel })).toBeVisible();
+}
+async function openJapanCard(page: Page): Promise<void> {
+  await openCountryCard(page, japan, cardJp);
 }
 
-test('peta asli: valid, 65 klip, intro/ask/praiseFlag tidak ada (prasyarat tes REAL)', () => {
-  expect(Object.keys(realMap.clips)).toHaveLength(65);
+test('peta asli: valid, sama dengan manifest id, intro:LA sengaja tanpa audio (prasyarat tes REAL)', () => {
+  const manifest = JSON.parse(readFileSync('src/content/data/audio-manifest.json', 'utf8')) as {
+    clips: { id: string; locale: string }[];
+  };
+  const manifestIds = manifest.clips
+    .filter((c) => c.locale === 'id')
+    .map((c) => c.id)
+    .sort();
+  expect(manifestIds.length).toBeGreaterThan(0);
+  expect(Object.keys(realMap.clips).sort()).toEqual([...new Set(manifestIds)]);
   expect(realMap.clips['fact:JP']).toBeDefined();
-  expect(realMap.clips['intro:JP']).toBeUndefined();
-  expect(Object.keys(realMap.clips).filter((id) => /^(intro|ask|praiseFlag):/.test(id))).toEqual(
-    [],
-  );
+  expect(realMap.clips['intro:JP']).toBeDefined();
+  expect(realMap.clips['intro:LA']).toBeUndefined();
 });
 
-test('TC-E2E-AUD-REAL-1 Jelajah JP: fact:JP dari file asli (offset/durasi sesuai peta), intro:JP lewat Web Speech', async ({
+test('TC-E2E-AUD-REAL-1 Jelajah JP: intro:JP lalu fact:JP dari file asli (offset/durasi sesuai peta), tanpa Web Speech', async ({
   page,
 }) => {
   await page.addInitScript(speechStub);
@@ -190,24 +210,30 @@ test('TC-E2E-AUD-REAL-1 Jelajah JP: fact:JP dari file asli (offset/durasi sesuai
     JSON.parse(readFileSync('public/audio/id/sprites.json', 'utf8')),
   );
 
-  await expect
-    .poll(async () => indexOfClip(await clipStarts(page), 'fact:JP'))
-    .toBeGreaterThanOrEqual(0);
+  await expect.poll(async () => (await clipStarts(page)).length).toBeGreaterThanOrEqual(2);
   const starts = await clipStarts(page);
-  // Hanya fakta yang dari file; intro tidak ada di peta sehingga tidak ada klip lain.
-  expect(starts).toHaveLength(1);
+  expect(starts).toHaveLength(2);
+  const [first, second] = starts;
+  if (!first || !second) throw new Error('dua klip diharapkan');
+  const intro = clip('intro:JP');
   const fact = clip('fact:JP');
-  expect(starts[0]?.offset).toBeCloseTo(fact.startMs / 1000, 3);
-  expect(starts[0]?.duration).toBeCloseTo(fact.durationMs / 1000, 3);
+  expect(isClip(first, 'intro:JP')).toBe(true);
+  expect(first.offset).toBeCloseTo(intro.startMs / 1000, 3);
+  expect(first.duration).toBeCloseTo(intro.durationMs / 1000, 3);
+  expect(isClip(second, 'fact:JP')).toBe(true);
+  expect(second.offset).toBeCloseTo(fact.startMs / 1000, 3);
+  expect(second.duration).toBeCloseTo(fact.durationMs / 1000, 3);
 
-  // Intro diucapkan lewat Web Speech dengan teks intro; teks fakta tidak boleh ikut diucapkan.
-  await expect.poll(() => spoken(page)).toContain(introJp);
+  // Jeda antarsegmen 400 ms (SEGMENT_GAP_MS di layered.ts); toleransi untuk headless.
+  const gapMs = second.at - first.at - intro.durationMs;
+  expect(gapMs).toBeGreaterThanOrEqual(300);
+
   // Penghalang sebelum klaim negatif: lewati durasi klip fakta.
   await settle(page, 2500);
-  expect(await spoken(page)).toEqual([introJp]);
+  expect(await spoken(page)).toEqual([]);
 });
 
-test('TC-E2E-AUD-REAL-2 Kuis: praise:N dari file asli, praiseFlag lewat Web Speech', async ({
+test('TC-E2E-AUD-REAL-2 Kuis: praise:N lalu praiseFlag dari file asli, tanpa Web Speech untuk keduanya', async ({
   page,
 }) => {
   await page.addInitScript(speechStub);
@@ -221,27 +247,42 @@ test('TC-E2E-AUD-REAL-2 Kuis: praise:N dari file asli, praiseFlag lewat Web Spee
   const name = entry(target).name.id;
   const askText = fmt(idMessages.quiz_ask_speech, { name });
   const flagText = fmt(idMessages.quiz_praise_flag, { name });
-  // ask:<kode> tidak ada di peta asli: pertanyaan lewat Web Speech, tanpa klip file.
-  await expect.poll(() => spoken(page)).toContain(askText);
-  expect(await clipStarts(page)).toEqual([]);
+  // ask:<kode> ada di peta: pertanyaan dari file, bukan Web Speech.
+  await expect
+    .poll(async () => indexOfClip(await clipStarts(page), `ask:${target}`))
+    .toBeGreaterThanOrEqual(0);
+  const askStarts = (await clipStarts(page)).length;
 
   await page
     .getByRole('region', { name: idMessages.quiz_region_label, exact: true })
     .getByRole('button', { name: fmt(idMessages.quiz_choice_label, { name }), exact: true })
     .click();
 
-  await expect.poll(() => spoken(page)).toContain(flagText);
-  const starts = await clipStarts(page);
-  expect(starts).toHaveLength(1);
+  await expect
+    .poll(async () => indexOfClip(await clipStarts(page), `praiseFlag:${target}`))
+    .toBeGreaterThanOrEqual(0);
+  const starts = (await clipStarts(page)).slice(askStarts);
   const played = ['praise:1', 'praise:2', 'praise:3', 'praise:4'].filter(
     (id) => indexOfClip(starts, id) >= 0,
   );
   expect(played).toHaveLength(1);
-  const praise = clip(played[0] ?? '');
-  expect(starts[0]?.offset).toBeCloseTo(praise.startMs / 1000, 3);
-  expect(starts[0]?.duration).toBeCloseTo(praise.durationMs / 1000, 3);
-  // Kata pujian adalah klip file, bukan Web Speech.
+  const praiseId = played[0] ?? '';
+  const praise = clip(praiseId);
+  const praiseStart = starts[indexOfClip(starts, praiseId)];
+  expect(praiseStart?.offset).toBeCloseTo(praise.startMs / 1000, 3);
+  expect(praiseStart?.duration).toBeCloseTo(praise.durationMs / 1000, 3);
+  const flag = clip(`praiseFlag:${target}`);
+  const flagStart = starts[indexOfClip(starts, `praiseFlag:${target}`)];
+  expect(flagStart?.offset).toBeCloseTo(flag.startMs / 1000, 3);
+  expect(flagStart?.duration).toBeCloseTo(flag.durationMs / 1000, 3);
+  // Urutan: pujian dulu, lalu nama bendera.
+  expect(indexOfClip(starts, praiseId)).toBeLessThan(indexOfClip(starts, `praiseFlag:${target}`));
+
+  // Penghalang sebelum klaim negatif, lalu Web Speech tidak dipakai untuk pujian maupun bendera.
+  await settle(page, 1500);
   const lines = await spoken(page);
+  expect(lines).not.toContain(flagText);
+  expect(lines).not.toContain(askText);
   for (const word of [
     idMessages.quiz_praise_1,
     idMessages.quiz_praise_2,
@@ -250,6 +291,28 @@ test('TC-E2E-AUD-REAL-2 Kuis: praise:N dari file asli, praiseFlag lewat Web Spee
   ]) {
     expect(lines).not.toContain(word);
   }
+});
+
+test('TC-E2E-AUD-REAL-LA Jelajah Laos: intro:LA tanpa audio file, jatuh ke Web Speech', async ({
+  page,
+}) => {
+  await page.addInitScript(speechStub);
+  await page.addInitScript(startRecorder);
+  await openCountryCard(page, laos, cardLa);
+
+  await expect.poll(() => spoken(page)).toContain(introLa);
+  // Penghalang sebelum klaim negatif.
+  await settle(page, 2500);
+  const starts = await clipStarts(page);
+  // Tidak ada klip file yang mengisi intro LA (id-nya tidak ada di peta).
+  expect(realMap.clips['intro:LA']).toBeUndefined();
+  for (const s of starts) {
+    for (const [id, c] of Object.entries(realMap.clips)) {
+      if (id.startsWith('intro:')) expect(isClip(s, id), `start cocok ${id}`).toBe(false);
+      void c;
+    }
+  }
+  expect((await spoken(page)).filter((t) => t === introLa)).toHaveLength(1);
 });
 
 test('TC-E2E-AUD-REAL-3 privasi: semua permintaan audio same-origin, tidak ada host lain', async ({
@@ -270,7 +333,9 @@ test('TC-E2E-AUD-REAL-3 privasi: semua permintaan audio same-origin, tidak ada h
   const audioRequests = urls.filter((u) => new URL(u).pathname.startsWith('/audio/'));
   expect(audioRequests.some((u) => new URL(u).pathname === '/audio/id/sprites.json')).toBe(true);
   expect(
-    audioRequests.some((u) => /^\/audio\/id\/fact-1-[0-9a-f]{8}\.mp3$/.test(new URL(u).pathname)),
+    audioRequests.some(
+      (u) => new URL(u).pathname === `/audio/id/${realMap.sprites[clip('fact:JP').sprite]?.src}`,
+    ),
   ).toBe(true);
   for (const u of audioRequests) expect(new URL(u).origin).toBe(origin);
   const external = urls.filter(

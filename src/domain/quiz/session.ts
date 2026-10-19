@@ -1,8 +1,10 @@
 import { createQuestion, type Question } from './question';
 import type { Rng } from './rng';
 
-export const NEXT_QUESTION_DELAY_MS = 3000;
-export const CELEBRATION_DELAY_MS = 4200;
+// Jeda mengikuti durasi klip asli: pujian + jeda 400 ms + kalimat bendera terpanjang (3,26 dtk);
+// perayaan terpanjang 5,1 dtk. Lebih pendek dari ini, ujung ucapan terpotong.
+export const NEXT_QUESTION_DELAY_MS = 3600;
+export const CELEBRATION_DELAY_MS = 5500;
 export const CELEBRATE_EVERY = 5;
 export const PRAISE_VARIANTS = 4;
 
