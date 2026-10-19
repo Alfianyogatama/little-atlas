@@ -3,9 +3,9 @@
   "locale": "id",
   "sprites": {
     "core-1": {
-      "src": "core-1-dd40f295.mp3",
-      "bytes": 86256,
-      "durationMs": 14312
+      "src": "core-1-c1f65ede.mp3",
+      "bytes": 85968,
+      "durationMs": 14278
     },
     "celebrate-1": {
       "src": "celebrate-1-72e47077.mp3",
@@ -23,19 +23,64 @@
       "durationMs": 4331
     },
     "fact-1": {
-      "src": "fact-1-4c0b4082.mp3",
-      "bytes": 267984,
-      "durationMs": 44603
+      "src": "fact-1-bc74cfa2.mp3",
+      "bytes": 267408,
+      "durationMs": 44510
     },
     "fact-2": {
-      "src": "fact-2-30dd1b12.mp3",
-      "bytes": 266544,
-      "durationMs": 44355
+      "src": "fact-2-38e426bb.mp3",
+      "bytes": 264240,
+      "durationMs": 43978
     },
     "fact-3": {
-      "src": "fact-3-bd78192f.mp3",
-      "bytes": 48672,
-      "durationMs": 8043
+      "src": "fact-3-9b824e76.mp3",
+      "bytes": 110880,
+      "durationMs": 18430
+    },
+    "intro-africa-1": {
+      "src": "intro-africa-1-9a2e205e.mp3",
+      "bytes": 41040,
+      "durationMs": 6782
+    },
+    "intro-americas-1": {
+      "src": "intro-americas-1-9fe670a3.mp3",
+      "bytes": 51984,
+      "durationMs": 8612
+    },
+    "intro-antarctica-1": {
+      "src": "intro-antarctica-1-88978324.mp3",
+      "bytes": 11808,
+      "durationMs": 1911
+    },
+    "intro-asia-1": {
+      "src": "intro-asia-1-6565d35c.mp3",
+      "bytes": 127152,
+      "durationMs": 21122
+    },
+    "intro-europe-1": {
+      "src": "intro-europe-1-655e11c5.mp3",
+      "bytes": 74592,
+      "durationMs": 12367
+    },
+    "intro-oceania-1": {
+      "src": "intro-oceania-1-6750cbe7.mp3",
+      "bytes": 29664,
+      "durationMs": 4893
+    },
+    "quiz-1-1": {
+      "src": "quiz-1-1-de67e718.mp3",
+      "bytes": 269712,
+      "durationMs": 44896
+    },
+    "quiz-1-2": {
+      "src": "quiz-1-2-e0689f53.mp3",
+      "bytes": 256752,
+      "durationMs": 42729
+    },
+    "quiz-1-3": {
+      "src": "quiz-1-3-e3d281b6.mp3",
+      "bytes": 33552,
+      "durationMs": 5540
     }
   },
   "clips": {
@@ -67,16 +112,16 @@
     "praise:3": {
       "sprite": "core-1",
       "startMs": 11105,
-      "durationMs": 881
+      "durationMs": 847
     },
     "praise:4": {
       "sprite": "core-1",
-      "startMs": 12116,
+      "startMs": 12082,
       "durationMs": 861
     },
     "tryAgain": {
       "sprite": "core-1",
-      "startMs": 13107,
+      "startMs": 13073,
       "durationMs": 1055
     },
     "celebrate:5": {
@@ -189,180 +234,595 @@
       "startMs": 2330,
       "durationMs": 2921
     },
-    "fact:BN": {
+    "fact:AU": {
       "sprite": "fact-1",
       "startMs": 5381,
+      "durationMs": 2083
+    },
+    "fact:BN": {
+      "sprite": "fact-1",
+      "startMs": 7593,
       "durationMs": 2653
     },
     "fact:BR": {
       "sprite": "fact-1",
-      "startMs": 8163,
+      "startMs": 10376,
       "durationMs": 2991
     },
     "fact:CA": {
       "sprite": "fact-1",
-      "startMs": 11283,
+      "startMs": 13496,
       "durationMs": 2323
     },
     "fact:CH": {
       "sprite": "fact-1",
-      "startMs": 13736,
+      "startMs": 15949,
       "durationMs": 2141
     },
     "fact:CN": {
       "sprite": "fact-1",
-      "startMs": 16006,
+      "startMs": 18219,
       "durationMs": 2093
     },
     "fact:DE": {
       "sprite": "fact-1",
-      "startMs": 18228,
+      "startMs": 20441,
       "durationMs": 2500
     },
     "fact:EG": {
       "sprite": "fact-1",
-      "startMs": 20857,
+      "startMs": 23070,
       "durationMs": 2810
     },
     "fact:ES": {
       "sprite": "fact-1",
-      "startMs": 23797,
+      "startMs": 26010,
       "durationMs": 2800
     },
     "fact:FR": {
       "sprite": "fact-1",
-      "startMs": 26727,
+      "startMs": 28940,
       "durationMs": 2793
     },
     "fact:GB": {
       "sprite": "fact-1",
-      "startMs": 29649,
+      "startMs": 31862,
       "durationMs": 2863
     },
     "fact:GR": {
       "sprite": "fact-1",
-      "startMs": 32642,
+      "startMs": 34855,
       "durationMs": 2415
     },
     "fact:ID": {
       "sprite": "fact-1",
-      "startMs": 35187,
+      "startMs": 37400,
       "durationMs": 2472
     },
     "fact:IN": {
       "sprite": "fact-1",
-      "startMs": 37789,
+      "startMs": 40002,
       "durationMs": 2104
     },
     "fact:IT": {
       "sprite": "fact-1",
-      "startMs": 40022,
+      "startMs": 42235,
       "durationMs": 2125
     },
     "fact:JP": {
-      "sprite": "fact-1",
-      "startMs": 42277,
+      "sprite": "fact-2",
+      "startMs": 80,
       "durationMs": 2177
     },
     "fact:KE": {
       "sprite": "fact-2",
-      "startMs": 80,
+      "startMs": 2386,
       "durationMs": 1934
     },
     "fact:KH": {
       "sprite": "fact-2",
-      "startMs": 2143,
+      "startMs": 4449,
       "durationMs": 2729
     },
     "fact:KR": {
       "sprite": "fact-2",
-      "startMs": 5001,
+      "startMs": 7308,
       "durationMs": 2870
     },
     "fact:LA": {
       "sprite": "fact-2",
-      "startMs": 8001,
+      "startMs": 10307,
       "durationMs": 2711
     },
     "fact:MA": {
       "sprite": "fact-2",
-      "startMs": 10842,
+      "startMs": 13148,
       "durationMs": 1993
+    },
+    "fact:MG": {
+      "sprite": "fact-2",
+      "startMs": 15270,
+      "durationMs": 2108
     },
     "fact:MM": {
       "sprite": "fact-2",
-      "startMs": 12964,
+      "startMs": 17508,
       "durationMs": 2526
     },
     "fact:MX": {
       "sprite": "fact-2",
-      "startMs": 15619,
+      "startMs": 20163,
       "durationMs": 2648
+    },
+    "fact:MY": {
+      "sprite": "fact-2",
+      "startMs": 22941,
+      "durationMs": 2612
     },
     "fact:NL": {
       "sprite": "fact-2",
-      "startMs": 18396,
+      "startMs": 25682,
       "durationMs": 2380
     },
     "fact:NZ": {
       "sprite": "fact-2",
-      "startMs": 20906,
+      "startMs": 28192,
       "durationMs": 2851
     },
     "fact:PE": {
       "sprite": "fact-2",
-      "startMs": 23886,
+      "startMs": 31172,
       "durationMs": 1790
     },
     "fact:PG": {
       "sprite": "fact-2",
-      "startMs": 25805,
+      "startMs": 33091,
       "durationMs": 2940
     },
     "fact:PH": {
       "sprite": "fact-2",
-      "startMs": 28875,
+      "startMs": 36161,
       "durationMs": 2203
     },
     "fact:RU": {
       "sprite": "fact-2",
-      "startMs": 31207,
+      "startMs": 38493,
       "durationMs": 2372
     },
     "fact:SA": {
       "sprite": "fact-2",
-      "startMs": 33709,
+      "startMs": 40994,
       "durationMs": 2834
     },
     "fact:SG": {
-      "sprite": "fact-2",
-      "startMs": 36672,
+      "sprite": "fact-3",
+      "startMs": 80,
       "durationMs": 2636
     },
     "fact:TH": {
-      "sprite": "fact-2",
-      "startMs": 39438,
+      "sprite": "fact-3",
+      "startMs": 2845,
       "durationMs": 2265
     },
+    "fact:TL": {
+      "sprite": "fact-3",
+      "startMs": 5239,
+      "durationMs": 2595
+    },
     "fact:TR": {
-      "sprite": "fact-2",
-      "startMs": 41832,
+      "sprite": "fact-3",
+      "startMs": 7964,
       "durationMs": 2374
     },
     "fact:US": {
       "sprite": "fact-3",
-      "startMs": 80,
+      "startMs": 10467,
       "durationMs": 2698
     },
     "fact:VN": {
       "sprite": "fact-3",
-      "startMs": 2907,
+      "startMs": 13295,
       "durationMs": 2435
     },
     "fact:ZA": {
       "sprite": "fact-3",
-      "startMs": 5472,
+      "startMs": 15860,
       "durationMs": 2421
+    },
+    "intro:EG": {
+      "sprite": "intro-africa-1",
+      "startMs": 80,
+      "durationMs": 846
+    },
+    "intro:KE": {
+      "sprite": "intro-africa-1",
+      "startMs": 1055,
+      "durationMs": 993
+    },
+    "intro:MA": {
+      "sprite": "intro-africa-1",
+      "startMs": 2178,
+      "durationMs": 1239
+    },
+    "intro:MG": {
+      "sprite": "intro-africa-1",
+      "startMs": 3547,
+      "durationMs": 1358
+    },
+    "intro:ZA": {
+      "sprite": "intro-africa-1",
+      "startMs": 5034,
+      "durationMs": 1599
+    },
+    "intro:AR": {
+      "sprite": "intro-americas-1",
+      "startMs": 80,
+      "durationMs": 1725
+    },
+    "intro:BR": {
+      "sprite": "intro-americas-1",
+      "startMs": 1934,
+      "durationMs": 1247
+    },
+    "intro:CA": {
+      "sprite": "intro-americas-1",
+      "startMs": 3311,
+      "durationMs": 933
+    },
+    "intro:MX": {
+      "sprite": "intro-americas-1",
+      "startMs": 4373,
+      "durationMs": 1035
+    },
+    "intro:PE": {
+      "sprite": "intro-americas-1",
+      "startMs": 5538,
+      "durationMs": 1132
+    },
+    "intro:US": {
+      "sprite": "intro-americas-1",
+      "startMs": 6799,
+      "durationMs": 1663
+    },
+    "intro:AQ": {
+      "sprite": "intro-antarctica-1",
+      "startMs": 80,
+      "durationMs": 1682
+    },
+    "intro:BN": {
+      "sprite": "intro-asia-1",
+      "startMs": 80,
+      "durationMs": 1009
+    },
+    "intro:CN": {
+      "sprite": "intro-asia-1",
+      "startMs": 1218,
+      "durationMs": 1823
+    },
+    "intro:IN": {
+      "sprite": "intro-asia-1",
+      "startMs": 3171,
+      "durationMs": 990
+    },
+    "intro:JP": {
+      "sprite": "intro-asia-1",
+      "startMs": 4291,
+      "durationMs": 1044
+    },
+    "intro:KH": {
+      "sprite": "intro-asia-1",
+      "startMs": 5465,
+      "durationMs": 1312
+    },
+    "intro:KR": {
+      "sprite": "intro-asia-1",
+      "startMs": 6906,
+      "durationMs": 1383
+    },
+    "intro:MM": {
+      "sprite": "intro-asia-1",
+      "startMs": 8419,
+      "durationMs": 901
+    },
+    "intro:MY": {
+      "sprite": "intro-asia-1",
+      "startMs": 9450,
+      "durationMs": 925
+    },
+    "intro:PH": {
+      "sprite": "intro-asia-1",
+      "startMs": 10504,
+      "durationMs": 1135
+    },
+    "intro:SA": {
+      "sprite": "intro-asia-1",
+      "startMs": 11768,
+      "durationMs": 1536
+    },
+    "intro:SG": {
+      "sprite": "intro-asia-1",
+      "startMs": 13434,
+      "durationMs": 1133
+    },
+    "intro:TH": {
+      "sprite": "intro-asia-1",
+      "startMs": 14696,
+      "durationMs": 1414
+    },
+    "intro:TL": {
+      "sprite": "intro-asia-1",
+      "startMs": 16239,
+      "durationMs": 1526
+    },
+    "intro:TR": {
+      "sprite": "intro-asia-1",
+      "startMs": 17894,
+      "durationMs": 1128
+    },
+    "intro:VN": {
+      "sprite": "intro-asia-1",
+      "startMs": 19152,
+      "durationMs": 1820
+    },
+    "intro:CH": {
+      "sprite": "intro-europe-1",
+      "startMs": 80,
+      "durationMs": 1316
+    },
+    "intro:DE": {
+      "sprite": "intro-europe-1",
+      "startMs": 1525,
+      "durationMs": 1066
+    },
+    "intro:ES": {
+      "sprite": "intro-europe-1",
+      "startMs": 2720,
+      "durationMs": 1321
+    },
+    "intro:FR": {
+      "sprite": "intro-europe-1",
+      "startMs": 4171,
+      "durationMs": 1486
+    },
+    "intro:GB": {
+      "sprite": "intro-europe-1",
+      "startMs": 5786,
+      "durationMs": 1222
+    },
+    "intro:GR": {
+      "sprite": "intro-europe-1",
+      "startMs": 7137,
+      "durationMs": 1019
+    },
+    "intro:IT": {
+      "sprite": "intro-europe-1",
+      "startMs": 8286,
+      "durationMs": 1239
+    },
+    "intro:NL": {
+      "sprite": "intro-europe-1",
+      "startMs": 9654,
+      "durationMs": 1318
+    },
+    "intro:RU": {
+      "sprite": "intro-europe-1",
+      "startMs": 11102,
+      "durationMs": 1115
+    },
+    "intro:AU": {
+      "sprite": "intro-oceania-1",
+      "startMs": 80,
+      "durationMs": 1292
+    },
+    "intro:NZ": {
+      "sprite": "intro-oceania-1",
+      "startMs": 1501,
+      "durationMs": 1467
+    },
+    "intro:PG": {
+      "sprite": "intro-oceania-1",
+      "startMs": 3098,
+      "durationMs": 1645
+    },
+    "ask:AR": {
+      "sprite": "quiz-1-1",
+      "startMs": 80,
+      "durationMs": 2933
+    },
+    "praiseFlag:AR": {
+      "sprite": "quiz-1-1",
+      "startMs": 3142,
+      "durationMs": 1806
+    },
+    "ask:AU": {
+      "sprite": "quiz-1-1",
+      "startMs": 5077,
+      "durationMs": 2748
+    },
+    "praiseFlag:AU": {
+      "sprite": "quiz-1-1",
+      "startMs": 7955,
+      "durationMs": 1588
+    },
+    "ask:BR": {
+      "sprite": "quiz-1-1",
+      "startMs": 9672,
+      "durationMs": 2556
+    },
+    "praiseFlag:BR": {
+      "sprite": "quiz-1-1",
+      "startMs": 12357,
+      "durationMs": 1512
+    },
+    "ask:CA": {
+      "sprite": "quiz-1-1",
+      "startMs": 13998,
+      "durationMs": 2740
+    },
+    "praiseFlag:CA": {
+      "sprite": "quiz-1-1",
+      "startMs": 16867,
+      "durationMs": 1662
+    },
+    "ask:CH": {
+      "sprite": "quiz-1-1",
+      "startMs": 18659,
+      "durationMs": 2545
+    },
+    "praiseFlag:CH": {
+      "sprite": "quiz-1-1",
+      "startMs": 21333,
+      "durationMs": 1460
+    },
+    "ask:CN": {
+      "sprite": "quiz-1-1",
+      "startMs": 22923,
+      "durationMs": 2370
+    },
+    "praiseFlag:CN": {
+      "sprite": "quiz-1-1",
+      "startMs": 25423,
+      "durationMs": 1418
+    },
+    "ask:GB": {
+      "sprite": "quiz-1-1",
+      "startMs": 26970,
+      "durationMs": 2371
+    },
+    "praiseFlag:GB": {
+      "sprite": "quiz-1-1",
+      "startMs": 29471,
+      "durationMs": 1447
+    },
+    "ask:ID": {
+      "sprite": "quiz-1-1",
+      "startMs": 31047,
+      "durationMs": 2327
+    },
+    "praiseFlag:ID": {
+      "sprite": "quiz-1-1",
+      "startMs": 33503,
+      "durationMs": 2131
+    },
+    "ask:IN": {
+      "sprite": "quiz-1-1",
+      "startMs": 35764,
+      "durationMs": 2940
+    },
+    "praiseFlag:IN": {
+      "sprite": "quiz-1-1",
+      "startMs": 38833,
+      "durationMs": 1674
+    },
+    "ask:JP": {
+      "sprite": "quiz-1-1",
+      "startMs": 40637,
+      "durationMs": 2567
+    },
+    "praiseFlag:JP": {
+      "sprite": "quiz-1-1",
+      "startMs": 43333,
+      "durationMs": 1413
+    },
+    "ask:KE": {
+      "sprite": "quiz-1-2",
+      "startMs": 80,
+      "durationMs": 2531
+    },
+    "praiseFlag:KE": {
+      "sprite": "quiz-1-2",
+      "startMs": 2740,
+      "durationMs": 1345
+    },
+    "ask:KH": {
+      "sprite": "quiz-1-2",
+      "startMs": 4214,
+      "durationMs": 2772
+    },
+    "praiseFlag:KH": {
+      "sprite": "quiz-1-2",
+      "startMs": 7115,
+      "durationMs": 1791
+    },
+    "ask:KR": {
+      "sprite": "quiz-1-2",
+      "startMs": 9036,
+      "durationMs": 3227
+    },
+    "praiseFlag:KR": {
+      "sprite": "quiz-1-2",
+      "startMs": 12393,
+      "durationMs": 1922
+    },
+    "ask:MY": {
+      "sprite": "quiz-1-2",
+      "startMs": 14445,
+      "durationMs": 2459
+    },
+    "praiseFlag:MY": {
+      "sprite": "quiz-1-2",
+      "startMs": 17033,
+      "durationMs": 1531
+    },
+    "ask:PH": {
+      "sprite": "quiz-1-2",
+      "startMs": 18693,
+      "durationMs": 2505
+    },
+    "praiseFlag:PH": {
+      "sprite": "quiz-1-2",
+      "startMs": 21328,
+      "durationMs": 1652
+    },
+    "ask:SA": {
+      "sprite": "quiz-1-2",
+      "startMs": 23109,
+      "durationMs": 3063
+    },
+    "praiseFlag:SA": {
+      "sprite": "quiz-1-2",
+      "startMs": 26302,
+      "durationMs": 1697
+    },
+    "ask:TR": {
+      "sprite": "quiz-1-2",
+      "startMs": 28128,
+      "durationMs": 2864
+    },
+    "praiseFlag:TR": {
+      "sprite": "quiz-1-2",
+      "startMs": 31121,
+      "durationMs": 1286
+    },
+    "ask:US": {
+      "sprite": "quiz-1-2",
+      "startMs": 32537,
+      "durationMs": 3270
+    },
+    "praiseFlag:US": {
+      "sprite": "quiz-1-2",
+      "startMs": 35937,
+      "durationMs": 2236
+    },
+    "ask:VN": {
+      "sprite": "quiz-1-2",
+      "startMs": 38302,
+      "durationMs": 2848
+    },
+    "praiseFlag:VN": {
+      "sprite": "quiz-1-2",
+      "startMs": 41279,
+      "durationMs": 1300
+    },
+    "ask:ZA": {
+      "sprite": "quiz-1-3",
+      "startMs": 80,
+      "durationMs": 3178
+    },
+    "praiseFlag:ZA": {
+      "sprite": "quiz-1-3",
+      "startMs": 3388,
+      "durationMs": 2003
     }
   }
 }
